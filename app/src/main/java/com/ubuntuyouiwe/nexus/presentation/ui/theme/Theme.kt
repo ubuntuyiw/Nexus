@@ -1,4 +1,4 @@
-package com.ubuntuyouiwe.nexus.ui.theme
+package com.ubuntuyouiwe.nexus.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

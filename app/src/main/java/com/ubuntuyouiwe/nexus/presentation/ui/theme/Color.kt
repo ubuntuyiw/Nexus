@@ -1,4 +1,4 @@
-package com.ubuntuyouiwe.nexus.ui.theme
+package com.ubuntuyouiwe.nexus.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
