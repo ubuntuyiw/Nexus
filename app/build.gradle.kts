@@ -127,4 +127,7 @@ dependencies {
     //Splash
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    //Seismic
+    implementation("com.squareup:seismic:1.0.3")
+
 }
