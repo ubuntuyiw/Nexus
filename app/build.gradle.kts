@@ -109,4 +109,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
+    //Chucker
+    debugImplementation("com.github.chuckerteam.chucker:library:3.5.2")
+    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:3.5.2")
+
 }
