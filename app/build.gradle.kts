@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -9,6 +11,11 @@ plugins {
 
     kotlin("plugin.serialization")
 }
+
+val apiKey: String = Properties().apply {
+    rootProject.file("local.properties").reader().use { load(it) }
+}.getProperty("API_KEY")!!
+
 
 android {
     namespace = "com.ubuntuyouiwe.nexus"
@@ -25,6 +32,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String","API_KEY", apiKey)
+    }
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
