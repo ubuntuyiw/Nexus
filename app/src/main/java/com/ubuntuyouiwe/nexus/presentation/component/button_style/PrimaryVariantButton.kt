@@ -6,7 +6,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray2
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.SoftGray
 
 @Composable
 fun PrimaryVariantButton(
@@ -19,7 +19,7 @@ fun PrimaryVariantButton(
         modifier = modifier,
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Gray2,
+            containerColor = SoftGray,
             contentColor = Black
         ),
         content = content

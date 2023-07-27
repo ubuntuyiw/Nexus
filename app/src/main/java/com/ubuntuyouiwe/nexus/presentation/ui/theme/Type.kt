@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.ubuntuyouiwe.nexus.R
 
@@ -17,9 +18,30 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
+    displayLarge = TextStyle(
+        fontFamily = FontFamily(Font(R.font.rosmatika_regular)),
+        fontSize = 36.sp,
+        letterSpacing = 16.sp
+
+    ),
     displayMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.rosmatika_regular)),
-        fontSize = 45.sp
+        fontSize = 28.sp,
+        letterSpacing = 8.sp
+
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+        fontSize = 18.sp,
+        letterSpacing = 2.sp,
+
+    ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.rosmatika_regular)),
+        fontSize = 11.sp,
+        textAlign = TextAlign.Center,
+        letterSpacing = 2.sp,
+        lineHeight = 24.sp,
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
