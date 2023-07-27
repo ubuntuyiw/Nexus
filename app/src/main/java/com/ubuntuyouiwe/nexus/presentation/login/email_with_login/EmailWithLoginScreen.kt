@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,13 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ubuntuyouiwe.nexus.R
@@ -41,7 +34,6 @@ import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTex
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryClickableText
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @Composable
@@ -121,7 +113,7 @@ fun EmailWithLoginScreen(navController: NavController) {
                     onValueChange = { password = it },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done
                     ),
                     label = { Text(text = "Password") },
                     leadingIcon = {
