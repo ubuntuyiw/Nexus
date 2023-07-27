@@ -1,6 +1,7 @@
 # Gradle files
 .gradle/
 build/
+output-metadata.json
 
 # Local configuration file (sdk path, etc)
 local.properties
