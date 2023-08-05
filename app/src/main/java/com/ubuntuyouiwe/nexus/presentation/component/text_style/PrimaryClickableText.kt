@@ -1,55 +1,23 @@
 package com.ubuntuyouiwe.nexus.presentation.component.text_style
 
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.DeepBlueSea
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 
 @Composable
 fun PrimaryClickableText(
-    text: String,
-    clickText: String,
-    clickable: () -> Unit,
+    text: AnnotatedString,
+    onClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 
 ) {
-    val annotatedText = buildAnnotatedString {
-        withStyle(
-            style = SpanStyle(
-                color = Gray,
-            )
-        ) {
-            append(text)
-        }
-
-
-        pushStringAnnotation(
-            tag = "SignUp",
-            annotation = "SignUp"
-        )
-        withStyle(
-            style = SpanStyle(
-                color = DeepBlueSea,
-            )
-        ) {
-            append(clickText)
-        }
-        pop()
-    }
-
     ClickableText(
-        text = annotatedText,
-        onClick = { offset ->
-            val annotations = annotatedText.getStringAnnotations(
-                tag = "SignUp",
-                start = offset,
-                end = offset
-            )
-            if (annotations.isNotEmpty()) {
-                clickable()
-            }
-        }
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        onClick = onClick,
+        modifier = modifier
     )
+
 }
