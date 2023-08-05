@@ -89,6 +89,7 @@ dependencies {
     implementation("com.google.firebase:firebase-functions-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging-ktx:23.2.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
 
 
     //Lifecycle Scopes
@@ -105,8 +106,11 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.47")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     //Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     //Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
@@ -128,5 +132,12 @@ dependencies {
 
     //Seismic
     implementation("com.squareup:seismic:1.0.3")
+
+
+
+
+
+
+
 
 }
