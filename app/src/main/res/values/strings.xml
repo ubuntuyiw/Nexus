@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Nexus</string>
+    <string name="logo_name">Logo</string>
+    <string name="google_name">Google</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="SignUp">SignUp</string>
+    <string name="passwordVisibility">Password Visibility</string>
+    <string name="resetPassword">Reset Password</string>
+    <string name="From_UBUNTUYOUIWE">"From\nUBUNTUYOUIWE"</string>
+    <string name="login">Login</string>
+    <string name="left_arrow">Left Arrow</string>
+    <string name="loading">"Loading…"</string>
+    <string name="creation_was_successful">Creation was successful</string>
+    <string name="loginSuccessful">Login successful.</string>
+    <string name="your_web_client_id">652042565767-hmtngu8b73sftlrkapi2po4g824a1ekh.apps.googleusercontent.com</string>
+    <string name="resetPasswordSendSuccessful">A password reset link has been sent to your email. Please remember to check your junk/spam folder as well.</string>
+    <string name="enterTheEmailForPasswordReset">Enter the email for password reset.</string>
+    <string name="debateBattle">In the Debate Battle, you start arguing over a predetermined topic, and the one who uses their intelligence best wins. You can have extreme fun with this role.</string>
+
 </resources>
