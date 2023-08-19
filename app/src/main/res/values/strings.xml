@@ -16,6 +16,5 @@
     <string name="your_web_client_id">652042565767-hmtngu8b73sftlrkapi2po4g824a1ekh.apps.googleusercontent.com</string>
     <string name="resetPasswordSendSuccessful">A password reset link has been sent to your email. Please remember to check your junk/spam folder as well.</string>
     <string name="enterTheEmailForPasswordReset">Enter the email for password reset.</string>
-    <string name="debateBattle">In the Debate Battle, you start arguing over a predetermined topic, and the one who uses their intelligence best wins. You can have extreme fun with this role.</string>
 
 </resources>

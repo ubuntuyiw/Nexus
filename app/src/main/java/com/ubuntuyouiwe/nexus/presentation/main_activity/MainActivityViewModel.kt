@@ -37,6 +37,17 @@ class MainActivityViewModel @Inject constructor(
     private fun getAuthStateListener() {
         authStateUseCase().onEach {
             when (it) {
+                is Resource.Loading -> {
+
+                    _userOperationState.value = userOperationState.value.copy(
+                        isSuccess = false,
+                        isError = false,
+                        isLoading = true
+                    )
+                    _authListenerRetryButton.value =
+                        authListenerRetryButton.value.copy(enabled = false)
+                }
+
                 is Resource.Success -> {
                     _userOperationState.value = userOperationState.value.copy(
                         isSuccess = true,
@@ -59,16 +70,7 @@ class MainActivityViewModel @Inject constructor(
                         authListenerRetryButton.value.copy(enabled = true)
                 }
 
-                is Resource.Loading -> {
 
-                    _userOperationState.value = userOperationState.value.copy(
-                        isSuccess = false,
-                        isError = false,
-                        isLoading = true
-                    )
-                    _authListenerRetryButton.value =
-                        authListenerRetryButton.value.copy(enabled = false)
-                }
 
             }
         }.launchIn(viewModelScope)

@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.EmailSignInUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.PasswordResetUseCase
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.SignInState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState

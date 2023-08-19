@@ -1,5 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.component.snacbar_style
 
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData

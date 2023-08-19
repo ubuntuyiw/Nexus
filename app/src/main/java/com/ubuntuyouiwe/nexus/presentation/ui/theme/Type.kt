@@ -2,13 +2,10 @@ package com.ubuntuyouiwe.nexus.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.ubuntuyouiwe.nexus.R
@@ -18,22 +15,22 @@ import com.ubuntuyouiwe.nexus.R
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_medium)),
-        fontSize = 16.sp,
+        fontSize = 15.sp,
         letterSpacing = 0.5.sp,
 
-    ),
+        ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-        fontSize = 16.sp,
-        letterSpacing = 0.5.sp,
+        fontSize = 14.sp,
+        letterSpacing = 0.sp,
 
-    ),
+        ),
     bodySmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_regular)),
         fontSize = 13.sp,
         letterSpacing = 0.sp,
 
-    ),
+        ),
     displayLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.rosmatika_regular)),
         fontSize = 36.sp,
@@ -46,13 +43,36 @@ val Typography = Typography(
         fontSize = 28.sp,
         letterSpacing = 8.sp,
         brush = Brush.linearGradient(
-            colors = gradientColors)
+            colors = gradientColors
+        )
 
     ),
     headlineSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_medium)),
         fontSize = 18.sp,
         letterSpacing = 2.sp,
+
+        ),
+
+    titleLarge = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+        fontSize = 22.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+        fontSize = 16.sp
+
+    ),
+    titleSmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+        fontSize = 14.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+        fontSize = 13.sp,
+        textAlign = TextAlign.Center,
+        color = Gray,
+        lineHeight = 18.sp
 
     ),
     labelMedium = TextStyle(

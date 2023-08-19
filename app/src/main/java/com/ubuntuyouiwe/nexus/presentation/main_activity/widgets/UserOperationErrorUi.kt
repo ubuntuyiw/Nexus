@@ -35,7 +35,7 @@ fun UserOperationErrorUi(
             Text(text = errorMessage, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.padding(16.dp))
             PrimaryButton(onClick = againOnClick, enabled = authListenerRetryButtonState.enabled) {
-                Text(text = "Retry")
+                Text(text = "Retry", style = MaterialTheme.typography.bodyMedium)
             }
 
 

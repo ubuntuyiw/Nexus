@@ -41,6 +41,9 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.SignInState
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.widgets.EmailWithLoginTopBar
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.widgets.ForgotPasswordDialog
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyTextForLoggedInUser
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.PasswordForgetPrompt
@@ -65,8 +68,6 @@ fun EmailWithLoginScreen(
     val context = LocalContext.current
 
 
-
-
     LaunchedEffect(key1 = signInState) {
         if (signInState.isLoading) {
             hostState.showSnackbar(
@@ -83,7 +84,6 @@ fun EmailWithLoginScreen(
         } else if (signInState.isSuccess) {
             hostState.showSnackbar(context.resources.getString(R.string.loginSuccessful))
         }
-
     }
     val emailStateFocusRequester = remember { emailState.focusRequester }
     val passwordStateFocusRequester = remember { passwordState.focusRequester }
@@ -104,25 +104,9 @@ fun EmailWithLoginScreen(
     Scaffold(
         containerColor = White,
         topBar = {
-            PrimaryTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.login),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                },
-                navigationIcon = {
-                    PrimaryIconButton(
-                        onClick = { navController.navigateUp() },
-                        modifier = Modifier.padding(start = 16.dp)
-                    ) {
-                        SecondaryIcon(
-                            painter = painterResource(id = R.drawable.left_arrow),
-                            contentDescription = stringResource(id = R.string.left_arrow)
-                        )
-                    }
-                },
-            )
+            EmailWithLoginTopBar {
+                navController.navigateUp()
+            }
         },
         snackbarHost = {
             SnackbarHost(hostState) { data ->
@@ -220,7 +204,7 @@ fun EmailWithLoginScreen(
                         .height(36.dp),
 
                     ) {
-                    Text(text = stringResource(id = R.string.login))
+                    Text(text = stringResource(id = R.string.login), style = MaterialTheme.typography.bodyMedium)
                 }
 
 
@@ -280,7 +264,6 @@ fun EmailWithLoginScreen(
 
     }
 
-
 }
 
 @Preview(showBackground = true)
@@ -294,6 +277,7 @@ fun EmailWithSignUpPreview() {
         val passwordState = TextFieldState()
         val signInButtonState = ButtonState()
         val passwordResetState = ResetPasswordState(dialogVisibility = true)
+
         EmailWithLoginScreen(
             navController,
             signInState,

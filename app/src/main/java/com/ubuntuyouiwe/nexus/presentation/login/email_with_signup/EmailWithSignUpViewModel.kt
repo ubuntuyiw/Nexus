@@ -75,7 +75,7 @@ class EmailWithSignUpViewModel @Inject constructor(
                     _passwordState.value.isError = false
 
                     _signUpState.value =
-                        signUpState.value.copy(isSuccess = false, isError = false, isLoading = true)
+                        signUpState.value.copy( isLoading = true, isSuccess = false, isError = false,)
 
                     _signUpButtonState.value = signUpButtonState.value.copy(enabled = false)
                 }

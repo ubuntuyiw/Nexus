@@ -1,8 +1,11 @@
 package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Intent
-import com.google.firebase.auth.FirebaseUser
-import com.ubuntuyouiwe.nexus.data.source.firebase.FirebaseDataSource
+import com.google.firebase.auth.AuthResult
+import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
+import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
+import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
+import com.ubuntuyouiwe.nexus.data.util.toHashMap
 import com.ubuntuyouiwe.nexus.data.util.toUser
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
@@ -18,11 +21,33 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(userCredentials: UserCredentials) {
         val userCredentialsDto = userCredentials.toUserCredentialsDto()
-        firebaseDatasource.signUp(userCredentialsDto.email, userCredentialsDto.password)
+        val result =
+            firebaseDatasource.signUp(userCredentialsDto.email, userCredentialsDto.password)
+        createUserDatabase( result.user?.uid, result.user?.email)
     }
 
-    override suspend fun googleSignIn(data: Intent): FirebaseUser? {
+    override suspend fun googleSignIn(data: Intent): AuthResult {
+        val authResult = firebaseDatasource.googleSignIn(data)
+        if (authResult.additionalUserInfo?.isNewUser == true) {
+            createUserDatabase(authResult.user?.uid ,authResult.user?.email)
+        }
         return firebaseDatasource.googleSignIn(data)
+    }
+
+    private suspend fun createUserDatabase(uid: String?, email: String?) {
+        uid?.let {
+            val data = UserDto(
+                email = email,
+                totalCompletionTokens = 0.0,
+                totalPromptTokens = 0.0,
+                totalTokens = 0.0,
+                uid = it
+            )
+            firebaseDatasource.set(
+                FirebaseCollections.Users, it, data.toHashMap()
+            )
+        }
+
     }
 
 

@@ -40,6 +40,7 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.widgets.EmailWithSignUpTopBar
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetLoginSuggestionText
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
@@ -98,25 +99,9 @@ fun EmailWithSignUp(
     Scaffold(
         containerColor = White,
         topBar = {
-            PrimaryTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.SignUp),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                },
-                navigationIcon = {
-                    PrimaryIconButton(
-                        onClick = { navController.navigateUp() },
-                        modifier = Modifier.padding(start = 16.dp)
-                    ) {
-                        SecondaryIcon(
-                            painter = painterResource(id = R.drawable.left_arrow),
-                            contentDescription = stringResource(id = R.string.left_arrow)
-                        )
-                    }
-                },
-            )
+            EmailWithSignUpTopBar {
+                navController.navigateUp()
+            }
         },
         snackbarHost = {
             SnackbarHost(hostState) { data ->
@@ -212,7 +197,7 @@ fun EmailWithSignUp(
                         .height(36.dp),
 
                     ) {
-                    Text(text = stringResource(id = R.string.SignUp))
+                    Text(text = stringResource(id = R.string.SignUp), style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Spacer(modifier = Modifier.padding(16.dp))

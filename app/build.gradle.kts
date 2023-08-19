@@ -1,30 +1,20 @@
-import org.jetbrains.kotlin.konan.properties.Properties
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-
     id("com.google.gms.google-services")
-
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
-
     kotlin("plugin.serialization")
 }
 
-val apiKey: String = Properties().apply {
-    rootProject.file("local.properties").reader().use { load(it) }
-}.getProperty("API_KEY")!!
-
-
 android {
     namespace = "com.ubuntuyouiwe.nexus"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ubuntuyouiwe.nexus"
         minSdk = 28
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -32,15 +22,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        buildConfigField("String","API_KEY", apiKey)
-    }
-    buildFeatures {
-        buildConfig = true
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -69,13 +55,13 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2023.06.01"))
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -87,8 +73,8 @@ dependencies {
     //Firebase
     implementation("com.google.firebase:firebase-firestore-ktx:24.7.0")
     implementation("com.google.firebase:firebase-functions-ktx:20.3.1")
-    implementation("com.google.firebase:firebase-messaging-ktx:23.2.0")
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
     implementation("com.google.android.gms:play-services-auth:20.6.0")
 
 
@@ -99,15 +85,15 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
 
     //Navigation
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
 
     //Hilt
     implementation("com.google.dagger:hilt-android:2.47")
     kapt("com.google.dagger:hilt-android-compiler:2.47")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-    //Coil
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    //Glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 
     //Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -115,25 +101,16 @@ dependencies {
     //Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
-    //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
-
-    //OkHttp3
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
-
-    //Chucker
-    debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
-    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
-
     //Splash
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    //Seismic
-    implementation("com.squareup:seismic:1.0.3")
+
+    //Firebase Language
+    implementation("com.google.mlkit:language-id:17.0.4")
 
 
+    //LeakCanary
+    //debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 
 
 
