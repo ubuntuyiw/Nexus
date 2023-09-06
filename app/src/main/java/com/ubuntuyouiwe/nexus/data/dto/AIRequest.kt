@@ -1,6 +1,6 @@
 package com.ubuntuyouiwe.nexus.data.dto
 
-import com.ubuntuyouiwe.nexus.data.dto.user.UserInfoDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,7 +1,14 @@
 package com.ubuntuyouiwe.nexus.presentation.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.ChatDashBoard
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.ChatDashBoardViewModel
+import com.ubuntuyouiwe.nexus.presentation.create_chat_room.CreateChatRoomScreen
+import com.ubuntuyouiwe.nexus.presentation.create_chat_room.CreateChatRoomViewModel
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.AuthenticationChoiceScreen
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.AuthenticationChoiceViewModel
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.EmailWithLogInViewModel
@@ -19,11 +28,13 @@ import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.EmailWithSign
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.Splash
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.MessagingPanelScreen
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.MessagingPanelViewModel
+import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingScreen
+import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingViewModel
 
 @Composable
 fun NavHostScreen(startDestination: Screen) {
     val navController = rememberNavController()
-
+    val screenHeight = LocalContext.current.resources.displayMetrics.heightPixels
     NavHost(navController = navController, startDestination = startDestination.name) {
         composable(Screen.SPLASH.name) {
             Splash()
@@ -33,10 +44,11 @@ fun NavHostScreen(startDestination: Screen) {
             enterTransition = null,
             exitTransition = null,
             popEnterTransition = null,
-            popExitTransition = null,) {
+            popExitTransition = null,
+        ) { navBackStackEntry ->
 
 
-            val viewModel: AuthenticationChoiceViewModel = hiltViewModel()
+            val viewModel: AuthenticationChoiceViewModel = hiltViewModel(navBackStackEntry)
             val googleSignInState by viewModel.googleSignInState
             val googleSignInButtonState by viewModel.googleSignInButtonState
 
@@ -56,8 +68,8 @@ fun NavHostScreen(startDestination: Screen) {
             exitTransition = null,
             popEnterTransition = null,
             popExitTransition = null,
-        ) {
-            val viewModel: EmailWithLogInViewModel = hiltViewModel()
+        ) { navBackStackEntry ->
+            val viewModel: EmailWithLogInViewModel = hiltViewModel(navBackStackEntry)
             val signInState by viewModel.signInState
             val emailState by viewModel.emailState
             val passwordState by viewModel.passwordState
@@ -80,8 +92,9 @@ fun NavHostScreen(startDestination: Screen) {
             enterTransition = null,
             exitTransition = null,
             popEnterTransition = null,
-            popExitTransition = null,) {
-            val viewModel: EmailWithSignUpViewModel = hiltViewModel()
+            popExitTransition = null,
+        ) { navBackStackEntry ->
+            val viewModel: EmailWithSignUpViewModel = hiltViewModel(navBackStackEntry)
             val emailState by viewModel.emailState
             val passwordState by viewModel.passwordState
             val signUpState by viewModel.signUpState
@@ -103,37 +116,34 @@ fun NavHostScreen(startDestination: Screen) {
             exitTransition = null,
             popEnterTransition = null,
             popExitTransition = null,
-        ) {
+        ) { navBackStackEntry ->
 
-            val viewModel: ChatDashBoardViewModel = hiltViewModel()
+            val viewModel: ChatDashBoardViewModel = hiltViewModel(navBackStackEntry)
             val stateLogOut by viewModel.stateLogOut
-            val createChatRoomState by viewModel.createChatRoomState
-            val dialogState = viewModel.dialogProperties
-            val menuState by viewModel.menuState
             val chatRoomState by viewModel.chatRoomsState
-            val roles by viewModel.rolesState
+            val filterState by viewModel.filter
+            val chatRoomShort by viewModel.chatRoomShortState
+            val chatRoomFilter by viewModel.chatRoomFilterState
+            val chatRoomDeleteSate by viewModel.chatRoomDeleteSate
+            val workManagerState by viewModel.workManagerState
 
             ChatDashBoard(
                 navController,
                 stateLogOut,
-                createChatRoomState,
-                dialogState,
-                menuState,
-                roles,
+                chatRoomShort,
+                chatRoomFilter,
+                filterState,
                 chatRoomState,
+                chatRoomDeleteSate,
+                workManagerState,
                 viewModel::onEvent
             )
         }
 
         composable(
-            route = Screen.MessagingPanel.name+"/{role}/{id}",
-            enterTransition = null,
-            exitTransition = null,
-            popEnterTransition = null,
-            popExitTransition = null,
+            route = Screen.MessagingPanel.name + "/{role}/{id}",
             arguments = listOf(
                 navArgument("role") {
-                    this.nullable = true
                     type = NavType.StringType
                 },
                 navArgument("id") {
@@ -141,16 +151,79 @@ fun NavHostScreen(startDestination: Screen) {
                     type = NavType.StringType
                 }
 
-                )) {
-            val viewModel: MessagingPanelViewModel = hiltViewModel()
+            ),
+            enterTransition = {
+                scaleIn() + fadeIn(initialAlpha = 0.3f)
+            },
+            exitTransition = {
+                scaleOut() + fadeOut(targetAlpha = 0.3f)
+            },
+            popEnterTransition = {
+                scaleIn() + fadeIn(initialAlpha = 0.3f)
+            },
+            popExitTransition = {
+                scaleOut() + fadeOut(targetAlpha = 0.3f)
+            }
+
+        ) { navBackStackEntry ->
+            val viewModel: MessagingPanelViewModel = hiltViewModel(navBackStackEntry)
+
             val role by viewModel.rolesState
             val getMessagesState by viewModel.getMessagesState
             val messageTextFieldState by viewModel.messageTextFieldState
             val sendMessageButtonState by viewModel.sendMessageButtonState
             val chatRoomState by viewModel.chatRoomState
-            val speakState by viewModel.speechState
+            val sendMessageState by viewModel.sendMessageState
+            val settingsState by viewModel.settingsState
+            val photoUri = viewModel.photoUri
 
-            MessagingPanelScreen(navController, role, messageTextFieldState, sendMessageButtonState, getMessagesState, chatRoomState, speakState, viewModel::onEvent)
+            MessagingPanelScreen(
+                navController,
+                role,
+                sendMessageState,
+                messageTextFieldState,
+                sendMessageButtonState,
+                getMessagesState,
+                chatRoomState,
+                photoUri,
+                settingsState,
+                viewModel::onEvent
+            )
+        }
+        composable(
+            Screen.PhotoEditingScreen.name + "/{photoUrl}",
+            arguments = listOf(
+                navArgument("photoUrl") {
+                    nullable = true
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+
+            val viewModel: PhotoEditingViewModel = hiltViewModel(navBackStackEntry)
+            val croppedPhotoState by viewModel.croppedPhotoState
+            val onEvent = viewModel::onEvent
+            val bitmapToStringState by viewModel.bitmapToStringState
+            val bitmap = viewModel.bitmap
+            PhotoEditingScreen(navController, croppedPhotoState, bitmapToStringState, onEvent ,bitmap)
+        }
+
+        composable(
+
+            Screen.CreateChatRoomScreen.name,
+            enterTransition = {
+                slideInVertically(initialOffsetY = { screenHeight }) + fadeIn(initialAlpha = 0.3f)
+            },
+            exitTransition = null,
+            popEnterTransition = null,
+            popExitTransition = {
+                slideOutVertically(targetOffsetY = { screenHeight }) + fadeOut(targetAlpha = 0.3f)
+            }
+        ) { navBackStackEntry ->
+            val viewModel: CreateChatRoomViewModel = hiltViewModel(navBackStackEntry)
+            val roleState by viewModel.rolesState
+            CreateChatRoomScreen(navController, roleState)
+
         }
 
     }

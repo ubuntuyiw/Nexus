@@ -2,6 +2,7 @@ package com.ubuntuyouiwe.nexus.presentation.login.widgets
 
 import android.util.Log
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -18,7 +19,7 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
         append("By logging in, I accept the")
         withStyle(
             style = SpanStyle(
-                color = DeepBlueSea,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.ExtraBold,
             )
         ) {
@@ -32,7 +33,7 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
         append("and")
         withStyle(
             style = SpanStyle(
-                color = DeepBlueSea,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.ExtraBold,
             )
         ) {

@@ -8,13 +8,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -25,6 +30,9 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_style.PrimaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.DarkGray
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.LightGray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.VeryLightGray
 
@@ -38,7 +46,8 @@ fun ForgotPasswordDialog(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = White
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
@@ -66,7 +75,7 @@ fun ForgotPasswordDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(start = 16.dp)
                 ) {
-                    PrimaryIcon(
+                    Icon(
                         painter = painterResource(
                             id = R.drawable.reset_password
                         ),
@@ -80,8 +89,21 @@ fun ForgotPasswordDialog(
                 }
 
                 if (resetPasswordState.isLoading) {
-                    PrimaryCircularProgressIndicator()
+                    ElevatedCard(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = LightGray
+                        )
 
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(24.dp),
+                            strokeCap = StrokeCap.Square,
+                            strokeWidth = 3.dp)
+                    }
                 }
 
             }
@@ -90,8 +112,18 @@ fun ForgotPasswordDialog(
                 value = emailValue,
                 onValueChange = onValueChangeEmailValue,
                 singleLine = true,
-                label = { PrimaryHintText(stringResource(id = R.string.email)) },
-                placeholder = { PrimaryHintText(stringResource(id = R.string.enterTheEmailForPasswordReset)) },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.email),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.enterTheEmailForPasswordReset),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                },
                 modifier = Modifier.fillMaxWidth(0.8f)
             )
             if (resetPasswordState.isErrorState)
@@ -106,14 +138,14 @@ fun ForgotPasswordDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(75.dp)
-                    .background(VeryLightGray)
+                    .background(MaterialTheme.colorScheme.scrim)
             ) {
                 SecondaryButton(onClick = rejectOnClick) {
-                    Text(text = "Cancel", modifier = Modifier.padding(8.dp))
+                    Text(text = "Cancel", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 SecondaryButton(onClick = approvalOnClick) {
-                    Text(text = "Send", modifier = Modifier.padding(8.dp))
+                    Text(text = "Send", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
             }

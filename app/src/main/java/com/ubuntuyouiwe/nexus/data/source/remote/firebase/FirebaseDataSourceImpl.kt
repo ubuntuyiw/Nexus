@@ -24,19 +24,17 @@ import com.google.firebase.functions.HttpsCallableResult
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
+import com.ubuntuyouiwe.nexus.data.util.CloudFunctions
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
-import com.ubuntuyouiwe.nexus.data.util.toAny
+import com.ubuntuyouiwe.nexus.data.util.dto_type.CommonCollectionFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
+import com.ubuntuyouiwe.nexus.data.util.toHashMap
 import com.ubuntuyouiwe.nexus.data.util.toUserDto
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import javax.inject.Inject
 
 class FirebaseDataSourceImpl @Inject constructor(
@@ -44,12 +42,12 @@ class FirebaseDataSourceImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val messaging: FirebaseMessaging,
     private val functions: FirebaseFunctions,
-    private val googleSignInClient: GoogleSignInClient,
-    private val json: Json
+    private val googleSignInClient: GoogleSignInClient
 ) : FirebaseDataSource {
     override suspend fun signUp(email: String, password: String): AuthResult {
         return auth.createUserWithEmailAndPassword(email, password).await()
     }
+
 
     override suspend fun loginIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password).await()
@@ -70,7 +68,6 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     override suspend fun googleSignIn(data: Intent): AuthResult {
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-
         val account = task.getResult(ApiException::class.java)
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         return auth.signInWithCredential(credential).await()
@@ -110,7 +107,8 @@ class FirebaseDataSourceImpl @Inject constructor(
     override suspend fun getAllDocumentListener(database: FirebaseCollections): Flow<Result<QuerySnapshot>> =
         callbackFlow {
             val registration = fireStore.collection(database.name)
-                .orderBy("creationDate", Query.Direction.DESCENDING)
+                .whereEqualTo(CommonCollectionFields.OWNER_ID.key, auth.currentUser?.toUserDto()?.uid)
+                .orderBy(CommonCollectionFields.LAST_MESSAGE_DATE.key, Query.Direction.DESCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE) { value, error ->
                     error?.let {
                         trySendBlocking(
@@ -124,7 +122,7 @@ class FirebaseDataSourceImpl @Inject constructor(
                     }
                     value?.let {
                         trySend(Result.success(it))
-                    } ?: kotlin.run {
+                    } ?: run {
 
                         trySendBlocking(
                             Result.failure(
@@ -146,7 +144,10 @@ class FirebaseDataSourceImpl @Inject constructor(
     ): Flow<Result<QuerySnapshot>> =
         callbackFlow {
             val registration = fireStore.collection(database.name)
-                .whereEqualTo("id", id)
+                .whereEqualTo(CommonCollectionFields.ID.key, id).whereEqualTo(
+                    CommonCollectionFields.OWNER_ID.key,
+                    auth.currentUser?.toUserDto()?.uid
+                )
                 .addSnapshotListener(MetadataChanges.INCLUDE) { value, error ->
                     error?.let {
                         trySendBlocking(
@@ -160,7 +161,7 @@ class FirebaseDataSourceImpl @Inject constructor(
                     }
                     value?.let {
                         trySend(Result.success(it))
-                    } ?: kotlin.run {
+                    } ?: run {
 
                         trySendBlocking(
                             Result.failure(
@@ -183,7 +184,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         val registration =
             fireStore.collection(database.name).document(id)
                 .collection(FirebaseCollections.Messages.name)
-                .orderBy("created", Query.Direction.DESCENDING)
+                .orderBy(MessagesFields.CREATED.key, Query.Direction.DESCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE) { value, error ->
                     error?.let {
                         trySendBlocking(
@@ -215,13 +216,8 @@ class FirebaseDataSourceImpl @Inject constructor(
     }
 
     override suspend fun ai(data: AIRequest): HttpsCallableResult? {
-        val jsonString = json.encodeToString(data)
-        val map: Map<String, Any?> = Json.decodeFromString(
-            MapSerializer(String.serializer(), JsonElement.serializer()),
-            jsonString
-        )
-            .mapValues { (_, value) -> value.toAny() }
-        return functions.getHttpsCallable("ai").call(map).await()
+        val dataToHashMap = data.toHashMap()
+        return functions.getHttpsCallable(CloudFunctions.AI.key).call(dataToHashMap).await()
     }
 
     override fun documentToSubCollection(
@@ -241,7 +237,8 @@ class FirebaseDataSourceImpl @Inject constructor(
         document: String
     ): QuerySnapshot {
 
-        return fireStore.collection(database.name).whereEqualTo("id", document).get().await()
+        return fireStore.collection(database.name)
+            .whereEqualTo(CommonCollectionFields.ID.key, document).get().await()
     }
 
     override suspend fun set(
@@ -249,8 +246,56 @@ class FirebaseDataSourceImpl @Inject constructor(
         id: String,
         data: HashMap<String, Any?>
     ): Void? {
+
         return fireStore.collection(collection.name).document(id).set(data, SetOptions.merge())
             .await()
+    }
+
+    override suspend fun batchSet(
+        collection: FirebaseCollections,
+        docsAndData: HashMap<String, HashMap<String, Any?>>
+    ): Void? {
+        val batch = fireStore.batch()
+
+        for ((docId, data) in docsAndData) {
+            val docRef = fireStore.collection(collection.name).document(docId)
+            batch.set(docRef, data, SetOptions.merge())
+        }
+        return batch.commit().await()
+    }
+
+    override suspend fun batchDelete(
+        collection: FirebaseCollections,
+        ids: List<String>
+    ): Void? {
+        val batch = fireStore.batch()
+
+        for (docId in ids) {
+            val docRef = fireStore.collection(collection.name).document(docId)
+            batch.delete(docRef)
+        }
+
+        return batch.commit().await()
+    }
+
+    override suspend fun batchDeleteWithSubCollections(
+        collection: FirebaseCollections,
+        ids: List<String>
+    ): Void? {
+        val batch = fireStore.batch()
+
+        for (docId in ids) {
+            val docRef = fireStore.collection(collection.name).document(docId)
+
+            val subCollectionRef = docRef.collection(FirebaseCollections.Messages.name)
+            val subDocs = subCollectionRef.get().await().documents
+            for (subDoc in subDocs) {
+                batch.delete(subDoc.reference)
+            }
+            batch.delete(docRef)
+        }
+
+        return batch.commit().await()
     }
 
     override suspend fun isDocumentExist(

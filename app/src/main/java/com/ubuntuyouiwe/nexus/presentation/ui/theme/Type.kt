@@ -38,13 +38,10 @@ val Typography = Typography(
 
     ),
 
-    displayMedium = TextStyle(
-        fontFamily = FontFamily(Font(R.font.rosmatika_regular)),
-        fontSize = 28.sp,
-        letterSpacing = 8.sp,
-        brush = Brush.linearGradient(
-            colors = gradientColors
-        )
+
+    displaySmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.roboto_medium)),
+        fontSize = 20.sp,
 
     ),
     headlineSmall = TextStyle(

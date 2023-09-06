@@ -11,6 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.MoveToInbox
+import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.filled.SupportAgent
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,17 +35,16 @@ fun MenuScreen(
     onClick: (MenuItemType) -> Unit
 ) {
     val menuItem = listOf<MenuItem>(
-        MenuItem(icon = R.drawable.premium, text = "Premium", type = MenuItemType.PREMIUM),
-        MenuItem(icon = R.drawable.settings, text = "Settings", type = MenuItemType.SETTINGS),
-        MenuItem(icon = R.drawable.privacy_policy, text = "Privacy Policy", type = MenuItemType.PRIVACY_POLICY),
-        MenuItem(icon = R.drawable.terms_of_use, text = "Terms of Use", type = MenuItemType.TERMS_OF_USE),
-        MenuItem(icon = R.drawable.playstore, text = "Rate Us", type = MenuItemType.RATE_USE),
-        MenuItem(icon = R.drawable.trash, text = "Trash Bin", type = MenuItemType.TRASH_BIN),
-        MenuItem(icon = R.drawable.assist, text = "Help Center", type = MenuItemType.HELP_CENTER),
-        MenuItem(icon = R.drawable.log_out, text = "Sign out", type = MenuItemType.SIGN_OUT),
-
-
+        MenuItem(icon = ImageVector.vectorResource(R.drawable.premium) , text = MenuItemType.PREMIUM.menuName, type = MenuItemType.PREMIUM),
+        MenuItem(icon = Icons.Default.Build, text = MenuItemType.SETTINGS.menuName, type = MenuItemType.SETTINGS),
+        MenuItem(icon = ImageVector.vectorResource(R.drawable.privacy_policy), text = MenuItemType.PRIVACY_POLICY.menuName, type = MenuItemType.PRIVACY_POLICY),
+        MenuItem(icon = ImageVector.vectorResource(R.drawable.terms_of_use), text = MenuItemType.TERMS_OF_USE.menuName, type = MenuItemType.TERMS_OF_USE),
+        MenuItem(icon = Icons.Default.StarRate, text = MenuItemType.RATE_US.menuName, type = MenuItemType.RATE_US),
+        MenuItem(icon = Icons.Default.Archive, text = MenuItemType.ARCHIVED.menuName, type = MenuItemType.ARCHIVED),
+        MenuItem(icon = Icons.Default.SupportAgent, text = MenuItemType.HELP_CENTER.menuName, type = MenuItemType.HELP_CENTER),
+        MenuItem(icon = Icons.Default.Logout, text = MenuItemType.SIGN_OUT.menuName, type = MenuItemType.SIGN_OUT),
     )
+
     val scrollState = rememberScrollState()
     Column(
         verticalArrangement = Arrangement.Top,
@@ -62,7 +68,7 @@ fun MenuScreen(
                         .fillMaxWidth()
 
                 ) {
-                    Icon(imageVector = ImageVector.vectorResource(id = item.icon), contentDescription = item.text)
+                    Icon(imageVector = item.icon, contentDescription = item.text)
                     Spacer(modifier = Modifier.padding(8.dp))
                     Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
 

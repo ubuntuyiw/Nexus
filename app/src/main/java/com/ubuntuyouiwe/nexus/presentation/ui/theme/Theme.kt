@@ -15,24 +15,27 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
-    primary = DeepBlueSea,
-    onPrimary = Color.White,
-    secondary = BrightCerulean,
-    onSecondary = Color.White,
-    background = Whisper,
-    onBackground = Color.Black,
-    surface = White,
-    onSurface = Color.Black,
+    primary = DeepBlueSeaDark,
+    onPrimary = White,
+    inversePrimary = Slate,
+    secondary = aa,
+    onSecondary = White,
+    background = DeepTwilight,
+    onBackground = White,
+    surface = DeepBlueSeaDark,
+    onSurface = White,
     error = Color.Red,
-    onError = Color.White,
+    onError = White,
+    scrim = scrim
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = DeepBlueSea,
     onPrimary = Color.White,
-    secondary = BrightCerulean,
+    secondary = DeepBlueSea,
     onSecondary = Color.White,
     background = Whisper,
     onBackground = Color.Black,
@@ -63,8 +66,9 @@ fun NexusTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
+            window.navigationBarColor =  colorScheme.background.toArgb()
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 

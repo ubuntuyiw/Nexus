@@ -80,7 +80,8 @@ fun AuthenticationChoiceScreen(
     }
 
     Scaffold(
-        containerColor = White,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = {
             SnackbarHost(hostState) { data ->
                 PrimarySnackbar(
@@ -196,7 +197,7 @@ fun AuthenticationChoiceScreen(
                 Text(
                     text = stringResource(id = R.string.From_UBUNTUYOUIWE),
                     style = MaterialTheme.typography.labelSmall,
-                    color = Gray
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 

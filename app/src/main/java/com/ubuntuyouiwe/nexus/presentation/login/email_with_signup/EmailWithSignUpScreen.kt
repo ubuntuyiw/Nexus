@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -40,6 +42,7 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
+import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.SignInEvent
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.widgets.EmailWithSignUpTopBar
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetLoginSuggestionText
@@ -97,7 +100,8 @@ fun EmailWithSignUp(
     }
 
     Scaffold(
-        containerColor = White,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             EmailWithSignUpTopBar {
                 navController.navigateUp()
@@ -136,9 +140,14 @@ fun EmailWithSignUp(
                         imeAction = ImeAction.Next
                     ),
                     isError = emailState.isError,
-                    label = { PrimaryHintText(stringResource(id = R.string.email)) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.email),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    },
                     leadingIcon = {
-                        TertiaryIcon(
+                        Icon(
                             painter = painterResource(id = R.drawable.email),
                             contentDescription = stringResource(id = R.string.email),
                         )
@@ -159,19 +168,24 @@ fun EmailWithSignUp(
                         imeAction = ImeAction.Done
                     ),
                     isError = passwordState.isError,
-                    label = { PrimaryHintText(stringResource(id = R.string.password)) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.password),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     leadingIcon = {
-                        TertiaryIcon(
+                        Icon(
                             painter = painterResource(id = R.drawable.password),
-                            contentDescription = stringResource(id = R.string.password),
+                            contentDescription = stringResource(id = R.string.password)
                         )
                     },
                     trailingIcon = {
-                        PrimaryIconButton(onClick = {
+                        IconButton(onClick = {
                             onEvent(SignUpEvent.ChangePasswordVisibility)
                         }) {
-                            PrimaryIcon(
-                                painter = painterResource(
+                            Icon(
+                                painter =  painterResource(
                                     id = if (passwordState.isVisibility) R.drawable.dont_see
                                     else R.drawable.to_see
                                 ),

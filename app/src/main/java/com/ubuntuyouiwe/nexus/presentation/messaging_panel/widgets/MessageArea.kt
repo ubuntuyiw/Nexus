@@ -3,166 +3,371 @@ package com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.TextSnippet
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
-import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIconButton
-import com.ubuntuyouiwe.nexus.presentation.state.SpeechState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.LightGray
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
+import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.Chapter
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageArea(
     messages: Messages,
     index: Int,
-    speechState: SpeechState,
-    onclick: (SpeechState) -> Unit,
+    expendedMessage: () -> Unit,
+    speechStateChange: (Messages) -> Unit,
 ) {
-
-    var expandedState by remember {
+    var dropdownMenuState by remember {
         mutableStateOf(false)
     }
-    var isLongText by remember { mutableStateOf(true) }
-    var lineCount by remember { mutableIntStateOf(0) }
 
 
     Card(
-        onClick = {
-            expandedState = !expandedState
-        },
         colors = CardDefaults.cardColors(
-            containerColor = White
+            containerColor = MaterialTheme.colorScheme.scrim
         ),
         modifier = Modifier
-            .fillMaxWidth(0.95f)
-            .animateContentSize()
-
+            .fillMaxWidth()
+            .combinedClickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { },
+                onLongClick = {
+                    dropdownMenuState = true
+                }
+            )
     ) {
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = LightGray
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    if (messages.messages.isNotEmpty()) {
-                        Text(
-                            text = messages.messages[0].content,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Black,
-                            modifier = Modifier
-                                .padding(all = 16.dp)
-                                .weight(90f)
-                        )
-                    }
-
-                    PrimaryIconButton(
-                        onClick = {
-                            onclick(
-                                SpeechState(
-                                    isSpeak = (speechState.isSpeak && speechState.index == index),
-                                    content = if (messages.messages.size > 1) messages.messages[1].content else "Please Waiting...",
-                                    codeLanguage = if (messages.messages.size > 1) "TR" else "EN",
-                                    index = index
+        Chapter(
+            top = {
+                if (messages.messages.isNotEmpty()) {
+                    val message =
+                        if (messages.messages[0].content.length > 50 && !messages.messages[0].isExpanded && index != 0 )
+                            buildAnnotatedString {
+                                pushStringAnnotation(
+                                    tag = "See",
+                                    annotation = ""
                                 )
+                                append(messages.messages[0].content.subSequence(0, 50))
+                                pop()
+                                append("...")
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.inversePrimary,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        fontSize = 13.sp,
+                                    )
+                                ) {
+                                    pushStringAnnotation(
+                                        tag = "See",
+                                        annotation = "SeeMore"
+                                    )
+                                    append(" See More")
+                                    pop()
+                                }
+
+                            } else
+                            buildAnnotatedString {
+                                pushStringAnnotation(
+                                    tag = "See",
+                                    annotation = ""
+                                )
+                                append(messages.messages[0].content)
+                                pop()
+
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.inversePrimary,
+                                        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                        fontSize = 13.sp,
+                                    )
+                                ) {
+                                    pushStringAnnotation(
+                                        tag = "See",
+                                        annotation = "SeeLess"
+                                    )
+                                    append(if (messages.messages[0].content.length > 50  && index != 0) " See Less " else "")
+                                    pop()
+                                }
+
+                            }
+
+                    ClickableText(
+                        text = message,
+                        style = TextStyle(
+                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                            fontSize = 13.sp,
+                            lineHeight = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        modifier = Modifier.weight(1f, false).animateContentSize(animationSpec = tween(1000)),
+                        onClick = { offset ->
+                            message.getStringAnnotations(
+                                tag = "See",
+                                start = offset, end = offset
+                            ).firstOrNull()?.let { annotation ->
+
+                                speechStateChange(
+                                    messages.copy(
+                                        messages = messages.messages.map {
+                                            if (it.role == "user") {
+                                                it.copy(
+                                                    isExpanded = when (annotation.item) {
+                                                        "SeeMore" -> {
+                                                            true
+                                                        }
+
+                                                        "SeeLess" -> {
+                                                            false
+                                                        }
+
+                                                        else -> {
+                                                            !messages.messages[0].isExpanded
+                                                        }
+                                                    }
+                                                )
+
+                                            }
+                                            else it
+                                        }
+                                    )
+                                )
+
+
+
+                            }
+                        }
+                    )
+
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+                            speechStateChange(
+                                messages.copy(isSpeak = !messages.isSpeak,)
                             )
-
-
                         },
-                        modifier = Modifier.weight(10f)
+
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(36.dp)
                     ) {
                         Icon(
-                            imageVector = if (speechState.isSpeak && speechState.index == index) ImageVector.vectorResource(
-                                id = R.drawable.baseline_pause_24
-                            ) else Icons.Default.PlayArrow,
-                            contentDescription = Icons.Default.PlayArrow.name
+                            imageVector = if (messages.isSpeak) {
+                                Icons.Default.Pause
+                            } else Icons.Default.PlayArrow,
+                            contentDescription = Icons.Default.PlayArrow.name,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = { dropdownMenuState = true },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = Icons.Default.MoreVert.name,
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                    }
+
+
+
+                    DropdownMenu(
+                        expanded = dropdownMenuState,
+                        onDismissRequest = { dropdownMenuState = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.scrim)
+                    ) {
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.TextSnippet,
+                                    contentDescription = Icons.Default.TextSnippet.toString()
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = "Select Text",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }, onClick = {
+                                dropdownMenuState = false
+                                expendedMessage()
+                            })
+
+                    }
+
+                }
+
+
+            },
+            bottom = {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+                    if (messages.messages.size > 1) {
+
+                        val message =
+                            if (messages.messages[1].content.length > 50 && !messages.messages[1].isExpanded && index != 0 )
+                                buildAnnotatedString {
+                                    pushStringAnnotation(
+                                        tag = "See",
+                                        annotation = ""
+                                    )
+                                    append(messages.messages[1].content.subSequence(0, 50))
+                                    pop()
+                                    append("...")
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.inversePrimary,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 13.sp,
+                                        )
+                                    ) {
+                                        pushStringAnnotation(
+                                            tag = "See",
+                                            annotation = "SeeMore"
+                                        )
+                                        append(" See More")
+                                        pop()
+                                    }
+
+                                } else
+                                buildAnnotatedString {
+                                    pushStringAnnotation(
+                                        tag = "See",
+                                        annotation = ""
+                                    )
+                                    append(messages.messages[1].content)
+                                    pop()
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.inversePrimary,
+                                            fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                            fontSize = 13.sp,
+                                        )
+                                    ) {
+                                        pushStringAnnotation(
+                                            tag = "See",
+                                            annotation = "SeeLess"
+                                        )
+                                        append(if (messages.messages[1].content.length > 50 && index != 0) " See Less " else "")
+                                        pop()
+                                    }
+
+                                }
+                        ClickableText(
+                            text = message,
+                            style = TextStyle(
+                                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                                fontSize = 13.sp,
+                                lineHeight = 24.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
+                            modifier = Modifier .animateContentSize(animationSpec = tween(1000)),
+                            onClick = { offset ->
+                                message.getStringAnnotations(
+                                    tag = "See",
+                                    start = offset, end = offset
+                                ).firstOrNull()?.let { annotation ->
+
+                                    speechStateChange(
+                                        messages.copy(
+                                            messages = messages.messages.map {
+                                                if (it.role == "assistant") {
+                                                    it.copy(
+                                                        isExpanded = when (annotation.item) {
+                                                            "SeeMore" -> {
+                                                                true
+                                                            }
+
+                                                            "SeeLess" -> {
+                                                                false
+                                                            }
+
+                                                            else -> {
+                                                                !messages.messages[1].isExpanded
+                                                            }
+                                                        }
+                                                    )
+
+                                                }
+                                                else it
+                                            }
+                                        )
+                                    )
+
+                                }
+                            },
                         )
                     }
                 }
 
-            }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                if (messages.messages.size > 1) {
-                    if (lineCount > 0) isLongText = lineCount > 1
-                    if ((expandedState || index == 0) && isLongText) {
-                        Text(
-                            text = messages.messages[1].content,
-                            style = MaterialTheme.typography.bodyMedium,
-                            onTextLayout = { layoutResult ->
-                                lineCount = layoutResult.lineCount
-                            }
-                        )
-                    } else {
-                        Text(
-                            text = messages.messages[1].content,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-
-                            )
-
-                        Text(
-                            text = "See All",
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(top = 16.dp)
-                        )
-                    }
-
-                }
                 AnimatedVisibility(visible = messages.messages.size <= 1) {
-                    if (messages.hasPendingWrites) Text(text = "Your message is being sent...", style = MaterialTheme.typography.labelMedium)
+                    if (messages.hasPendingWrites) Text(
+                        text = "Your message is being sent...",
+                        style = MaterialTheme.typography.labelMedium
+                    )
                     AnimatedVisibility(visible = !messages.hasPendingWrites) {
-                        Text(text = "Artificial Intelligence is writing...", style = MaterialTheme.typography.labelMedium)
+                        Text(
+                            text = "Artificial Intelligence is writing...",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
-                    
+
                 }
             }
-
-        }
+        )
 
     }
+
 
 }

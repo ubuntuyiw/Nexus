@@ -1,5 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.login.widgets
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -16,7 +17,7 @@ fun GetLoginSuggestionText(
         append("Do you already have an account?")
         withStyle(
             style = SpanStyle(
-                color = DeepBlueSea,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.ExtraBold,
             )
         ) {

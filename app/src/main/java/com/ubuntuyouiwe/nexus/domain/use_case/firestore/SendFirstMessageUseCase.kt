@@ -1,9 +1,8 @@
 package com.ubuntuyouiwe.nexus.domain.use_case.firestore
 
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
+import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
-import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
-import com.ubuntuyouiwe.nexus.domain.model.roles.Role
 import com.ubuntuyouiwe.nexus.domain.repository.DataSyncRepository
 import com.ubuntuyouiwe.nexus.util.Resource
 import com.ubuntuyouiwe.nexus.util.erros.ErrorCodes
@@ -14,14 +13,40 @@ class SendFirstMessageUseCase @Inject constructor(
     private val dataSyncRepository: DataSyncRepository
 ) {
 
-    operator fun invoke(chatRoom: ChatRoom, messages: List<MessageItem>) = flow<Resource<Any>>{
-        emit(Resource.Loading())
-        try {
-            dataSyncRepository.sendMessage(chatRoom, messages)
-            emit(Resource.Success())
-        }catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+    operator fun invoke(chatRoom: ChatRoom, messages: Message, newMessage: MessageItem) =
+        flow<Resource<Any>> {
+            emit(Resource.Loading())
+            try {
+                dataSyncRepository.sendMessage(
+                    totalMessageCountUpdate(chatRoom),
+                    aiMemory(messages, newMessage)
+                )
+                emit(Resource.Success())
+            } catch (e: Exception) {
+                emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
+            }
+
         }
 
+    private fun totalMessageCountUpdate(chatRoom: ChatRoom): ChatRoom {
+
+        return chatRoom.copy(
+            totalMessageCount = chatRoom.totalMessageCount + 1
+        )
+    }
+
+    private fun aiMemory(messages: Message, newMessage: MessageItem): List<MessageItem> {
+        var sumTokens = 0.0
+
+        val filterMessage = messages.messages.filter {
+            sumTokens += it.totalTokens
+            sumTokens < 3900
+        }
+
+        val messagesReversed = filterMessage.flatMap {
+            it.messages.reversed()
+        }.reversed()
+
+        return messagesReversed + listOf(newMessage)
     }
 }

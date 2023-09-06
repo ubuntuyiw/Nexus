@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -32,15 +34,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ubuntuyouiwe.nexus.R
-import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryButton
 import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIconButton
 import com.ubuntuyouiwe.nexus.presentation.component.icon_style.PrimaryIcon
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.SecondaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
+import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
-import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.SignInState
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.widgets.EmailWithLoginTopBar
@@ -50,8 +50,10 @@ import com.ubuntuyouiwe.nexus.presentation.login.widgets.PasswordForgetPrompt
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.SignUpPrompt
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.DarkGray
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @Composable
 fun EmailWithLoginScreen(
@@ -102,7 +104,8 @@ fun EmailWithLoginScreen(
 
 
     Scaffold(
-        containerColor = White,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             EmailWithLoginTopBar {
                 navController.navigateUp()
@@ -141,9 +144,14 @@ fun EmailWithLoginScreen(
                         imeAction = ImeAction.Next
                     ),
                     isError = emailState.isError,
-                    label = { PrimaryHintText(stringResource(id = R.string.email)) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.email),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    },
                     leadingIcon = {
-                        TertiaryIcon(
+                        Icon(
                             painter = painterResource(id = R.drawable.email),
                             contentDescription = stringResource(id = R.string.email),
                         )
@@ -163,20 +171,25 @@ fun EmailWithLoginScreen(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done
                     ),
-                    label = { PrimaryHintText(stringResource(id = R.string.password)) },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.password),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
                     isError = passwordState.isError,
                     leadingIcon = {
-                        TertiaryIcon(
+                        Icon(
                             painter = painterResource(id = R.drawable.password),
-                            contentDescription = stringResource(id = R.string.password),
+                            contentDescription = stringResource(id = R.string.password)
                         )
                     },
                     trailingIcon = {
-                        PrimaryIconButton(onClick = {
+                        IconButton(onClick = {
                             onEvent(SignInEvent.ChangePasswordVisibility)
                         }) {
-                            PrimaryIcon(
-                                painter = painterResource(
+                            Icon(
+                                painter =  painterResource(
                                     id = if (passwordState.isVisibility) R.drawable.dont_see
                                     else R.drawable.to_see
                                 ),
@@ -204,7 +217,10 @@ fun EmailWithLoginScreen(
                         .height(36.dp),
 
                     ) {
-                    Text(text = stringResource(id = R.string.login), style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = stringResource(id = R.string.login),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
 
 

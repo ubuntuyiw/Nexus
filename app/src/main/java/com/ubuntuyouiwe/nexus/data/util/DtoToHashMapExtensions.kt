@@ -1,91 +1,82 @@
 package com.ubuntuyouiwe.nexus.data.util
 
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
+import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
-import com.ubuntuyouiwe.nexus.data.dto.MessageItemDto
-import com.ubuntuyouiwe.nexus.data.dto.MessagesDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.double
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.intOrNull
+import com.ubuntuyouiwe.nexus.data.util.dto_type.AIRequestBodyFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.AIRequestFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.ChatRoomFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessageItemFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.user.UserDtoFields
 
 
 fun ChatRoomDto.firstToHashMap(): HashMap<String, Any?> =
     hashMapOf(
-        "id" to this.id,
-        "name" to this.name,
-        "ownerId" to this.ownerId,
-        "creationDate" to this.creationDate,
-        "isFavorited" to this.isFavorited,
-        "isArchived" to this.isArchived,
-        "isPinned" to this.isPinned,
-        "roleId" to this.roleId,
-        "totalMessageCount" to 1
+        ChatRoomFields.ID.key to this.id,
+        ChatRoomFields.NAME.key to this.name,
+        ChatRoomFields.OWNER_ID.key to this.ownerId,
+        ChatRoomFields.CREATION_DATE.key to this.creationDate,
+        ChatRoomFields.IS_FAVORITED.key to this.isFavorited,
+        ChatRoomFields.IS_ARCHIVED.key to this.isArchived,
+        ChatRoomFields.IS_PINNED.key to this.isPinned,
+        ChatRoomFields.ROLE_ID.key to this.roleId,
+        ChatRoomFields.TOTAL_MESSAGE_COUNT.key to 1
     )
 
 fun ChatRoomDto.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
-        "isFavorited" to this.isFavorited,
-        "isArchived" to this.isArchived,
-        "isPinned" to this.isPinned,
-        "totalMessageCount" to this.totalMessageCount
+        ChatRoomFields.NAME.key to this.name,
+        ChatRoomFields.IS_FAVORITED.key to this.isFavorited,
+        ChatRoomFields.IS_ARCHIVED.key to this.isArchived,
+        ChatRoomFields.IS_PINNED.key to this.isPinned,
+        ChatRoomFields.TOTAL_MESSAGE_COUNT.key to this.totalMessageCount
     )
 
 fun MessagesDto.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
-        "messages" to this.messages,
-        "created" to this.created,
-    )
-fun MessageItemDto.toHashMap(): HashMap<String, Any?> =
-    hashMapOf(
-        "content" to this.content,
-        "role" to this.role
+        MessagesFields.MESSAGES.key to this.messages,
+        MessagesFields.CREATED.key to this.created,
+        MessagesFields.UPDATE_TIMESTAMP.key to this.updateTimestamp
     )
 
 fun UserDto.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
-        "uid" to this.uid,
-        "displayName" to this.displayName,
-        "email" to this.email,
-        "photoUrl" to this.photoUrl,
-        "isEmailVerified" to this.isEmailVerified,
-        "phoneNumber" to this.phoneNumber,
-        "totalCompletionTokens" to this.totalCompletionTokens,
-        "totalPromptTokens" to this.totalPromptTokens,
-        "totalTokens" to this.totalTokens,
-        "info" to this.info,
-        "rateLimiting" to this.rateLimiting
+        UserDtoFields.UID.key to this.uid,
+        UserDtoFields.DISPLAY_NAME.key to this.displayName,
+        UserDtoFields.EMAIL.key to this.email,
+        UserDtoFields.PHOTO_URL.key to this.photoUrl,
+        UserDtoFields.IS_EMAIL_VERIFIED.key to this.isEmailVerified,
+        UserDtoFields.PHONE_NUMBER.key to this.phoneNumber,
+        UserDtoFields.TOTAL_COMPLETION_TOKENS.key to this.totalCompletionTokens,
+        UserDtoFields.TOTAL_PROMPT_TOKENS.key to this.totalPromptTokens,
+        UserDtoFields.TOTAL_TOKENS.key to this.totalTokens,
+        UserDtoFields.INFO.key to this.info,
+        UserDtoFields.RATE_LIMITING.key to this.rateLimiting
     )
 
 
 fun AIRequest.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
-        "aiRequestBody" to this.aiRequestBody,
-        "chatRoomId" to this.chatRoomId,
-        "info" to this.info,
-        "messageId" to this.messageId,
-        "ownerId" to this.ownerId
+        AIRequestFields.AI_REQUEST_BODY.key to this.aiRequestBody.toHashMap(),
+        AIRequestFields.CHAT_ROOM_ID.key to this.chatRoomId,
+        AIRequestFields.INFO.key to this.info.map { it.toHashMap() },
+        AIRequestFields.MESSAGE_ID.key to this.messageId,
+        AIRequestFields.OWNER_ID.key to this.ownerId
+    )
+fun AIRequestBody.toHashMap(): HashMap<String, Any?> =
+    hashMapOf(
+        AIRequestBodyFields.MODEL.key to this.model,
+        AIRequestBodyFields.MESSAGES.key to this.messages.map { it.toHashMap() }
     )
 
+fun MessageItemDto.toHashMap(): HashMap<String, Any?> =
+    hashMapOf(
+       MessageItemFields.CONTENT.key to this.content,
+        MessageItemFields.ROLE.key to this.role
+    )
 
-fun JsonElement.toAny(): Any? = when (this) {
-    is JsonObject -> entries.associate { it.key to it.value.toAny() }
-    is JsonArray -> this.map { it.toAny() }
-    is JsonPrimitive -> when {
-        isString -> content
-        doubleOrNull != null -> double
-        intOrNull != null -> int
-        booleanOrNull != null -> boolean
-        else -> null
-    }
-
-    else -> null
-}
 

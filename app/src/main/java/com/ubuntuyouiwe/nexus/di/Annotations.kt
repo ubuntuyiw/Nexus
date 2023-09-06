@@ -1,5 +1,4 @@
 package com.ubuntuyouiwe.nexus.di
-
 import javax.inject.Qualifier
 
 @Qualifier
@@ -8,4 +7,4 @@ annotation class GoogleClientId
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ApiKey
+annotation class RecognizerDefault

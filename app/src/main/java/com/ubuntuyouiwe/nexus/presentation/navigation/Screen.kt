@@ -7,5 +7,7 @@ enum class Screen {
     EMAIL_WITH_SIGNUP,
     CHAT_DASHBOARD,
     MessagingPanel,
+    PhotoEditingScreen,
+    CreateChatRoomScreen
 
 }

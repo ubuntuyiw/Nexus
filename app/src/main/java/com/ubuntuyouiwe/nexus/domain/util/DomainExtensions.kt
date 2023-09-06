@@ -1,11 +1,10 @@
 package com.ubuntuyouiwe.nexus.domain.util
 
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
-import com.ubuntuyouiwe.nexus.data.dto.MessageItemDto
-import com.ubuntuyouiwe.nexus.data.dto.MessagesDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
 import com.ubuntuyouiwe.nexus.data.dto.user.UserCredentialsDto
-import com.ubuntuyouiwe.nexus.data.util.toRoles
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem

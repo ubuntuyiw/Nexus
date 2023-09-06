@@ -1,9 +1,11 @@
 package com.ubuntuyouiwe.nexus.presentation.main_activity
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,11 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.UserOperationErrorUi
 import com.ubuntuyouiwe.nexus.presentation.navigation.NavHostScreen
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,11 +36,13 @@ class MainActivity : ComponentActivity() {
             var startDestination by remember {
                 mutableStateOf(Screen.SPLASH)
             }
-            NexusTheme {
+            NexusTheme(
+                viewModel.isDarkMode.value
+            ) {
                 installSplashScreen()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = White
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     NavHostScreen(startDestination)
 
@@ -65,6 +69,13 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+         val isTablet = resources.getBoolean(R.bool.isTablet)
+
+         requestedOrientation = if (isTablet) {
+             ActivityInfo.SCREEN_ORIENTATION_SENSOR
+         } else {
+             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+         }
 
 
     }

@@ -36,6 +36,20 @@ interface FirebaseDataSource {
         id: String,
         data: HashMap<String, Any?>
     ): Void?
+    suspend fun batchSet(
+        collection: FirebaseCollections,
+        docsAndData: HashMap<String, HashMap<String, Any?>>
+    ): Void?
+
+    suspend fun batchDelete(
+        collection: FirebaseCollections,
+        ids: List<String>
+    ): Void?
+
+    suspend fun batchDeleteWithSubCollections(
+        collection: FirebaseCollections,
+        ids: List<String>
+    ): Void?
     suspend fun addSubCollection(
         collection: FirebaseCollections,
         documentId: String,

@@ -1,0 +1,36 @@
+syntax = "proto3";
+package com.ubuntuyouiwe.nexus;
+import "google/protobuf/wrappers.proto";
+option java_multiple_files = true;
+message SettingsDto {
+  google.protobuf.FloatValue setSpeechRate = 1;
+}
+message ChatRoomFilterDto {
+  google.protobuf.BoolValue isAllRoles = 1;
+  google.protobuf.BoolValue isNeutralMode = 2;
+  google.protobuf.BoolValue isDebateArena = 3;
+  google.protobuf.BoolValue isDoctor = 4;
+  google.protobuf.BoolValue isChef = 5;
+  google.protobuf.BoolValue isLawyer = 6;
+  google.protobuf.BoolValue isRelationshipCoach = 7;
+  google.protobuf.BoolValue isIslamicScholar = 8;
+  google.protobuf.BoolValue isAstrologer = 9;
+  google.protobuf.BoolValue isBishop = 10;
+  google.protobuf.BoolValue isPsychologist = 11;
+  google.protobuf.BoolValue isPhysicsTeacher = 12;
+  google.protobuf.BoolValue isChemistryTeacher = 13;
+  google.protobuf.BoolValue isBiologyTeacher = 14;
+  google.protobuf.BoolValue isMathematicsTeacher = 15;
+  google.protobuf.BoolValue isGeographyTeacher = 16;
+  google.protobuf.BoolValue isEnglishTeacher = 17;
+  google.protobuf.BoolValue isHistoryTeacher = 18;
+  google.protobuf.BoolValue isVeterinarian = 19;
+  google.protobuf.BoolValue isSoftwareDeveloper = 20;
+  google.protobuf.BoolValue isTravelAdvisor = 21;
+  google.protobuf.BoolValue isFavorited = 22;
+  google.protobuf.BoolValue isArchived = 23;
+}
+
+message ChatRoomShortDto{
+  google.protobuf.BoolValue isNewestFirst = 1;
+}

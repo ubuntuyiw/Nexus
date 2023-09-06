@@ -2,23 +2,24 @@ package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
-import com.ubuntuyouiwe.nexus.data.dto.MessageItemDto
-import com.ubuntuyouiwe.nexus.data.dto.MessagesDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
+import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
 import com.ubuntuyouiwe.nexus.data.util.firstToHashMap
 import com.ubuntuyouiwe.nexus.data.util.toChatRoom
 import com.ubuntuyouiwe.nexus.data.util.toHashMap
+import com.ubuntuyouiwe.nexus.data.util.toMessage
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.ChatRooms
 import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
-import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
 import com.ubuntuyouiwe.nexus.domain.repository.DataSyncRepository
 import com.ubuntuyouiwe.nexus.domain.util.toChatRoomDto
 import com.ubuntuyouiwe.nexus.domain.util.toMessageItemDto
@@ -51,17 +52,35 @@ class DataSyncRepositoryImpl @Inject constructor(
         if (chatRoom.isNew) {
             sendInitialMessage(chatRoom, messages)
         } else {
-            Toast.makeText(context, "ilk mesaj değil", Toast.LENGTH_LONG).show()
             sendSubsequentMessage(chatRoom, messages)
         }
     }
+
+    override suspend fun updateChatRoomDocuments(chatRooms: List<ChatRoom>) {
+        val chatRoomToDto = chatRooms.map { it.toChatRoomDto() }
+        val listHashMap = chatRoomToDto.map { hashMapOf(it.id to it.toHashMap()) }
+
+        val finalHashMap = HashMap<String, HashMap<String, Any?>>()
+        for (singleHashMap in listHashMap) {
+            for ((key, value) in singleHashMap) {
+                finalHashMap[key!!] = value
+            }
+        }
+
+        firebaseDataSource.batchSet(FirebaseCollections.ChatRooms,finalHashMap)
+    }
+
+    override suspend fun deleteChatRoomDocuments(chatRooms: List<ChatRoom>) {
+        val id = chatRooms.map { it.id }
+        firebaseDataSource.batchDeleteWithSubCollections(FirebaseCollections.ChatRooms, id)
+    }
+
 
     private suspend fun sendInitialMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
         val rolesDto = chatRoom.role.toRolesDto()
         val messagesItemToDto = messages.map { it.toMessageItemDto() }
         val chatRoomToDto =
             chatRoom.toChatRoomDto().copy(ownerId = firebaseDataSource.userState()?.uid)
-        Log.v("dawddwddd",messagesItemToDto.toString())
 
         firebaseDataSource.set(
             FirebaseCollections.ChatRooms,
@@ -76,7 +95,7 @@ class DataSyncRepositoryImpl @Inject constructor(
         )
         messageResult.update(
             mapOf(
-                "id" to messageResult.id
+                MessagesFields.ID.key to messageResult.id
             )
         ).await()
 
@@ -90,12 +109,8 @@ class DataSyncRepositoryImpl @Inject constructor(
         messages: List<MessageItemDto>
     ) {
         val systemMessage = MessageItemDto(role = "system", content = system)
-        val aiRequestBody = AIRequestBody(model = "gpt-3.5-turbo-16k-0613", messages = messages)
-
-        aiRequestBody.messages.forEach {
-            Log.v("wdwdwdw",it.toString())
-
-        }
+        val systemMessage2 = MessageItemDto(role = "system", content = "The name of the person you are talking to is ibrahim, you will always be addressed by this name, this name will be in every message.")
+        val aiRequestBody = AIRequestBody(model = "gpt-3.5-turbo", messages = listOf(systemMessage2, systemMessage) + messages)
 
         val aiRequest = AIRequest(
             aiRequestBody = aiRequestBody,
@@ -122,18 +137,15 @@ class DataSyncRepositoryImpl @Inject constructor(
         )
         messageResult.update(
             mapOf(
-                "id" to messageResult.id
+                MessagesFields.ID.key to messageResult.id
             )
         ).await()
-
-        ai(messageResult.id, chatRoomToDto.id!!, rolesDto.system!!, messagesItemToDto)
-
         firebaseDataSource.set(
             FirebaseCollections.ChatRooms,
-            chatRoomToDto.id,
+            chatRoomToDto.id!!,
             chatRoomToDto.toHashMap()
         )
-
+        ai(messageResult.id, chatRoomToDto.id, rolesDto.system!!, messagesItemToDto)
     }
 
 
@@ -145,6 +157,9 @@ class DataSyncRepositoryImpl @Inject constructor(
                         ChatRooms(
                             messageResult = result.getOrNull()?.let { querySnapshot ->
                                 querySnapshot.documents.map { documentSnapshot ->
+
+
+
                                     documentSnapshot.toObject(ChatRoomDto::class.java)?.toChatRoom()
                                         ?: ChatRoomDto(role = RoleDto()).toChatRoom()
                                 }
@@ -164,16 +179,17 @@ class DataSyncRepositoryImpl @Inject constructor(
             }
     }
 
+
     override suspend fun getChatRoomMessage(id: String): Flow<Message?> {
         return firebaseDataSource.getAllSubCollectionDocumentListener(
             FirebaseCollections.ChatRooms,
             id
         ).map {
             if (it.isSuccess) {
-                Message(
+                MessageDto(
                     it.getOrNull()?.documents?.mapNotNull { documentSnapshot ->
 
-                        var messageResult = documentSnapshot.toObject(Messages::class.java)
+                        var messageResult = documentSnapshot.toObject(MessagesDto::class.java)
                         messageResult = messageResult?.copy(
                             hasPendingWrites = documentSnapshot.metadata.hasPendingWrites(),
                         )
@@ -182,7 +198,7 @@ class DataSyncRepositoryImpl @Inject constructor(
                     } ?: emptyList(),
                     isFromCache = it.getOrNull()?.metadata?.isFromCache ?: false
 
-                )
+                ).toMessage()
 
             } else {
                 throw it.exceptionOrNull()!!
