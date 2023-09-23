@@ -12,9 +12,10 @@ class GoogleSignInUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(data: Intent): Flow<Resource<Any>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
-            authRepository.googleSignIn(data)
+            val result = authRepository.googleSignIn(data)
+            authRepository.loginUserDatabase(result?.uid)
             emit(Resource.Success())
         } catch (e: Exception) {
             emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))

@@ -8,6 +8,7 @@ enum class Screen {
     CHAT_DASHBOARD,
     MessagingPanel,
     PhotoEditingScreen,
-    CreateChatRoomScreen
+    CreateChatRoomScreen,
+    InAppPurchaseScreen
 
 }

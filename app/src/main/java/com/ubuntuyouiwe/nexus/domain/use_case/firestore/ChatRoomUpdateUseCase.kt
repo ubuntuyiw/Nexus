@@ -11,7 +11,7 @@ class ChatRoomUpdateUseCase @Inject constructor(
     private val dataSyncRepository: DataSyncRepository
 ) {
     operator fun invoke(chatRoom: List<ChatRoom>) = flow<Resource<Nothing>>{
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             dataSyncRepository.updateChatRoomDocuments(chatRoom)
             emit(Resource.Success())

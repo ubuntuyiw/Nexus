@@ -1,5 +1,9 @@
 package com.ubuntuyouiwe.nexus.domain.model
 
 data class User(
-    val email: String? = null
+    val uid: String = "",
+    val email: String = "",
+    val shouldLogout: Boolean = false,
+    val isFromCache: Boolean = false,
+    val hasPendingWrites: Boolean = false
 )

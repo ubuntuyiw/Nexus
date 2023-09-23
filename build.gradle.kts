@@ -19,4 +19,6 @@ plugins {
 
     id("com.google.protobuf") version "0.9.4" apply false
 
+    id("com.google.firebase.crashlytics") version "2.9.9" apply false
+
 }

@@ -48,6 +48,8 @@ class DataSyncRepositoryImpl @Inject constructor(
         }
     }
 
+
+
     override suspend fun sendMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
         if (chatRoom.isNew) {
             sendInitialMessage(chatRoom, messages)

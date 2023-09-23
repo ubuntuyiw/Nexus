@@ -12,7 +12,7 @@ class GetRoleUseCase @Inject constructor(
     private val roleRepository: RoleRepository
 ){
     operator fun invoke(id: String): Flow<Resource<Role>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
 
             emit(Resource.Success(roleRepository.getRole(id)))

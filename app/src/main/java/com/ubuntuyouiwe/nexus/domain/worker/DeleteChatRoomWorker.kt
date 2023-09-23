@@ -25,11 +25,8 @@ class DeleteChatRoomWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-
         return try {
-
             val jsonList = inputData.getString(CHAT_ROOMS)!!
-
             val myList: List<ChatRoom> = json.decodeFromString<List<ChatRoom>>(jsonList)
             dataSyncRepository.deleteChatRoomDocuments(myList)
             Result.success()

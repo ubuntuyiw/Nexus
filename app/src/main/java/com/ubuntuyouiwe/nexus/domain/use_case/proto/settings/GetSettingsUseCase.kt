@@ -14,7 +14,7 @@ class GetSettingsUseCase @Inject constructor(
     private val settingsProtoRepository: SettingsProtoRepository
 ) {
     operator fun invoke(): Flow<Resource<Settings>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         settingsProtoRepository.getSettings().catch {
             emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {

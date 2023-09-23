@@ -16,7 +16,7 @@ class UpdateChatRoomFilterUseCase @Inject constructor(
     private val chatRoomFilterRepository: ChatRoomFilterRepository
 ) {
     operator fun invoke(chatRoomFilter: ChatRoomFilter): Flow<Resource<ChatRoomFilter>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         try {
             val updatedData = chatRoomFilterRepository.updateChatRoomFilter {

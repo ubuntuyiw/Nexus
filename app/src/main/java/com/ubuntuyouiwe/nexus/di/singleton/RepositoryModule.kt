@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.di.singleton
 
 import android.content.Context
+import com.android.billingclient.api.BillingClient
 import com.ubuntuyouiwe.nexus.data.repository.AuthRepositoryImpl
 import com.ubuntuyouiwe.nexus.data.repository.ChatRoomFilterRepositoryImpl
 import com.ubuntuyouiwe.nexus.data.repository.ChatRoomShortRepositoryImpl
@@ -25,6 +26,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 

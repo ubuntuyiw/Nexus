@@ -183,7 +183,8 @@ fun MessageArea(
                 }
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
                 ) {
                     IconButton(
                         onClick = {
@@ -214,6 +215,7 @@ fun MessageArea(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = Icons.Default.MoreVert.name,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(20.dp)
                         )
 
@@ -230,7 +232,8 @@ fun MessageArea(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.TextSnippet,
-                                    contentDescription = Icons.Default.TextSnippet.toString()
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    contentDescription = Icons.Default.TextSnippet.name
                                 )
                             },
                             text = {

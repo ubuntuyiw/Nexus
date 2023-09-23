@@ -74,6 +74,7 @@ fun FullScreenTextField(
                 IconButton(onClick = hide, modifier = Modifier) {
                     Icon(
                         imageVector = Icons.Default.FullscreenExit,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         contentDescription = Icons.Default.FullscreenExit.name
                     )
                 }

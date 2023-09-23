@@ -13,7 +13,7 @@ class GetChatRoomMessageUseCase @Inject constructor(
 ) {
 
     operator fun invoke(id: String) = flow<Resource<Message?>>{
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         dataSyncRepository.getChatRoomMessage(id).catch {
             emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {

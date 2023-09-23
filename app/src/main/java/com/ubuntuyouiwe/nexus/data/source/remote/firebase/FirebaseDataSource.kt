@@ -9,13 +9,14 @@ import com.google.firebase.functions.HttpsCallableResult
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
+import com.ubuntuyouiwe.nexus.domain.model.user_messaging_data.UserMessagingData
 import kotlinx.coroutines.flow.Flow
 
 interface FirebaseDataSource {
 
     suspend fun signUp(email: String, password: String): AuthResult
 
-    suspend fun loginIn(email: String, password: String)
+    suspend fun loginIn(email: String, password: String): AuthResult
 
     suspend fun googleSignIn(data: Intent): AuthResult
 
@@ -26,9 +27,9 @@ interface FirebaseDataSource {
 
     fun userStateListener(): Flow<UserDto?>
 
-    suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot
+/*    suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot
 
-    suspend fun getDocument(database: FirebaseCollections, document: String): QuerySnapshot
+    suspend fun getDocument(database: FirebaseCollections, document: String): QuerySnapshot*/
     suspend fun getAllDocumentListener(database: FirebaseCollections): Flow<Result<QuerySnapshot>>
     fun userState(): UserDto?
     suspend fun set(
@@ -41,10 +42,10 @@ interface FirebaseDataSource {
         docsAndData: HashMap<String, HashMap<String, Any?>>
     ): Void?
 
-    suspend fun batchDelete(
+ /*   suspend fun batchDelete(
         collection: FirebaseCollections,
         ids: List<String>
-    ): Void?
+    ): Void?*/
 
     suspend fun batchDeleteWithSubCollections(
         collection: FirebaseCollections,
@@ -60,6 +61,11 @@ interface FirebaseDataSource {
     suspend fun getAllSubCollectionDocumentListener(database: FirebaseCollections, id: String): Flow<Result<QuerySnapshot>>
 
     suspend fun ai(data: AIRequest): HttpsCallableResult?
-    suspend fun isDocumentExist(collection: FirebaseCollections, documentId: String): Boolean
-    fun documentToSubCollection(database: FirebaseCollections, document: String, subDataBases: FirebaseCollections): CollectionReference
+
+    suspend fun handlePurchase(data: HashMap<String, String?>): HttpsCallableResult?
+
+    suspend fun createUserMessagingData(): HttpsCallableResult?
+
+/*    suspend fun isDocumentExist(collection: FirebaseCollections, documentId: String): Boolean
+    fun documentToSubCollection(database: FirebaseCollections, document: String, subDataBases: FirebaseCollections): CollectionReference*/
 }

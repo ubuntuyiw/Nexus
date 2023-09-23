@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.photo_editing
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxScope
@@ -37,7 +38,7 @@ fun BoxScope.NewAreaArrangement(crop: (left: Float, top: Float, right: Float, bo
 
     val cornerLineArea = 100f
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = canvasWidth, key2 = canvasHeight) {
         right = canvasWidth.toFloat()
         bottom = canvasHeight.toFloat()
     }

@@ -11,7 +11,7 @@ class PasswordResetUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(email: String): Flow<Resource<Any>> = flow{
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             authRepository.sendPasswordResetEmail(email)
             emit(Resource.Success())

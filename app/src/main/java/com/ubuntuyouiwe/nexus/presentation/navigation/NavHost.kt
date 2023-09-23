@@ -6,10 +6,12 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +21,8 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.ChatDashBoard
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.ChatDashBoardViewModel
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.CreateChatRoomScreen
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.CreateChatRoomViewModel
+import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.InAppPurchaseScreen
+import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.InAppPurchaseViewModel
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.AuthenticationChoiceScreen
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.AuthenticationChoiceViewModel
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.EmailWithLogInViewModel
@@ -31,6 +35,7 @@ import com.ubuntuyouiwe.nexus.presentation.messaging_panel.MessagingPanelViewMod
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingScreen
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavHostScreen(startDestination: Screen) {
     val navController = rememberNavController()
@@ -126,6 +131,7 @@ fun NavHostScreen(startDestination: Screen) {
             val chatRoomFilter by viewModel.chatRoomFilterState
             val chatRoomDeleteSate by viewModel.chatRoomDeleteSate
             val workManagerState by viewModel.workManagerState
+            val userState by viewModel.userState
 
             ChatDashBoard(
                 navController,
@@ -136,6 +142,7 @@ fun NavHostScreen(startDestination: Screen) {
                 chatRoomState,
                 chatRoomDeleteSate,
                 workManagerState,
+                userState,
                 viewModel::onEvent
             )
         }
@@ -176,6 +183,9 @@ fun NavHostScreen(startDestination: Screen) {
             val sendMessageState by viewModel.sendMessageState
             val settingsState by viewModel.settingsState
             val photoUri = viewModel.photoUri
+            val userState by viewModel.userState
+            val userMessagingDataState by viewModel.userMessagingDataState
+            val chatRoomUpdateState by viewModel.chatRoomUpdateState
 
             MessagingPanelScreen(
                 navController,
@@ -187,6 +197,9 @@ fun NavHostScreen(startDestination: Screen) {
                 chatRoomState,
                 photoUri,
                 settingsState,
+                userState,
+                userMessagingDataState,
+                chatRoomUpdateState,
                 viewModel::onEvent
             )
         }
@@ -211,11 +224,11 @@ fun NavHostScreen(startDestination: Screen) {
         composable(
 
             Screen.CreateChatRoomScreen.name,
+            exitTransition = null,
+            popEnterTransition = null,
             enterTransition = {
                 slideInVertically(initialOffsetY = { screenHeight }) + fadeIn(initialAlpha = 0.3f)
             },
-            exitTransition = null,
-            popEnterTransition = null,
             popExitTransition = {
                 slideOutVertically(targetOffsetY = { screenHeight }) + fadeOut(targetAlpha = 0.3f)
             }
@@ -225,6 +238,34 @@ fun NavHostScreen(startDestination: Screen) {
             CreateChatRoomScreen(navController, roleState)
 
         }
+
+        composable(
+            route = Screen.InAppPurchaseScreen.name,
+            enterTransition = {
+                slideInVertically(initialOffsetY = { screenHeight }) + fadeIn(initialAlpha = 0.3f)
+            },
+            exitTransition = null,
+            popEnterTransition = null,
+            popExitTransition = {
+                slideOutVertically(targetOffsetY = { screenHeight }) + fadeOut(targetAlpha = 0.3f)
+            }
+
+        ) { navBackStackEntry ->
+            val viewModel: InAppPurchaseViewModel = hiltViewModel(navBackStackEntry)
+            viewModel.triggerPurchasesQuery.collectAsStateWithLifecycle(navBackStackEntry)
+            val onEvent = viewModel::onEvent
+            val billingState by viewModel.purchasesUpdateState
+            val productDetailsState by viewModel.productDetailsState
+            val connectionState by viewModel.connectionState
+            val purchasesResponseState by viewModel.queryPurchaseState
+            val consumeState by viewModel.consumeState
+            val isReady = viewModel.isReady()
+            val userState by viewModel.userState
+            val userMessagingDataState by viewModel.userMessagingDataState
+            InAppPurchaseScreen(billingState, connectionState, productDetailsState, purchasesResponseState, consumeState, isReady, userState, userMessagingDataState, onEvent)
+        }
+
+
 
     }
 

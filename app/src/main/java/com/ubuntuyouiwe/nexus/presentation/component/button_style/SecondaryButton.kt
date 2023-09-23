@@ -3,6 +3,7 @@ package com.ubuntuyouiwe.nexus.presentation.component.button_style
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,9 @@ fun SecondaryButton(
         enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = Black
+            contentColor = Black,
+            disabledContentColor = MaterialTheme.colorScheme.scrim,
+            disabledContainerColor = Color.Transparent
         ),
         content = content
     )

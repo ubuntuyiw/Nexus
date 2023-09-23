@@ -13,7 +13,7 @@ class UpdateChatRoomShortUseCase @Inject constructor(
     private val chatRoomShortRepository: ChatRoomShortRepository
 ) {
     operator fun invoke(chatRoomShort: ChatRoomShort): Flow<Resource<ChatRoomShort>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         chatRoomShortRepository.updateChatRoomShort {  }
         try {
             val updatedData = chatRoomShortRepository.updateChatRoomShort {

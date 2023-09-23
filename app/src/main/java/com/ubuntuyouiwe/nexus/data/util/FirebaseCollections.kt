@@ -4,4 +4,6 @@ enum class FirebaseCollections() {
     ChatRooms,
     Messages,
     Users,
+    UserMessagingData
+
 }

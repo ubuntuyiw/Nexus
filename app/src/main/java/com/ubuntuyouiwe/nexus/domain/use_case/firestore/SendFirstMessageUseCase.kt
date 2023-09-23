@@ -15,7 +15,7 @@ class SendFirstMessageUseCase @Inject constructor(
 
     operator fun invoke(chatRoom: ChatRoom, messages: Message, newMessage: MessageItem) =
         flow<Resource<Any>> {
-            emit(Resource.Loading())
+            emit(Resource.Loading)
             try {
                 dataSyncRepository.sendMessage(
                     totalMessageCountUpdate(chatRoom),

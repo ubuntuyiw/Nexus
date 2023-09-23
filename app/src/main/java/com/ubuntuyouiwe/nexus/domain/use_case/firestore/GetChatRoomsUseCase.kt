@@ -18,7 +18,7 @@ class GetChatRoomsUseCase @Inject constructor(
 ) {
 
     operator fun invoke(short: Boolean, filter: ChatRoomFilter) = flow<Resource<ChatRooms>> {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         dataSyncRepository.getChatRooms().catch {
             emit(Resource.Error(message = it.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }.map { chatRooms ->

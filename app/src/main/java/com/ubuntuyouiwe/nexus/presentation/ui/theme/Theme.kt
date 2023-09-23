@@ -26,9 +26,13 @@ private val DarkColorScheme = darkColorScheme(
     background = DeepTwilight,
     onBackground = White,
     surface = DeepBlueSeaDark,
+    surfaceVariant = White,
+    onSurfaceVariant = Black,
     onSurface = White,
     error = Color.Red,
     onError = White,
+    errorContainer = White,
+    onErrorContainer = Black,
     scrim = scrim
 )
 

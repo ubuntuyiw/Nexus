@@ -14,7 +14,7 @@ class UpdateSettingsUseCase @Inject constructor(
     private val settingsProtoRepository: SettingsProtoRepository
 ) {
     operator fun invoke(rate: Float): Flow<Resource<Settings>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         settingsProtoRepository.updateSettings {
             it.setSpeechRate = FloatValue.of(rate)

@@ -16,7 +16,7 @@ class SignUpUseCase @Inject constructor(
 ) {
 
     operator fun invoke(param: UserCredentials): Flow<Resource<Any>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             preconditions.invalidEmail(param.email)
             preconditions.invalidPassword(param.password)

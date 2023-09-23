@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -176,7 +180,7 @@ fun EmailWithSignUp(
                     },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.password),
+                            imageVector = Icons.Default.Lock,
                             contentDescription = stringResource(id = R.string.password)
                         )
                     },
@@ -185,10 +189,8 @@ fun EmailWithSignUp(
                             onEvent(SignUpEvent.ChangePasswordVisibility)
                         }) {
                             Icon(
-                                painter =  painterResource(
-                                    id = if (passwordState.isVisibility) R.drawable.dont_see
-                                    else R.drawable.to_see
-                                ),
+                                imageVector =   if (passwordState.isVisibility) Icons.Default.Password
+                                else Icons.Default.RemoveRedEye,
                                 contentDescription = stringResource(id = R.string.passwordVisibility),
                             )
                         }

@@ -11,7 +11,7 @@ class SignOutUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(): Flow<Resource<Any>> = flow{
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             authRepository.logOut()
             emit(Resource.Success())

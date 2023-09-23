@@ -1,13 +1,16 @@
 package com.ubuntuyouiwe.nexus.domain.use_case.auth
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuthException
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
 import com.ubuntuyouiwe.nexus.domain.util.Preconditions
 import com.ubuntuyouiwe.nexus.util.Resource
 import com.ubuntuyouiwe.nexus.util.erros.ErrorCodes
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class EmailSignInUseCase @Inject constructor(
@@ -15,7 +18,7 @@ class EmailSignInUseCase @Inject constructor(
     private val preconditions: Preconditions
 ) {
     operator fun invoke(userCredentials: UserCredentials): Flow<Resource<Any>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             preconditions.invalidEmail(userCredentials.email)
             preconditions.invalidPassword(userCredentials.password)
@@ -27,7 +30,4 @@ class EmailSignInUseCase @Inject constructor(
             emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
-
-
-
 }

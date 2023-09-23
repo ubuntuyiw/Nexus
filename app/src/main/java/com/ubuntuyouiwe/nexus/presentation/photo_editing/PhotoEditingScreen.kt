@@ -27,6 +27,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
@@ -74,7 +76,7 @@ fun PhotoEditingScreen(
     val newWidth = (originalWidth - cropLeft -( originalWidth - cropRight)).toInt()
     val newHeight = (originalHeight - cropTop -( originalHeight - cropBottom)).toInt()
 
-    var cardSize by remember { mutableStateOf(0) }
+    var cardSize by remember { mutableIntStateOf(0) }
     if (croppedPhotoState.isDialogVisibility) {
         Dialog(onDismissRequest = {
             onEvent(PhotoEditingEvent.ChangeDialogVisibility(false))
@@ -101,7 +103,7 @@ fun PhotoEditingScreen(
 
                         Text(
                             text = "Preview",
-                            style = MaterialTheme.typography.displaySmall,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(16.dp)
                         )
@@ -134,7 +136,12 @@ fun PhotoEditingScreen(
                                 if (bitmapToStringState.isLoading) {
                                     CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                                 }else if (bitmapToStringState.isError) {
-                                    Text(text = bitmapToStringState.errorText, color = MaterialTheme.colorScheme.error)
+                                    Text(
+                                        text = bitmapToStringState.errorText,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(16.dp),
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
                                 }
                                 else if (bitmapToStringState.isSuccess) {
                                     onEvent(PhotoEditingEvent.ToMessagingPanel(navController, croppedBitmap))
@@ -148,15 +155,8 @@ fun PhotoEditingScreen(
 
                                     )
                                 }
-
-
-
-
                             }
-
-
                         }
-
                     }
                     Spacer(modifier = Modifier.padding(16.dp))
                     Row(
@@ -168,7 +168,9 @@ fun PhotoEditingScreen(
                             .heightIn(75.dp)
                     ) {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                onEvent(PhotoEditingEvent.ChangeDialogVisibility(false))
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent,
                                 contentColor = MaterialTheme.colorScheme.onSurface
@@ -179,20 +181,11 @@ fun PhotoEditingScreen(
                         Spacer(modifier = Modifier.padding(16.dp))
                         Button(
                             onClick = {
-                                /*croppedBitmap?.let {
-                                    val inputImage = InputImage.fromBitmap(it, 0)
-                                    onEvent(PhotoEditingEvent.ApplyCrop(inputImage))
-                                }*/
                                 onEvent(PhotoEditingEvent.ApplyCrop(croppedBitmap))
-
-                                //onEvent(PhotoEditingEvent.ToMessagingPanel(navController, croppedBitmap))
-
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent,
                                 contentColor = MaterialTheme.colorScheme.onSurface
-
-
                             )
                         ) {
                             Text(text = "Apply Crop", style = MaterialTheme.typography.bodyMedium,)
@@ -231,7 +224,9 @@ fun PhotoEditingScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Button(onClick = { /*TODO*/ }) {
+                    Button(onClick = {
+                        navController.navigateUp()
+                    }) {
                         Text(text = "Cancel", style = MaterialTheme.typography.bodyLarge,)
                     }
                     Spacer(modifier = Modifier.padding(24.dp))
@@ -268,13 +263,11 @@ fun PhotoEditingScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Box(  modifier = Modifier.padding(24.dp)) {
-                bitmap.asImageBitmap().let {
-                    Image(
-                        bitmap = it,
-                        contentDescription = "",
-                    )
-                }
+            Box(  modifier = Modifier.padding(24.dp).weight(1f, false)) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = "",
+                )
 
 
 
@@ -289,6 +282,13 @@ fun PhotoEditingScreen(
                     cropBottom = bottom * rotationHeight
                 }
             }
+
+            Text(
+                text = "Please crop the photo to focus on the text you want to send to Nexus. Don't forget to leave out any unwanted words or objects.",
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(24.dp)
+            )
 
 
         }

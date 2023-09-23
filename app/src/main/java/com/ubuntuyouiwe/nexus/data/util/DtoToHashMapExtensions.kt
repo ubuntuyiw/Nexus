@@ -51,11 +51,10 @@ fun UserDto.toHashMap(): HashMap<String, Any?> =
         UserDtoFields.PHOTO_URL.key to this.photoUrl,
         UserDtoFields.IS_EMAIL_VERIFIED.key to this.isEmailVerified,
         UserDtoFields.PHONE_NUMBER.key to this.phoneNumber,
-        UserDtoFields.TOTAL_COMPLETION_TOKENS.key to this.totalCompletionTokens,
-        UserDtoFields.TOTAL_PROMPT_TOKENS.key to this.totalPromptTokens,
-        UserDtoFields.TOTAL_TOKENS.key to this.totalTokens,
         UserDtoFields.INFO.key to this.info,
-        UserDtoFields.RATE_LIMITING.key to this.rateLimiting
+        UserDtoFields.OWNER_ID.key to this.ownerId,
+        UserDtoFields.ID.key to this.id,
+        UserDtoFields.SHOULD_LOGOUT.key to this.shouldLogout,
     )
 
 

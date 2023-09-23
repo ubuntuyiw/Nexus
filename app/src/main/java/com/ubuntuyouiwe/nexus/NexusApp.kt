@@ -3,7 +3,6 @@ package com.ubuntuyouiwe.nexus
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.revenuecat.purchases.Purchases
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

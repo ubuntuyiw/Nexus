@@ -14,7 +14,7 @@ class GetChatRoomFilterUseCase @Inject constructor(
     private val chatRoomFilterRepository: ChatRoomFilterRepository
 ) {
     operator fun invoke(): Flow<Resource<ChatRoomFilter>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         chatRoomFilterRepository.getChatRoomFilter().catch {
             emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {

@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.data.source.remote.firebase
 
 import android.content.Intent
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -49,8 +50,8 @@ class FirebaseDataSourceImpl @Inject constructor(
     }
 
 
-    override suspend fun loginIn(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+    override suspend fun loginIn(email: String, password: String): AuthResult {
+        return auth.signInWithEmailAndPassword(email, password).await()
     }
 
 
@@ -162,7 +163,6 @@ class FirebaseDataSourceImpl @Inject constructor(
                     value?.let {
                         trySend(Result.success(it))
                     } ?: run {
-
                         trySendBlocking(
                             Result.failure(
                                 FirebaseFirestoreException(
@@ -220,15 +220,23 @@ class FirebaseDataSourceImpl @Inject constructor(
         return functions.getHttpsCallable(CloudFunctions.AI.key).call(dataToHashMap).await()
     }
 
-    override fun documentToSubCollection(
+    override suspend fun handlePurchase(data: HashMap<String, String?>): HttpsCallableResult? {
+        return functions.getHttpsCallable(CloudFunctions.HANDLE_PURCHASE.key).call(data).await()
+    }
+
+    override suspend fun createUserMessagingData(): HttpsCallableResult? {
+        return functions.getHttpsCallable(CloudFunctions.CREATE_USER_MESSAGING_DATA.key).call().await()
+    }
+
+ /*   override fun documentToSubCollection(
         database: FirebaseCollections,
         document: String,
         subDataBases: FirebaseCollections
     ): CollectionReference {
         return fireStore.collection(database.name).document(document).collection(subDataBases.name)
-    }
+    }*/
 
-    override suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot {
+   /* override suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot {
         return fireStore.collection(database.name).get().await()
     }
 
@@ -236,10 +244,9 @@ class FirebaseDataSourceImpl @Inject constructor(
         database: FirebaseCollections,
         document: String
     ): QuerySnapshot {
-
         return fireStore.collection(database.name)
             .whereEqualTo(CommonCollectionFields.ID.key, document).get().await()
-    }
+    }*/
 
     override suspend fun set(
         collection: FirebaseCollections,
@@ -264,7 +271,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         return batch.commit().await()
     }
 
-    override suspend fun batchDelete(
+/*    override suspend fun batchDelete(
         collection: FirebaseCollections,
         ids: List<String>
     ): Void? {
@@ -276,7 +283,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         }
 
         return batch.commit().await()
-    }
+    }*/
 
     override suspend fun batchDeleteWithSubCollections(
         collection: FirebaseCollections,
@@ -298,7 +305,7 @@ class FirebaseDataSourceImpl @Inject constructor(
         return batch.commit().await()
     }
 
-    override suspend fun isDocumentExist(
+/*    override suspend fun isDocumentExist(
         collection: FirebaseCollections,
         documentId: String
     ): Boolean {
@@ -308,7 +315,7 @@ class FirebaseDataSourceImpl @Inject constructor(
 
     suspend fun count(collection: FirebaseCollections): AggregateQuerySnapshot? {
         return fireStore.collection(collection.name).count().get((AggregateSource.SERVER)).await()
-    }
+    }*/
 
 
     override suspend fun addSubCollection(

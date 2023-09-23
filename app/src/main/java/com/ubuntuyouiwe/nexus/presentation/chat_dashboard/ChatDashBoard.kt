@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.ArrowBack
@@ -29,8 +32,12 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Unarchive
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -48,7 +55,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,7 +80,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideLazyListPreloader
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
@@ -89,6 +97,7 @@ import com.ubuntuyouiwe.nexus.presentation.component.button_style.SecondaryButto
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
@@ -97,6 +106,7 @@ import com.ubuntuyouiwe.nexus.presentation.util.RolesFilter
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class,
@@ -111,6 +121,7 @@ fun ChatDashBoard(
     chatRoomsState: ChatRoomsState,
     chatRoomDeleteSate: ChatRoomDeleteState,
     workManagerState: WorkManagerState,
+    userState: UserOperationState,
     onEvent: (ChatDashBoardEvent) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -126,8 +137,8 @@ fun ChatDashBoard(
     val hasNotFavorited = selectedChatRooms.any { !it.isFavorited }
     val hasPinned = selectedChatRooms.any { it.isPinned }
     val hasNotPinned = selectedChatRooms.any { !it.isPinned }
-    var fabHeight by remember { mutableStateOf(0) }
-    var fabPosition by remember { mutableStateOf(0f) }
+    var fabHeight by remember { mutableIntStateOf(0) }
+    var fabPosition by remember { mutableFloatStateOf(0f) }
 
     val topAppBarColor =
         if (selectedChatRooms.isNotEmpty()) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
@@ -151,44 +162,15 @@ fun ChatDashBoard(
         }
     }
     var deleteTime by remember {
-        mutableIntStateOf(10)
+        mutableIntStateOf(5)
     }
-    var hasShownSnackbarForDeleteTime by remember { mutableStateOf(false) }
-    LaunchedEffect(workManagerState) {
-        if (workManagerState.isEnqueued) {
-            while(true) {
-                delay(1000)
-                deleteTime--
-            }
-        }
 
-    }
 
     LaunchedEffect(key1 = workManagerState, key2 = chatRoomDeleteSate,) {
+        //TODO
         if (chatRoomDeleteSate.isSuccess) {
-            if (workManagerState.isEnqueued) {
-
-                if (!hasShownSnackbarForDeleteTime) {
-                    hasShownSnackbarForDeleteTime = true
-
-                    val snackbarResult = hostState.showSnackbar(
-                        message = "Silinme işlemi başlatılıyor: $deleteTime",
-                        actionLabel = "İptal",
-                        duration = SnackbarDuration.Indefinite
-                    )
-                    if (snackbarResult == SnackbarResult.ActionPerformed) {
-                        onEvent(ChatDashBoardEvent.ChatRoomCancelDelete(
-                            chatRoomDeleteSate.data
-                        ))
-                    }
-                }
-
-            } else if (workManagerState.isRunning) {
+             if (workManagerState.isRunning) {
                 hostState.showSnackbar("Siliniyor")
-            } else if(workManagerState.isCancelled) {
-                hostState.showSnackbar("iptal edildi")
-            } else if(workManagerState.isSucceeded) {
-                hostState.showSnackbar("Silindi")
             } else if(workManagerState.isFailed) {
                 hostState.showSnackbar("Hata")
             }
@@ -232,24 +214,28 @@ fun ChatDashBoard(
         topBar = {
             TopAppBar(
                 title = {
-                    if (selectedChatRooms.isEmpty()) {
-                        if (chatRoomFilterState.data.isArchived) {
+                    Column {
+                        if (selectedChatRooms.isEmpty()) {
+                            if (chatRoomFilterState.data.isArchived) {
 
-                            Text(
-                                text = "Archived",
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                                Text(
+                                    text = "Archived",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+
+                            } else {
+                                Text(
+                                    text = stringResource(id = R.string.app_name),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
 
                         } else {
-                            Text(
-                                text = stringResource(id = R.string.app_name),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                    } else {
-                        Text(text = selectedChatRooms.size.toString())
+                            Text(text = selectedChatRooms.size.toString())
 
+                        }
                     }
+
                 },
                 navigationIcon = {
                     if (selectedChatRooms.isEmpty()) {
@@ -311,8 +297,9 @@ fun ChatDashBoard(
                                     tint = White,
                                     modifier = Modifier.size(24.dp)
                                 )
-
                             }
+
+
                         } else {
 
                             IconButton(onClick = {
@@ -521,7 +508,9 @@ fun ChatDashBoard(
 
 
                 if (filterState.isDialogVisibility) {
-                    ModalBottomSheet(onDismissRequest = {
+                    ModalBottomSheet(
+                        dragHandle = {},
+                        onDismissRequest = {
                         onEvent(
                             ChatDashBoardEvent.ChangeFilterDialogVisibility(
                                 false
@@ -686,11 +675,10 @@ fun ChatDashBoard(
 
                 if (sheetState.isVisible || (sheetState.currentValue != sheetState.targetValue)) {
                     ModalBottomSheet(
+                        dragHandle = {},
                         onDismissRequest = {},
                         sheetState = sheetState,
-                        containerColor = MaterialTheme.colorScheme.background,
-
-
+                        containerColor = MaterialTheme.colorScheme.background
                         ) {
 
                         MenuScreen { menuItemType ->
@@ -699,7 +687,7 @@ fun ChatDashBoard(
                             }.invokeOnCompletion {
                                 when (menuItemType) {
                                     MenuItemType.PREMIUM -> {
-
+                                        navController.navigate(Screen.InAppPurchaseScreen.name)
                                     }
 
                                     MenuItemType.SETTINGS -> {
@@ -746,14 +734,6 @@ fun ChatDashBoard(
                 }
                 val state = rememberLazyListState()
                 val imageList = chatRoomsState.data.map { it.role.image.any() }
-                GlideLazyListPreloader(
-                    state = state,
-                    data = imageList,
-                    size = Size(40f, 40f),
-                    numberOfItemsToPreload = 1
-                ) { item, requestBuilder ->
-                    requestBuilder.load(item)
-                }
 
                 LazyColumn(modifier = Modifier.fillMaxSize(), state = state) {
 
@@ -795,23 +775,73 @@ fun ChatDashBoard(
 
             }
         }
-        val snackbarHeight = 56.dp
-        Box(modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Row(
-                modifier = Modifier
-                    .offset(y = -(16.dp + with(LocalDensity.current) { fabHeight.toDp()}), x = 0.dp)
-                    .height(snackbarHeight)
-                    .fillMaxWidth()
-                    .background(Color.White)
+        val snackbarHeight = 50.dp
+        val snackbarBottomPadding = 28.dp
+        LaunchedEffect(key1 = chatRoomDeleteSate.isSuccess && workManagerState.isEnqueued) {
+            if (chatRoomDeleteSate.isSuccess && workManagerState.isEnqueued) {
+                if (deleteTime >= 0) {
 
-            ) {
+                    for (i in 5 downTo 0) {
+                        deleteTime = i
+                        delay(1000)
 
-            }
+                    }
+                } else deleteTime = 5
+            } else deleteTime = 5
+
         }
+
+        if (chatRoomDeleteSate.isSuccess && workManagerState.isEnqueued) {
+
+            Box(modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    shape = RoundedCornerShape(36.dp),
+                    modifier = Modifier
+                        .offset(
+                            y = -(snackbarBottomPadding + with(LocalDensity.current) { fabHeight.toDp() }),
+                            x = 0.dp
+                        )
+                        .height(snackbarHeight)
+                        .widthIn(max = 716.dp)
+                        .fillMaxWidth(0.88f)
+
+
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 16.dp, end = 16.dp)
+                    ) {
+
+                        Text(text = "Silinecek: $deleteTime", style = MaterialTheme.typography.bodySmall)
+
+                        Button(onClick = {
+                            onEvent(ChatDashBoardEvent.ChatRoomCancelDelete(
+                                chatRoomDeleteSate.data
+                            ))
+                        }) {
+
+                            Text(text = "İptal")
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+
+
 
     }
 
@@ -830,6 +860,7 @@ fun ChatDashBoardPreview() {
         val chatRoomShortState = ChatRoomShortState()
         val chatRoomDeleteSate = ChatRoomDeleteState()
         val workManagerState = WorkManagerState()
+        val userState = UserOperationState()
         ChatDashBoard(
             navController,
             stateSignOut,
@@ -839,6 +870,7 @@ fun ChatDashBoardPreview() {
             chatRoomsState,
             chatRoomDeleteSate,
             workManagerState,
+            userState,
         ) {}
     }
 }

@@ -71,6 +71,10 @@
             tools:node="remove">
         </provider>
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1704947920987430~3398250221"/>
+
     </application>
 
 </manifest>

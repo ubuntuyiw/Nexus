@@ -28,19 +28,16 @@ class ChatRoomDeleteUseCase @Inject constructor(
     private val json: Json
 ) {
     operator fun invoke(chatRoom: List<ChatRoom>) = flow<Resource<UUID>>{
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         try {
             val workManager = WorkManager.getInstance(context)
 
             val chatRoomJson = json.encodeToString(chatRoom)
             val inputData = workDataOf(CHAT_ROOMS to chatRoomJson)
 
-            val constraints = Constraints.Builder()
-                .setRequiresCharging(true).build()
 
             val workRequest = OneTimeWorkRequestBuilder<DeleteChatRoomWorker>()
-                .setConstraints(constraints)
-                .setInitialDelay(10, TimeUnit.SECONDS)
+                .setInitialDelay(5, TimeUnit.SECONDS)
                 .setInputData(inputData)
                 .build()
             workManager.enqueue(workRequest)

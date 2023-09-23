@@ -13,7 +13,7 @@ class GetChatRoomShortUseCase @Inject constructor(
     private val chatRoomShortRepository: ChatRoomShortRepository
 ) {
     operator fun invoke(): Flow<Resource<ChatRoomShort>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         chatRoomShortRepository.getChatRoomShort().catch {
             emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {

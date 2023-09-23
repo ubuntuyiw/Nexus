@@ -29,6 +29,8 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterState
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.RolesState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
+import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
 import com.ubuntuyouiwe.nexus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +43,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatDashBoardViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
+    private val sharedState: SharedState,
     private val getChatRoomsUseCase: GetChatRoomsUseCase,
     private val getRolesUseCase: GetRolesUseCase,
     private val getChatRoomFilterUseCase: GetChatRoomFilterUseCase,
@@ -63,6 +66,8 @@ class ChatDashBoardViewModel @Inject constructor(
     private val _chatRoomsState = mutableStateOf(ChatRoomsState())
     val chatRoomsState: State<ChatRoomsState> = _chatRoomsState
 
+    private val _userState = sharedState.userState
+    val userState: State<UserOperationState> = _userState
 
     private val _menuState = mutableStateOf(ModalBottomSheetState())
     val menuState: State<ModalBottomSheetState> = _menuState
@@ -333,7 +338,7 @@ class ChatDashBoardViewModel @Inject constructor(
                         isCancelled = true,
                         isRunning = false,
                     )
-                    _chatRoomDeleteSate.value = ChatRoomDeleteState()
+                    /*_chatRoomDeleteSate.value = ChatRoomDeleteState()*/
 
 
                 }
@@ -347,7 +352,6 @@ class ChatDashBoardViewModel @Inject constructor(
                         isCancelled = false,
                         isRunning = true,
                     )
-
                 }
 
                 else -> {
@@ -362,6 +366,7 @@ class ChatDashBoardViewModel @Inject constructor(
                     _chatRoomDeleteSate.value = ChatRoomDeleteState()
 
                 }
+
             }
         }
     }
@@ -379,9 +384,7 @@ class ChatDashBoardViewModel @Inject constructor(
                         isSuccess = false,
                         isError = false
                     )
-
                 }
-
                 is Resource.Success -> {
                     _chatRoomFilterState.value = chatRoomFilterState.value.copy(
                         isLoading = false,
@@ -468,7 +471,6 @@ class ChatDashBoardViewModel @Inject constructor(
                         chatRoomFilterState.value.data
                     )
 
-
                 }
 
                 is Resource.Error -> {
@@ -502,11 +504,6 @@ class ChatDashBoardViewModel @Inject constructor(
                         isSuccess = true,
                         isError = false,
                         data = resource.data ?: ChatRoomShort()
-                    )
-
-                    Log.v(
-                        "awaaaaadawd",
-                        "success" + chatRoomShortState.value.data.isNewestFirst.toString()
                     )
 
                 }

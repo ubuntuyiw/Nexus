@@ -20,12 +20,17 @@ import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
 import com.ubuntuyouiwe.nexus.domain.use_case.GetRoleUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.firestore.ChatRoomUpdateUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.firestore.GetChatRoomMessageUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.firestore.GetChatRoomUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.firestore.SendFirstMessageUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.UpdateSettingsUseCase
+import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ChatRoomUpdateState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
+import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +43,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MessagingPanelViewModel @Inject constructor(
+    private val sharedState: SharedState,
     private val savedStateHandle: SavedStateHandle,
     private val getChatRoomMessageUseCase: GetChatRoomMessageUseCase,
     private val sendFirstMessageUseCase: SendFirstMessageUseCase,
@@ -47,6 +53,7 @@ class MessagingPanelViewModel @Inject constructor(
     private val languageIdentification: LanguageIdentifier,
     private val getSettingsUseCase: GetSettingsUseCase,
     private val updateSettingsUseCase: UpdateSettingsUseCase,
+    private val chatRoomUpdateUseCase: ChatRoomUpdateUseCase,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -56,14 +63,21 @@ class MessagingPanelViewModel @Inject constructor(
     private val _sendMessageButtonState = mutableStateOf(ButtonState())
     val sendMessageButtonState: State<ButtonState> = _sendMessageButtonState
 
+    private val _userState = sharedState.userState
+    val userState: State<UserOperationState> = _userState
+
     private val _sendMessageState = mutableStateOf(SendMessageState())
     val sendMessageState: State<SendMessageState> = _sendMessageState
 
     private val _messageTextFieldState = mutableStateOf(TextFieldState())
     val messageTextFieldState: State<TextFieldState> = _messageTextFieldState
 
+    private val _userMessagingDataState = sharedState.userMessagingDataState
+    val userMessagingDataState: State<UserMessagingDataState> = _userMessagingDataState
+
     private val _chatRoomState = mutableStateOf(ChatRoomState())
     val chatRoomState: State<ChatRoomState> = _chatRoomState
+
 
     private val _getMessagesState = mutableStateOf(GetMessagesState())
     val getMessagesState: State<GetMessagesState> = _getMessagesState
@@ -71,6 +85,8 @@ class MessagingPanelViewModel @Inject constructor(
     private val _settingsState = mutableStateOf(SettingsState())
     val settingsState: State<SettingsState> = _settingsState
 
+    private val _chatRoomUpdateState = mutableStateOf(ChatRoomUpdateState())
+    val chatRoomUpdateState: State<ChatRoomUpdateState> = _chatRoomUpdateState
 
     init {
         if (textToSpeech.defaultEngine != "com.google.android.tts") {
@@ -171,8 +187,46 @@ class MessagingPanelViewModel @Inject constructor(
                 if (settingsState.value.data.setSpeechRate == 1.5f)  setSpeechRate(2f)
                 if (settingsState.value.data.setSpeechRate == 2f)  setSpeechRate(1f)
             }
+            is MessagingPanelOnEvent.RenameChange -> {
+                _chatRoomUpdateState.value = event.chatRoomUpdateState
+            }
+            is MessagingPanelOnEvent.ChatRoomUpdate -> {
+                chatRoomUpdate(event.chatRooms)
+            }
         }
 
+    }
+
+    private fun chatRoomUpdate(chatRooms: List<ChatRoom>) {
+        chatRoomUpdateUseCase(chatRooms).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    _chatRoomUpdateState.value = chatRoomUpdateState.value.copy(
+                        isLoading = true,
+                        isSuccess = false,
+                        isError = false
+                    )
+
+                }
+
+                is Resource.Success -> {
+                    _chatRoomUpdateState.value = chatRoomUpdateState.value.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        isError = false
+                    )
+                }
+
+                is Resource.Error -> {
+                    _chatRoomUpdateState.value = chatRoomUpdateState.value.copy(
+                        isLoading = false,
+                        isSuccess = false,
+                        isError = true,
+                        errorMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private val photoFile = File(

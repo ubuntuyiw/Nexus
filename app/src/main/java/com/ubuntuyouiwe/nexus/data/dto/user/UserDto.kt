@@ -9,11 +9,14 @@ data class UserDto(
     val displayName: String? = null,
     val email: String? = null,
     val photoUrl: String? = null,
+    @field:JvmField
     val isEmailVerified: Boolean? = null,
     val phoneNumber: String? = null,
-    val totalCompletionTokens: Double? = null,
-    val totalPromptTokens: Double? = null,
-    val totalTokens: Double? = null,
     val info: UserInfoDto? = null,
-    val rateLimiting: Double? = null
+    val ownerId: String? = null,
+    val id: String? = null,
+    @field:JvmField
+    val shouldLogout: Boolean? = null,
+    val isFromCache: Boolean? = null,
+    val hasPendingWrites: Boolean? = null
 )

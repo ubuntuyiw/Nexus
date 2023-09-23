@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -106,7 +107,13 @@ fun FilterDialog(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
-            Checkbox(checked = isFavorited.values.first(), onCheckedChange = {
+            Checkbox(
+                checked = isFavorited.values.first(),
+                colors = CheckboxDefaults.colors(
+                    checkedColor = MaterialTheme.colorScheme.scrim,
+                    uncheckedColor = MaterialTheme.colorScheme.onBackground
+                ),
+                onCheckedChange = {
                 chatRoomFilterOnEvent(it, isFavorited.keys.first())
             })
             Text(text = isFavorited.keys.first().roleName, style = MaterialTheme.typography.bodyMedium)
@@ -224,6 +231,9 @@ fun FilterDialog(
                         ) {
                             Checkbox(
                                 checked = allSelectedRole,
+                                colors = CheckboxDefaults.colors(
+                                    uncheckedColor = MaterialTheme.colorScheme.onSurface
+                                ),
                                 onCheckedChange = {
                                     chatRoomFilterOnEvent(it, RolesFilter.All)
                                 }
@@ -245,6 +255,9 @@ fun FilterDialog(
                             ) {
                                 Checkbox(
                                     checked = map.values.first(),
+                                    colors = CheckboxDefaults.colors(
+                                        uncheckedColor = MaterialTheme.colorScheme.onSurface
+                                    ),
                                     onCheckedChange = {
                                         chatRoomFilterOnEvent(it, map.keys.first())
                                     }
