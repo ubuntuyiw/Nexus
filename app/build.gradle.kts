@@ -68,7 +68,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation(kotlin("stdlib-jdk8"))
-    implementation(platform("androidx.compose:compose-bom:2023.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.09.01"))
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -77,7 +77,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.5.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.09.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.09.01"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -88,14 +88,14 @@ dependencies {
 
 
     //Google-Firebase
-    implementation("com.google.firebase:firebase-firestore-ktx:24.7.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.8.1")
     implementation("com.google.firebase:firebase-functions-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
-    implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.firebase:firebase-crashlytics-ktx:18.4.1")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.4.3")
     implementation("com.google.firebase:firebase-analytics-ktx:21.3.0")
-    implementation("com.google.firebase:firebase-crashlytics-ndk:18.4.1")
+    implementation("com.google.firebase:firebase-crashlytics-ndk:18.4.3")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
     implementation("com.google.mlkit:language-id:17.0.4")
 
@@ -111,7 +111,7 @@ dependencies {
 
 
     //Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.2")
+    implementation("androidx.navigation:navigation-compose:2.7.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     //Hilt
@@ -150,19 +150,13 @@ dependencies {
     implementation("com.android.billingclient:billing-ktx:6.0.1")
 
     //AdMob
-    implementation("com.google.android.gms:play-services-ads:22.3.0")
+    implementation("com.google.android.gms:play-services-ads:22.4.0")
 
 
     //DataStore
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("com.google.protobuf:protobuf-javalite:3.22.3")
     implementation("androidx.datastore:datastore-core:1.0.0")
-
-
-
-
-
-
 }
 
 protobuf {

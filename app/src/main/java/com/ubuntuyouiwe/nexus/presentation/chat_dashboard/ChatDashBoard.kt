@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -701,10 +702,10 @@ fun ChatDashBoard(
                                     }
 
                                     MenuItemType.RATE_US -> {
-                                        val intent = Intent()
-                                        intent.action = "com.android.settings.TTS_SETTINGS"
-                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        val link = "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                                         context.startActivity(intent)
+
                                     }
 
                                     MenuItemType.ARCHIVED -> {
@@ -718,7 +719,10 @@ fun ChatDashBoard(
                                     }
 
                                     MenuItemType.HELP_CENTER -> {
-
+                                        val intent = Intent()
+                                        intent.action = "com.android.settings.TTS_SETTINGS"
+                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        context.startActivity(intent)
                                     }
 
                                     MenuItemType.SIGN_OUT -> {

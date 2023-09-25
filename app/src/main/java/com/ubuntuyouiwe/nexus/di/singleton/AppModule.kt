@@ -51,7 +51,28 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRoles(@ApplicationContext context: Context): List<RoleDto> {
-        val files = listOf(Assets.DebateArena.name + ".json", Assets.NeutralMode.name + ".json")
+        val files = listOf(
+            Assets.NeutralMode.name + ".json",
+            Assets.RelationshipCoach.name + ".json",
+            Assets.DebateArena.name + ".json",
+            Assets.TravelAdvisor.name + ".json",
+            Assets.Chef.name + ".json",
+            Assets.Astrologer.name + ".json",
+            Assets.Lawyer.name + ".json",
+            Assets.IslamicScholar.name + ".json",
+            Assets.Doctor.name + ".json",
+            Assets.Bishop.name + ".json",
+            Assets.BiologyTeacher.name + ".json",
+            Assets.ChemistryTeacher.name + ".json",
+            Assets.EnglishTeacher.name + ".json",
+            Assets.GeographyTeacher.name + ".json",
+            Assets.HistoryTeacher.name + ".json",
+            Assets.MathematicsTeacher.name + ".json",
+            Assets.PhysicsTeacher.name + ".json",
+            Assets.Psychologist.name + ".json",
+            Assets.Veterinarian.name + ".json",
+            Assets.SoftwareDeveloper.name + ".json",
+        )
         return files.map { fileName ->
             val inputStream = context.assets.open(fileName)
             val jsonString = inputStream.bufferedReader().use { it.readText() }

@@ -81,8 +81,8 @@ class DataSyncRepositoryImpl @Inject constructor(
     private suspend fun sendInitialMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
         val rolesDto = chatRoom.role.toRolesDto()
         val messagesItemToDto = messages.map { it.toMessageItemDto() }
-        val chatRoomToDto =
-            chatRoom.toChatRoomDto().copy(ownerId = firebaseDataSource.userState()?.uid)
+        val chatRoomToDto = chatRoom.toChatRoomDto()
+            .copy(ownerId = firebaseDataSource.userState()?.uid)
 
         firebaseDataSource.set(
             FirebaseCollections.ChatRooms,
@@ -112,14 +112,14 @@ class DataSyncRepositoryImpl @Inject constructor(
     ) {
         val systemMessage = MessageItemDto(role = "system", content = system)
         val systemMessage2 = MessageItemDto(role = "system", content = "The name of the person you are talking to is ibrahim, you will always be addressed by this name, this name will be in every message.")
-        val aiRequestBody = AIRequestBody(model = "gpt-3.5-turbo", messages = listOf(systemMessage2, systemMessage) + messages)
+        val aiRequestBody = AIRequestBody(messages = listOf(systemMessage2, systemMessage) + messages)
 
         val aiRequest = AIRequest(
             aiRequestBody = aiRequestBody,
             chatRoomId = chatroomId,
             info = listOf(systemMessage),
             messageId = messageId,
-            ownerId = firebaseDataSource.userState()?.uid?:""
+            ownerId = firebaseDataSource.userState()?.uid?: return
         )
         firebaseDataSource.ai(aiRequest)
     }

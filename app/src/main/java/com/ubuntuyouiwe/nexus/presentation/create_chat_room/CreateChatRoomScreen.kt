@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.create_chat_room
 
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,23 +29,27 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
+import java.util.Locale
 
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CreateChatRoomScreen(navController: NavHostController, roleState: RolesState) {
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
                 title = {
-                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                    Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = "Who Would You Like to Talk With?",
                             style = MaterialTheme.typography.bodyLarge,
@@ -81,26 +86,32 @@ fun CreateChatRoomScreen(navController: NavHostController, roleState: RolesState
 
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxSize()
                     ) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            GlideImage(model = it.image, contentDescription = it.name.EN, modifier = Modifier.size(75.dp))
-                            Spacer(modifier = Modifier.padding(8.dp))
-                            Text(text = it.name.EN, style = MaterialTheme.typography.bodySmall)
-                        }
+                        GlideImage(model = it.image, contentDescription = it.name.EN, modifier = Modifier.size(75.dp))
 
                         Spacer(modifier = Modifier.padding(start = 16.dp))
-                        Text(
-                            text = it.description["EN"] ?:"",
-                            style = MaterialTheme.typography.labelMedium
-                        )
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                        ) {
+                            Text(text = if (systemLanguage.equals("TR")) it.name.TR else it.name.EN, style = MaterialTheme.typography.bodySmall)
+
+                            Spacer(modifier = Modifier.padding(bottom = 16.dp))
+                            Text(
+                                text = it.description[systemLanguage] ?:"",
+                                style = MaterialTheme.typography.labelMedium,
+                            )
+
+                        }
+
+
 
                     }
 
