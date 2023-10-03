@@ -7,6 +7,9 @@ enum class Assets {
     BiologyTeacher,
     Bishop,
     Chef,
+    SportsPolymath,
+    LiteratureTeacher,
+    Philosophy,
     ChemistryTeacher,
     Doctor,
     EnglishTeacher,
@@ -21,4 +24,6 @@ enum class Assets {
     SoftwareDeveloper,
     TravelAdvisor,
     Veterinarian,
+    NexusSystem,
+    TermsOfUse
 }

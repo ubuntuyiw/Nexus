@@ -73,7 +73,11 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1704947920987430~3398250221"/>
+            android:value="ca-app-pub-8437475970369583~8273012810"/>
+
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
 
     </application>
 

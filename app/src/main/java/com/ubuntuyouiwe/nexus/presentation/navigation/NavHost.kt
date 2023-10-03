@@ -1,10 +1,13 @@
 package com.ubuntuyouiwe.nexus.presentation.navigation
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -32,15 +35,28 @@ import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.EmailWithSign
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.Splash
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.MessagingPanelScreen
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.MessagingPanelViewModel
+import com.ubuntuyouiwe.nexus.presentation.onboarding.system_message.SystemMessageScreen
+import com.ubuntuyouiwe.nexus.presentation.onboarding.system_message.SystemMessageViewModel
+import com.ubuntuyouiwe.nexus.presentation.onboarding.user_name.UserNameScreen
+import com.ubuntuyouiwe.nexus.presentation.onboarding.user_name.UserNameViewModel
+import com.ubuntuyouiwe.nexus.presentation.onboarding.user_preferences.PurposeSelectionScreen
+import com.ubuntuyouiwe.nexus.presentation.onboarding.user_preferences.PurposeSelectionViewModel
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingScreen
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingViewModel
+import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.MainSettingsScreen
+import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseScreen
+import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavHostScreen(startDestination: Screen) {
     val navController = rememberNavController()
     val screenHeight = LocalContext.current.resources.displayMetrics.heightPixels
-    NavHost(navController = navController, startDestination = startDestination.name) {
+    val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
+    NavHost(
+        navController = navController,
+        startDestination = if (startDestination == Screen.UserName) startDestination.name + "/${true}" else startDestination.name
+    ) {
         composable(Screen.SPLASH.name) {
             Splash()
         }
@@ -218,7 +234,13 @@ fun NavHostScreen(startDestination: Screen) {
             val onEvent = viewModel::onEvent
             val bitmapToStringState by viewModel.bitmapToStringState
             val bitmap = viewModel.bitmap
-            PhotoEditingScreen(navController, croppedPhotoState, bitmapToStringState, onEvent ,bitmap)
+            PhotoEditingScreen(
+                navController,
+                croppedPhotoState,
+                bitmapToStringState,
+                onEvent,
+                bitmap
+            )
         }
 
         composable(
@@ -241,13 +263,19 @@ fun NavHostScreen(startDestination: Screen) {
 
         composable(
             route = Screen.InAppPurchaseScreen.name,
-            enterTransition = {
-                slideInVertically(initialOffsetY = { screenHeight }) + fadeIn(initialAlpha = 0.3f)
-            },
             exitTransition = null,
             popEnterTransition = null,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -screenWidth },
+                    animationSpec = tween(500)
+                ) + fadeIn(animationSpec = tween(500))
+            },
             popExitTransition = {
-                slideOutVertically(targetOffsetY = { screenHeight }) + fadeOut(targetAlpha = 0.3f)
+                slideOutHorizontally(
+                    targetOffsetX = { -screenWidth },
+                    animationSpec = tween(500)
+                ) + fadeOut(animationSpec = tween(500))
             }
 
         ) { navBackStackEntry ->
@@ -262,9 +290,127 @@ fun NavHostScreen(startDestination: Screen) {
             val isReady = viewModel.isReady()
             val userState by viewModel.userState
             val userMessagingDataState by viewModel.userMessagingDataState
-            InAppPurchaseScreen(billingState, connectionState, productDetailsState, purchasesResponseState, consumeState, isReady, userState, userMessagingDataState, onEvent)
+            InAppPurchaseScreen(
+                navController,
+                billingState,
+                connectionState,
+                productDetailsState,
+                purchasesResponseState,
+                consumeState,
+                isReady,
+                userState,
+                userMessagingDataState,
+                onEvent
+            )
         }
 
+        composable(
+            route = Screen.TermsOfUseScreen.name
+        ) { navBackStackEntry ->
+            val viewModel: TermsOfUseViewModel = hiltViewModel(navBackStackEntry)
+            val getTermsOfUse by viewModel.getTermsOfUse
+
+            TermsOfUseScreen(
+                navController,
+                getTermsOfUse
+            )
+
+        }
+
+
+
+        composable(
+            route = Screen.MainSettings.name,
+            exitTransition = null,
+            popEnterTransition = null,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -screenWidth },
+                    animationSpec = tween(500)
+                ) + fadeIn(animationSpec = tween(500))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -screenWidth },
+                    animationSpec = tween(500)
+                ) + fadeOut(animationSpec = tween(500))
+            }
+        ) {
+
+            MainSettingsScreen(navController)
+        }
+
+
+        composable(
+            Screen.UserName.name + "/{auto}",
+            arguments = listOf(
+                navArgument("auto") {
+
+                    defaultValue = true
+                    nullable = false
+                    type = NavType.BoolType
+                }
+            )
+        ) { navBackStackEntry ->
+            val isAuto =  navBackStackEntry.arguments?.getBoolean("auto", true)!!
+            val viewModel: UserNameViewModel = hiltViewModel(navBackStackEntry)
+            val userName by viewModel.userName
+            val updateDisplayNameState by viewModel.updateDisplayNameState
+            val onEvent = viewModel::onEvent
+
+            UserNameScreen(
+                navController,
+                isAuto,
+                userName,
+                updateDisplayNameState,
+                onEvent
+            )
+        }
+
+        composable(
+            Screen.PurposeSelection.name + "/{auto}",
+            arguments = listOf(
+                navArgument("auto") {
+
+                    defaultValue = true
+                    nullable = false
+                    type = NavType.BoolType
+                }
+            )
+        ) { navBackStackEntry ->
+            val isAuto =  navBackStackEntry.arguments?.getBoolean("auto", true)!!
+            val viewModel: PurposeSelectionViewModel = hiltViewModel(navBackStackEntry)
+            val purposeSelectionState by viewModel.getPurposeSelection
+            val updatePurposeSelection by viewModel.updatePurposeSelection
+            val onEvent = viewModel::onEvent
+            PurposeSelectionScreen(
+                navController,
+                isAuto,
+                purposeSelectionState,
+                updatePurposeSelection,
+                onEvent
+
+            )
+        }
+
+        composable(
+            Screen.SystemMessage.name + "/{auto}",
+            arguments = listOf(
+                navArgument("auto") {
+
+                    defaultValue = true
+                    nullable = false
+                    type = NavType.BoolType
+                }
+            )
+        ) { navBackStackEntry ->
+            val isAuto =  navBackStackEntry.arguments?.getBoolean("auto", true)!!
+            val viewModel: SystemMessageViewModel = hiltViewModel(navBackStackEntry)
+            val systemMessage by viewModel.systemMessage
+            val updateSystemMessageState by viewModel.updateSystemMessageState
+            val onEvent = viewModel::onEvent
+            SystemMessageScreen(navController, isAuto, systemMessage, updateSystemMessageState, onEvent)
+        }
 
 
     }

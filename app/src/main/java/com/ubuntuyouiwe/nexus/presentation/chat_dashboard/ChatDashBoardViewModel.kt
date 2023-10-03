@@ -123,6 +123,7 @@ class ChatDashBoardViewModel @Inject constructor(
             }
 
             is ChatDashBoardEvent.ChatRoomFilterChange -> {
+
                 updateFilterRoles(event.chatRoomFilter)
             }
 
@@ -427,6 +428,7 @@ class ChatDashBoardViewModel @Inject constructor(
                         data = it.data ?: ChatRoomFilter()
 
                     )
+
                     getChatRooms(
                         chatRoomShortState.value.data.isNewestFirst,
                         chatRoomFilterState.value.data

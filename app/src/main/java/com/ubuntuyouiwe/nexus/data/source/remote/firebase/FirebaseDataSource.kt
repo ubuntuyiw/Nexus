@@ -25,6 +25,8 @@ interface FirebaseDataSource {
     fun signInIntent(): Intent
     fun signOut()
 
+    suspend fun updateDisplayName(name: String)
+
     fun userStateListener(): Flow<UserDto?>
 
 /*    suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot

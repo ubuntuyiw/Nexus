@@ -14,5 +14,8 @@ enum class UserDtoFields(val key: String) {
     INFO("info"),
     OWNER_ID("ownerId"),
     ID("id"),
-    SHOULD_LOGOUT("shouldLogout")
+    IS_ON_BOARDING("isOnBoarding"),
+    SHOULD_LOGOUT("shouldLogout"),
+    PURPOSE_SELECTION("purposeSelection"),
+    SYSTEM_MESSAGE("systemMessage")
 }

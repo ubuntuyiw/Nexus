@@ -3,6 +3,7 @@ package com.ubuntuyouiwe.nexus.data.util
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
+import com.ubuntuyouiwe.nexus.data.dto.user.PurposeSelectionDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
@@ -11,6 +12,7 @@ import com.ubuntuyouiwe.nexus.data.util.dto_type.AIRequestFields
 import com.ubuntuyouiwe.nexus.data.util.dto_type.ChatRoomFields
 import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessageItemFields
 import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
+import com.ubuntuyouiwe.nexus.data.util.dto_type.user.PurposeSelectionFields
 import com.ubuntuyouiwe.nexus.data.util.dto_type.user.UserDtoFields
 
 
@@ -36,6 +38,33 @@ fun ChatRoomDto.toHashMap(): HashMap<String, Any?> =
         ChatRoomFields.TOTAL_MESSAGE_COUNT.key to this.totalMessageCount
     )
 
+fun PurposeSelectionDto.toHashMap(): HashMap<String, Any?> =
+    hashMapOf(
+        PurposeSelectionFields.IsDebateArena.key to this.isDebateArena,
+        PurposeSelectionFields.IsTravelAdvisor.key to this.isTravelAdvisor,
+        PurposeSelectionFields.IsAstrologer.key to this.isAstrologer,
+        PurposeSelectionFields.IsChef.key to this.isChef,
+        PurposeSelectionFields.IsSportsPolymath.key to this.isSportsPolymath,
+        PurposeSelectionFields.IsLiteratureTeacher.key to this.isLiteratureTeacher,
+        PurposeSelectionFields.IsPhilosophy.key to this.isPhilosophy,
+        PurposeSelectionFields.IsLawyer.key to this.isLawyer,
+        PurposeSelectionFields.IsDoctor.key to this.isDoctor,
+        PurposeSelectionFields.IsIslamicScholar.key to this.isIslamicScholar,
+        PurposeSelectionFields.IsBiologyTeacher.key to this.isBiologyTeacher,
+        PurposeSelectionFields.IsChemistryTeacher.key to this.isChemistryTeacher,
+        PurposeSelectionFields.IsGeographyTeacher.key to this.isGeographyTeacher,
+        PurposeSelectionFields.IsHistoryTeacher.key to this.isHistoryTeacher,
+        PurposeSelectionFields.IsMathematicsTeacher.key to this.isMathematicsTeacher,
+        PurposeSelectionFields.IsPhysicsTeacher.key to this.isPhysicsTeacher,
+        PurposeSelectionFields.IsPsychologist.key to this.isPsychologist,
+        PurposeSelectionFields.IsBishop.key to this.isBishop,
+        PurposeSelectionFields.IsEnglishTeacher.key to this.isEnglishTeacher,
+        PurposeSelectionFields.IsRelationshipCoach.key to this.isRelationshipCoach,
+        PurposeSelectionFields.IsVeterinarian.key to this.isVeterinarian,
+        PurposeSelectionFields.IsSoftwareDeveloper.key to this.isSoftwareDeveloper,
+    )
+
+
 fun MessagesDto.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
         MessagesFields.MESSAGES.key to this.messages,
@@ -55,6 +84,7 @@ fun UserDto.toHashMap(): HashMap<String, Any?> =
         UserDtoFields.OWNER_ID.key to this.ownerId,
         UserDtoFields.ID.key to this.id,
         UserDtoFields.SHOULD_LOGOUT.key to this.shouldLogout,
+        UserDtoFields.IS_ON_BOARDING.key to this.isOnBoarding
     )
 
 

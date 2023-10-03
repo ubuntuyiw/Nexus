@@ -7,11 +7,13 @@ import com.ubuntuyouiwe.nexus.data.dto.billing.PurchaseDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
+import com.ubuntuyouiwe.nexus.data.dto.user.PurposeSelectionDto
 import com.ubuntuyouiwe.nexus.data.dto.user.UserCredentialsDto
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
+import com.ubuntuyouiwe.nexus.domain.model.roles.PurposeSelection
 import com.ubuntuyouiwe.nexus.domain.model.roles.Role
 import kotlinx.serialization.json.Json
 
@@ -44,6 +46,32 @@ fun ChatRoom.toChatRoomDto(): ChatRoomDto =
         name = this.name,
         totalMessageCount = this.totalMessageCount,
         role = this.role.toRolesDto()
+    )
+
+fun PurposeSelection.toPurposeSelectionDto(): PurposeSelectionDto =
+    PurposeSelectionDto(
+        isDebateArena = this.isDebateArena,
+        isTravelAdvisor = this.isTravelAdvisor,
+        isAstrologer = this.isAstrologer,
+        isChef = this.isChef,
+        isSportsPolymath = this.isSportsPolymath,
+        isLiteratureTeacher = this.isLiteratureTeacher,
+        isPhilosophy = this.isPhilosophy,
+        isLawyer = this.isLawyer,
+        isDoctor = this.isDoctor,
+        isIslamicScholar = this.isIslamicScholar,
+        isBiologyTeacher = this.isBiologyTeacher,
+        isChemistryTeacher = this.isChemistryTeacher,
+        isGeographyTeacher = this.isGeographyTeacher,
+        isHistoryTeacher = this.isHistoryTeacher,
+        isMathematicsTeacher = this.isMathematicsTeacher,
+        isPhysicsTeacher = this.isPhysicsTeacher,
+        isPsychologist = this.isPsychologist,
+        isBishop = this.isBishop,
+        isEnglishTeacher = this.isEnglishTeacher,
+        isRelationshipCoach = this.isRelationshipCoach,
+        isVeterinarian = this.isVeterinarian,
+        isSoftwareDeveloper = this.isSoftwareDeveloper
     )
 
 fun Role.toRolesDto(): RoleDto =

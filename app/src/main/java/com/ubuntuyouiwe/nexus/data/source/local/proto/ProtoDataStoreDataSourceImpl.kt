@@ -146,11 +146,28 @@ class ProtoDataStoreDataSourceImpl @Inject constructor(
                     it.isSoftwareDeveloper = BoolValue.of(true)
                 }
             }
+            if (!data.hasIsSportsPolymath()) {
+                updateChatRoomFilter {
+                    it.isSportsPolymath = BoolValue.of(true)
+                }
+            }
+            if (!data.hasIsLiteratureTeacher()) {
+                updateChatRoomFilter {
+                    it.isLiteratureTeacher = BoolValue.of(true)
+                }
+            }
+            if (!data.hasIsPhilosophy()) {
+                updateChatRoomFilter {
+                    it.isPhilosophy = BoolValue.of(true)
+                }
+            }
+
             if (!data.hasIsFavorited()) {
                 updateChatRoomFilter {
                     it.isFavorited = BoolValue.of(false)
                 }
             }
+
             updateChatRoomFilter {
                 it.isArchived = BoolValue.of(false)
             }

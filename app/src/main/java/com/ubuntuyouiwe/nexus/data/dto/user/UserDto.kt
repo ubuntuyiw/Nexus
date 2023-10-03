@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.data.dto.user
 
-import android.net.Uri
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -16,7 +15,12 @@ data class UserDto(
     val ownerId: String? = null,
     val id: String? = null,
     @field:JvmField
+    val isOnBoarding: Boolean? = null,
+    @field:JvmField
     val shouldLogout: Boolean? = null,
     val isFromCache: Boolean? = null,
-    val hasPendingWrites: Boolean? = null
+    val hasPendingWrites: Boolean? = null,
+    val purposeSelection: PurposeSelectionDto? = null,
+    val systemMessage: String? = null
+
 )

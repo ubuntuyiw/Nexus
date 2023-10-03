@@ -124,8 +124,14 @@ fun ForgotPasswordDialog(
                         style = MaterialTheme.typography.bodySmall,
                     )
                 },
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth()
             )
+            if (resetPasswordState.isSuccess)
+                Text(
+                    text = "A password reset link has been sent to your email.",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.bodySmall
+                )
             if (resetPasswordState.isErrorState)
                 Text(
                     text = resetPasswordState.errorMessage,

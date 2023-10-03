@@ -1,0 +1,26 @@
+{
+  "title": {
+    "EN": "Terms of Use for Nexus",
+    "TR": "Nexus İçin Kullanım Şartları"
+  },
+  "acceptance": {
+    "EN": "This document outlines the Terms of Use for the \"Nexus\" application (\"App\"), developed by UBUNTUYOUIWE. By downloading or using the App, you agree to these terms.",
+    "TR": "Bu belge, UBUNTUYOUIWE tarafından geliştirilen \"Nexus\" uygulamasının (\"Uygulama\") kullanım şartlarını açıklamaktadır. Uygulamayı indirerek veya kullanarak, bu şartları kabul etmiş olursunuz."
+  },
+  "license": {
+    "EN": "The App allows you to engage in conversations with an AI with various roles. You may use the App for personal and non-commercial purposes. The copyright of the App belongs to UBUNTUYOUIWE.",
+    "TR": "Uygulama, çeşitli rolleri olan bir yapay zeka ile konuşmanıza olanak tanır. Uygulamayı kişisel ve ticari olmayan amaçlar için kullanabilirsiniz. Uygulamanın telif hakları UBUNTUYOUIWE'ye aittir."
+  },
+  "limitations": {
+    "EN": "The AI provides information and conversation but offers no guarantee of the accuracy of this information. To chat with the AI, you need to purchase message credits or earn them by watching ads. No refunds are available for purchased credits. Banner ads are displayed within the App.",
+    "TR": "Yapay zeka bilgi ve sohbet sağlar, ancak bu bilgilerin doğruluğu konusunda hiçbir garanti vermez.\nYapay zeka ile sohbet edebilmek için mesaj hakkı satın almanız veya reklam izleyerek mesaj hakkı kazanmanız gerekmektedir. Satın alınan mesaj hakları için iade yapılmamaktadır.\nUygulama içerisinde banner reklamlar gösterilmektedir."
+  },
+  "disclaimer": {
+  "EN": "The App is provided \"as is.\" UBUNTUYOUIWE does not guarantee the accuracy of the information provided by the AI in the App.",
+  "TR": "Uygulama \"olduğu gibi\" sunulmaktadır. UBUNTUYOUIWE, Uygulama içerisinde yapay zeka tarafından sağlanan bilgilerin doğruluğunu garanti etmemektedir."
+  },
+  "contact": {
+    "EN": "For any issues, you may send a descriptive email to ubuntu@ubuntuyouiwe.com.",
+    "TR": "Herhangi bir sorun oluştuğunda ubuntu@ubuntuyouiwe.com adresine açıklayıcı bir e-posta gönderebilirsiniz."
+  }
+}

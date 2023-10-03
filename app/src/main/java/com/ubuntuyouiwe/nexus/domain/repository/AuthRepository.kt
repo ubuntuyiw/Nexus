@@ -5,6 +5,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
+import com.ubuntuyouiwe.nexus.domain.model.roles.PurposeSelection
 import com.ubuntuyouiwe.nexus.domain.model.user_messaging_data.UserMessagingData
 import kotlinx.coroutines.flow.Flow
 
@@ -25,4 +26,10 @@ interface AuthRepository {
     fun listenUserOnlineStatus(): Flow<User?>
 
     suspend fun getUserListener(id: String): Flow<User?>
+
+    suspend fun updateDisplayName(name: String)
+
+    suspend fun updatePurposeSelection(purposeSelection: PurposeSelection)
+
+    suspend fun updateSystemMessage(systemMessage: String)
 }

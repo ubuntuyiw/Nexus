@@ -5,6 +5,7 @@ import android.util.Log
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
+import com.ubuntuyouiwe.nexus.data.dto.TermsOfUseDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
@@ -16,8 +17,12 @@ import com.ubuntuyouiwe.nexus.data.util.firstToHashMap
 import com.ubuntuyouiwe.nexus.data.util.toChatRoom
 import com.ubuntuyouiwe.nexus.data.util.toHashMap
 import com.ubuntuyouiwe.nexus.data.util.toMessage
+import com.ubuntuyouiwe.nexus.data.util.toTermsOfUseModel
+import com.ubuntuyouiwe.nexus.di.SystemMessages
+import com.ubuntuyouiwe.nexus.di.TermsOfUse
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.ChatRooms
+import com.ubuntuyouiwe.nexus.domain.model.TermsOfUseModel
 import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
 import com.ubuntuyouiwe.nexus.domain.repository.DataSyncRepository
@@ -33,7 +38,13 @@ import javax.inject.Inject
 class DataSyncRepositoryImpl @Inject constructor(
     private val firebaseDataSource: FirebaseDataSource,
     @ApplicationContext val context: Context,
+    @SystemMessages private val systemMessages: List<MessageItemDto>,
+    @TermsOfUse private val termsOfUseDto: List<TermsOfUseDto>
 ) : DataSyncRepository {
+
+    override fun getTermsOfUse(): TermsOfUseModel {
+        return termsOfUseDto.map { it.toTermsOfUseModel()  }.first()
+    }
 
 
     override suspend fun getChatRoom(id: String): Flow<ChatRoom?> {
@@ -110,14 +121,13 @@ class DataSyncRepositoryImpl @Inject constructor(
         system: String,
         messages: List<MessageItemDto>
     ) {
-        val systemMessage = MessageItemDto(role = "system", content = system)
-        val systemMessage2 = MessageItemDto(role = "system", content = "The name of the person you are talking to is ibrahim, you will always be addressed by this name, this name will be in every message.")
-        val aiRequestBody = AIRequestBody(messages = listOf(systemMessage2, systemMessage) + messages)
+        val systemMessageRole = MessageItemDto(role = "system", content = system)
+        val aiRequestBody = AIRequestBody(messages = this.systemMessages + listOf(systemMessageRole) + messages)
 
         val aiRequest = AIRequest(
             aiRequestBody = aiRequestBody,
             chatRoomId = chatroomId,
-            info = listOf(systemMessage),
+            info = listOf(systemMessageRole),
             messageId = messageId,
             ownerId = firebaseDataSource.userState()?.uid?: return
         )

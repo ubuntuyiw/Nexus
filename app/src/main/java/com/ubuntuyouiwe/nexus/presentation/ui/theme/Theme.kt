@@ -31,8 +31,8 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = White,
     error = Color.Red,
     onError = White,
-    errorContainer = White,
-    onErrorContainer = Black,
+    errorContainer = DeepTwilight,
+    onErrorContainer = White,
     scrim = scrim
 )
 

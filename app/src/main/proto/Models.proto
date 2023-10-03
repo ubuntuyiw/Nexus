@@ -29,6 +29,9 @@ message ChatRoomFilterDto {
   google.protobuf.BoolValue isTravelAdvisor = 21;
   google.protobuf.BoolValue isFavorited = 22;
   google.protobuf.BoolValue isArchived = 23;
+  google.protobuf.BoolValue isSportsPolymath = 24;
+  google.protobuf.BoolValue isLiteratureTeacher = 25;
+  google.protobuf.BoolValue isPhilosophy = 26;
 }
 
 message ChatRoomShortDto{

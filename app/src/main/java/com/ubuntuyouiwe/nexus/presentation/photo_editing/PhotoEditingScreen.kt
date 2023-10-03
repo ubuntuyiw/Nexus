@@ -1,6 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.photo_editing
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,11 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,9 +26,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,12 +42,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import com.google.mlkit.vision.common.InputImage
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
-import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 
 @Composable
 fun PhotoEditingScreen(
@@ -57,10 +59,10 @@ fun PhotoEditingScreen(
 
     if (bitmap == null) navController.navigateUp()
 
-    var cropLeft by remember {  mutableFloatStateOf(0f) }
-    var cropTop by remember {  mutableFloatStateOf(0f) }
-    var cropRight by remember {  mutableFloatStateOf(0f) }
-    var cropBottom by remember {  mutableFloatStateOf(0f) }
+    var cropLeft by remember { mutableFloatStateOf(0f) }
+    var cropTop by remember { mutableFloatStateOf(0f) }
+    var cropRight by remember { mutableFloatStateOf(0f) }
+    var cropBottom by remember { mutableFloatStateOf(0f) }
 
 
     val originalWidth = bitmap!!.width
@@ -73,8 +75,8 @@ fun PhotoEditingScreen(
 
     val x = cropLeft.toInt()
     val y = cropTop.toInt()
-    val newWidth = (originalWidth - cropLeft -( originalWidth - cropRight)).toInt()
-    val newHeight = (originalHeight - cropTop -( originalHeight - cropBottom)).toInt()
+    val newWidth = (originalWidth - cropLeft - (originalWidth - cropRight)).toInt()
+    val newHeight = (originalHeight - cropTop - (originalHeight - cropBottom)).toInt()
 
     var cardSize by remember { mutableIntStateOf(0) }
     if (croppedPhotoState.isDialogVisibility) {
@@ -84,9 +86,7 @@ fun PhotoEditingScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .onGloballyPositioned { coordinates ->
-                        cardSize = coordinates.size.width
-                    }
+
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -119,12 +119,7 @@ fun PhotoEditingScreen(
                             ),
                             modifier = Modifier
                                 .padding(24.dp)
-                                .fillMaxWidth()
-                                .onGloballyPositioned { coordinates ->
-                                    cardSize = coordinates.size.width
-
-                                }
-                                .height(height = with(LocalDensity.current) { cardSize.toDp() })
+                                .size(with(LocalDensity.current) { (cardSize*0.60).toInt().toDp() })
 
 
 
@@ -135,16 +130,20 @@ fun PhotoEditingScreen(
                             ) {
                                 if (bitmapToStringState.isLoading) {
                                     CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
-                                }else if (bitmapToStringState.isError) {
+                                } else if (bitmapToStringState.isError) {
                                     Text(
                                         text = bitmapToStringState.errorText,
                                         color = MaterialTheme.colorScheme.error,
                                         modifier = Modifier.padding(16.dp),
                                         style = MaterialTheme.typography.labelLarge
                                     )
-                                }
-                                else if (bitmapToStringState.isSuccess) {
-                                    onEvent(PhotoEditingEvent.ToMessagingPanel(navController, croppedBitmap))
+                                } else if (bitmapToStringState.isSuccess) {
+                                    onEvent(
+                                        PhotoEditingEvent.ToMessagingPanel(
+                                            navController,
+                                            croppedBitmap
+                                        )
+                                    )
 
                                 } else {
                                     Image(
@@ -188,7 +187,7 @@ fun PhotoEditingScreen(
                                 contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
-                            Text(text = "Apply Crop", style = MaterialTheme.typography.bodyMedium,)
+                            Text(text = "Apply Crop", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -199,7 +198,10 @@ fun PhotoEditingScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().onGloballyPositioned { coordinates ->
+            cardSize = if (coordinates.size.width > coordinates.size.height)  coordinates.size.height else  coordinates.size.width
+
+        },
         topBar = {
             PrimaryTopAppBar(
                 title = {
@@ -227,7 +229,7 @@ fun PhotoEditingScreen(
                     Button(onClick = {
                         navController.navigateUp()
                     }) {
-                        Text(text = "Cancel", style = MaterialTheme.typography.bodyLarge,)
+                        Text(text = "Cancel", style = MaterialTheme.typography.bodyLarge)
                     }
                     Spacer(modifier = Modifier.padding(24.dp))
 
@@ -263,7 +265,9 @@ fun PhotoEditingScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Box(  modifier = Modifier.padding(24.dp).weight(1f, false)) {
+            Box(modifier = Modifier
+                .padding(24.dp)
+                .weight(1f, false)) {
                 Image(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = "",

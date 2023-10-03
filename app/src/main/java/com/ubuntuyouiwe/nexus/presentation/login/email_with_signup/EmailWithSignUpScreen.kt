@@ -1,5 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.login.email_with_signup
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,6 +52,7 @@ import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.SignInEvent
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.widgets.EmailWithSignUpTopBar
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetLoginSuggestionText
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
@@ -233,10 +236,12 @@ fun EmailWithSignUp(
             ) {
                 GetAnnotatedTermsAndPrivacyText(
                     termsOfUseOnClick = {
-
+                        navController.navigate(Screen.TermsOfUseScreen.name)
                     },
                     privacyPolicy = {
-
+                        val link = "https://www.iubenda.com/privacy-policy/84531396"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                        context.startActivity(intent)
                     }
                 )
             }

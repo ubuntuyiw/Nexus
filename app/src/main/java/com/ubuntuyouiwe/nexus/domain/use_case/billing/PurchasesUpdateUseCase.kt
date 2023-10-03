@@ -17,7 +17,7 @@ class PurchasesUpdateUseCase @Inject constructor(
             if (billingResult.responseCode == BillingResponseCode.OK) {
                 try {
                     purchaseList?.let {
-                        //billingManager.handlePurchase(purchaseList)
+                        billingManager.handlePurchase(purchaseList)
                     }
                     emit(Resource.Success())
                 } catch (e: Exception) {

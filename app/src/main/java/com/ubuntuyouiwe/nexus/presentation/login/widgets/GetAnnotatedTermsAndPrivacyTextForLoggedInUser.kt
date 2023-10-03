@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.login.widgets
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,11 +10,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryClickableText
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.DeepBlueSea
 
 @Composable
-fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
-    val getAnnotatedTermsAndPrivacyTextForLoggedInUser = buildAnnotatedString {
+fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser(
+    termsOfUseOnClick: () -> Unit,
+    privacyPolicy: () -> Unit
+) {
+      val getAnnotatedTermsAndPrivacyTextForLoggedInUser = buildAnnotatedString {
         append("By logging in, I accept the")
         withStyle(
             style = SpanStyle(
@@ -24,13 +25,14 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
             )
         ) {
             pushStringAnnotation(
-                tag = "URL",
+                tag = "URl",
                 annotation = "TermsOfUse"
             )
             append(" Terms of Use ")
             pop()
         }
         append("and")
+
         withStyle(
             style = SpanStyle(
                 color = MaterialTheme.colorScheme.onBackground,
@@ -38,7 +40,7 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
             )
         ) {
             pushStringAnnotation(
-                tag = "URL",
+                tag = "URl",
                 annotation = "PrivacyPolicy"
             )
             append(" Privacy Policy ")
@@ -46,6 +48,8 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
         }
         append("of the Nexus app.")
     }
+
+
 
     PrimaryClickableText(
         text = getAnnotatedTermsAndPrivacyTextForLoggedInUser,
@@ -56,16 +60,16 @@ fun GetAnnotatedTermsAndPrivacyTextForLoggedInUser() {
             ).firstOrNull()?.let { annotation ->
                 when (annotation.item) {
                     "TermsOfUse" -> {
-                        Log.v("asdasd", annotation.item)
+                        termsOfUseOnClick()
                     }
 
                     "PrivacyPolicy" -> {
-                        Log.v("asdasd", annotation.item)
+                        privacyPolicy()
                     }
                 }
             }
         },
-        modifier = Modifier.padding(start = 48.dp, end = 48.dp)
+        modifier = Modifier.padding(start = 24.dp, end = 24.dp)
 
     )
 }

@@ -9,9 +9,12 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,26 +50,30 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.ProductDetails
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.ubuntuyouiwe.nexus.domain.util.ProductsFields
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
+import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ConnectionState
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ConsumeState
+import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ProductDetailsState
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.PurchasesUpdateState
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.QueryPurchaseState
-import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ConnectionState
-import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ProductDetailsState
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.widgets.InAppPurchaseItem
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.widgets.LoadingDialog
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.widgets.OrderVerificationScreen
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
 fun InAppPurchaseScreen(
+    navController: NavHostController,
     purchasesUpdateState: PurchasesUpdateState,
     connectionState: ConnectionState,
     productDetailsState: ProductDetailsState,
@@ -97,6 +105,7 @@ fun InAppPurchaseScreen(
 
 
 
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = {
@@ -105,12 +114,30 @@ fun InAppPurchaseScreen(
             }
         },
         topBar = {
-            TopAppBar(title = {
-                Column {
-                    Text(text = "Message Buy", style = MaterialTheme.typography.titleMedium)
-                }
+            TopAppBar(
+                navigationIcon = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.clickable {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = Icons.Default.ArrowBack.name,
+                            tint = White
+                        )
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                    }
+                },
+                title = {
+                    Column {
+                        Text(text = "Buy Messages", style = MaterialTheme.typography.titleMedium)
+                    }
 
-            },
+                },
                 actions = {
 
                     IconButton(
@@ -159,23 +186,47 @@ fun InAppPurchaseScreen(
 
             ) {
                 this.stickyHeader {
-                    Box(
+                    Column(
                         modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
                             .background(MaterialTheme.colorScheme.background,)
                             .fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
+                        Spacer(modifier = Modifier.padding(8.dp))
                         Text(
                             text = "Available Messages: " + userMessagingDataState.successData?.totalMessages.toString(),
                             style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(16.dp)
                         )
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Text(
+                            text = "Shake your phone quickly to earn message credits.",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        Spacer(modifier = Modifier.padding(8.dp))
                     }
 
 
                 }
 
-                items(productDetailsState.data) { productDetails ->
+                val comparator = compareBy<ProductDetails> { item ->
+                    if (item.productId == ProductsFields.Message500.id) {
+                        0
+                    } else if (item.productId == ProductsFields.Message10000.id) {
+                        1
+                    } else if (item.productId == ProductsFields.Message1000.id) {
+                        3
+                    } else if (item.productId == ProductsFields.Message250.id) {
+                        4
+                    } else {
+                        5
+                    }
+                }
+
+                val sortedList = productDetailsState.data.sortedWith(comparator)
+
+                items(sortedList) { productDetails ->
 
 
                     var discount = ""
@@ -249,6 +300,7 @@ fun InAppPurchaseScreen(
 
 
     }
+
     LaunchedEffect(key1 = productDetailsState) {
         if (productDetailsState.isError) {
             hostState.showSnackbar(productDetailsState.errorMessage)

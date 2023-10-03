@@ -7,6 +7,9 @@ import com.ubuntuyouiwe.nexus.ChatRoomFilterDto
 import com.ubuntuyouiwe.nexus.ChatRoomShortDto
 import com.ubuntuyouiwe.nexus.SettingsDto
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
+import com.ubuntuyouiwe.nexus.data.dto.LanguageDto
+import com.ubuntuyouiwe.nexus.data.dto.user.PurposeSelectionDto
+import com.ubuntuyouiwe.nexus.data.dto.TermsOfUseDto
 import com.ubuntuyouiwe.nexus.data.dto.billing.OriginalJsonDto
 import com.ubuntuyouiwe.nexus.data.dto.billing.product_details.OneTimePurchaseOfferDetailsDto
 import com.ubuntuyouiwe.nexus.data.dto.billing.product_details.ProductDetailsDto
@@ -20,11 +23,14 @@ import com.ubuntuyouiwe.nexus.data.dto.user_messaging_data.UserMessagingDataDto
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoomFilter
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoomShort
-import com.ubuntuyouiwe.nexus.domain.model.billing.PurchasesModel
+import com.ubuntuyouiwe.nexus.domain.model.LanguageModel
+import com.ubuntuyouiwe.nexus.domain.model.TermsOfUseModel
 import com.ubuntuyouiwe.nexus.domain.model.User
+import com.ubuntuyouiwe.nexus.domain.model.billing.PurchasesModel
 import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
+import com.ubuntuyouiwe.nexus.domain.model.roles.PurposeSelection
 import com.ubuntuyouiwe.nexus.domain.model.roles.Role
 import com.ubuntuyouiwe.nexus.domain.model.roles.RoleName
 import com.ubuntuyouiwe.nexus.domain.model.user_messaging_data.UserMessagingData
@@ -47,15 +53,47 @@ fun UserDto.toUser(): User =
     User(
         uid = this.uid ?: "",
         email = this.email ?: "",
+        isOnBoarding = this.isOnBoarding ?: false,
+        name = this.displayName ?: "",
         shouldLogout = this.shouldLogout ?: false,
-        isFromCache = this.isFromCache?: false,
-        hasPendingWrites = this.hasPendingWrites?: false
+        isFromCache = this.isFromCache ?: false,
+        hasPendingWrites = this.hasPendingWrites ?: false,
+        purposeSelection = this.purposeSelection?.toPurposeSelection()?: PurposeSelection(),
+        systemMessage = this.systemMessage.orEmpty()
+
     )
+
 fun UserMessagingDataDto.toUserMessagingData(): UserMessagingData =
     UserMessagingData(
-        isFromCache = this.isFromCache?: false,
-        hasPendingWrites = this.hasPendingWrites?: false,
-        totalMessages = this.totalMessages?.toInt()?: 0
+        isFromCache = this.isFromCache ?: false,
+        hasPendingWrites = this.hasPendingWrites ?: false,
+        totalMessages = this.totalMessages?.toInt() ?: 0
+    )
+
+fun PurposeSelectionDto.toPurposeSelection(): PurposeSelection =
+    PurposeSelection(
+        isDebateArena = this.isDebateArena,
+        isTravelAdvisor = this.isTravelAdvisor,
+        isAstrologer = this.isAstrologer,
+        isChef = this.isChef,
+        isSportsPolymath = this.isSportsPolymath,
+        isLiteratureTeacher = this.isLiteratureTeacher,
+        isPhilosophy = this.isPhilosophy,
+        isLawyer = this.isLawyer,
+        isDoctor = this.isDoctor,
+        isIslamicScholar = this.isIslamicScholar,
+        isBiologyTeacher = this.isBiologyTeacher,
+        isChemistryTeacher = this.isChemistryTeacher,
+        isGeographyTeacher = this.isGeographyTeacher,
+        isHistoryTeacher = this.isHistoryTeacher,
+        isMathematicsTeacher = this.isMathematicsTeacher,
+        isPhysicsTeacher = this.isPhysicsTeacher,
+        isPsychologist = this.isPsychologist,
+        isBishop = this.isBishop,
+        isEnglishTeacher = this.isEnglishTeacher,
+        isRelationshipCoach = this.isRelationshipCoach,
+        isVeterinarian = this.isVeterinarian,
+        isSoftwareDeveloper = this.isSoftwareDeveloper
     )
 
 fun RoleDto.toRoles(): Role =
@@ -129,6 +167,9 @@ fun ChatRoomFilterDto.toChatRoomFilter(): ChatRoomFilter =
         isTravelAdvisor = this.isTravelAdvisor.value,
         isAstrologer = this.isAstrologer.value,
         isChef = this.isChef.value,
+        isSportsPolymath = this.isSportsPolymath.value,
+        isLiteratureTeacher = this.isLiteratureTeacher.value,
+        isPhilosophy = this.isPhilosophy.value,
         isLawyer = this.isLawyer.value,
         isDoctor = this.isDoctor.value,
         isIslamicScholar = this.isIslamicScholar.value,
@@ -164,7 +205,6 @@ fun OriginalJsonDto.toPurchases() =
     )
 
 
-
 fun ProductDetails.toProductDetailsDto(): ProductDetailsDto =
     ProductDetailsDto(
         productId = this.productId,
@@ -175,6 +215,22 @@ fun ProductDetails.toProductDetailsDto(): ProductDetailsDto =
             priceCurrencyCode = this.oneTimePurchaseOfferDetails?.priceCurrencyCode,
             formattedPrice = this.oneTimePurchaseOfferDetails?.formattedPrice
         )
+    )
+
+fun TermsOfUseDto.toTermsOfUseModel(): TermsOfUseModel =
+    TermsOfUseModel(
+        title = this.title?.toLanguageModel() ?: LanguageModel(),
+        acceptance = this.acceptance?.toLanguageModel() ?: LanguageModel(),
+        license = this.license?.toLanguageModel() ?: LanguageModel(),
+        limitations = this.limitations?.toLanguageModel() ?: LanguageModel(),
+        disclaimer = this.disclaimer?.toLanguageModel() ?: LanguageModel(),
+        contact = this.contact?.toLanguageModel() ?: LanguageModel(),
+    )
+
+fun LanguageDto.toLanguageModel(): LanguageModel =
+    LanguageModel(
+        TR = this.TR.orEmpty(),
+        EN = this.EN.orEmpty(),
     )
 
 

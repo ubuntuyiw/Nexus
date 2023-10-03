@@ -338,8 +338,8 @@ class MessagingPanelViewModel @Inject constructor(
 
         val speakMessage = getMessagesState.value.data.messages.firstOrNull() { it.isSpeak }
         speakMessage?.let { messages ->
-
-            languageIdentification.identifyLanguage(messages.messages[1].content)
+            val content = if (messages.messages.size > 1) messages.messages[1].content else "Please Wait"
+            languageIdentification.identifyLanguage(content)
                 .addOnSuccessListener { languageCode ->
                     val data = getMessagesState.value.data.messages.map { if (it.isSpeak) it.copy(codeLanguage = languageCode ) else it }
 
@@ -353,7 +353,7 @@ class MessagingPanelViewModel @Inject constructor(
                         textToSpeech.language =
                             Locale.forLanguageTag(languageCode)
                         textToSpeech.speak(
-                            messages.messages[1].content,
+                            content,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
                             ""

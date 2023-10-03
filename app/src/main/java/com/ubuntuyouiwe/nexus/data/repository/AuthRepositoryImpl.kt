@@ -1,7 +1,6 @@
 package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Intent
-import android.util.Log
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
 import com.ubuntuyouiwe.nexus.data.dto.user_messaging_data.UserMessagingDataDto
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
@@ -13,8 +12,10 @@ import com.ubuntuyouiwe.nexus.data.util.toUserDto
 import com.ubuntuyouiwe.nexus.data.util.toUserMessagingData
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.domain.model.UserCredentials
+import com.ubuntuyouiwe.nexus.domain.model.roles.PurposeSelection
 import com.ubuntuyouiwe.nexus.domain.model.user_messaging_data.UserMessagingData
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
+import com.ubuntuyouiwe.nexus.domain.util.toPurposeSelectionDto
 import com.ubuntuyouiwe.nexus.domain.util.toUserCredentialsDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -70,7 +71,8 @@ class AuthRepositoryImpl @Inject constructor(
                 uid = it,
                 ownerId = it,
                 id = it,
-                shouldLogout = false
+                shouldLogout = false,
+                isOnBoarding = true
             )
             firebaseDatasource.set(
                 FirebaseCollections.Users, it, data.toHashMap()
@@ -96,6 +98,55 @@ class AuthRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun updatePurposeSelection(purposeSelection: PurposeSelection) {
+        val uid = firebaseDatasource.userState()?.uid
+        val purposeSelectionDtoHashMap = purposeSelection.toPurposeSelectionDto().toHashMap()
+        val data = hashMapOf<String, Any?>("purposeSelection" to purposeSelectionDtoHashMap )
+        if (uid != null) {
+            firebaseDatasource.set(
+                FirebaseCollections.Users,
+                uid,
+                data
+            )
+        } else {
+            throw Exception("No active user found")
+        }
+    }
+
+    override suspend fun updateSystemMessage(systemMessage: String) {
+        val uid = firebaseDatasource.userState()?.uid
+        val dataName = hashMapOf<String, Any?>(
+            UserDtoFields.SYSTEM_MESSAGE.key to systemMessage,
+            UserDtoFields.IS_ON_BOARDING.key to false
+        )
+        if (uid != null) {
+            firebaseDatasource.set(
+                FirebaseCollections.Users,
+                uid,
+                dataName
+            )
+        } else {
+            throw Exception("No active user found")
+        }
+    }
+
+
+    override suspend fun updateDisplayName(name: String) {
+        val uid = firebaseDatasource.userState()?.uid
+        val dataName = hashMapOf<String, Any?>(UserDtoFields.DISPLAY_NAME.key to name)
+        if (uid != null) {
+            firebaseDatasource.updateDisplayName(name)
+            firebaseDatasource.set(
+                FirebaseCollections.Users,
+                uid,
+                dataName
+            )
+        } else {
+            throw Exception("No active user found")
+        }
+
+    }
+
     override suspend fun getUserMessagingData(id: String): Flow<UserMessagingData?> {
         return firebaseDatasource.getDocumentListener(FirebaseCollections.UserMessagingData, id).map {
             if (it.isSuccess) {
@@ -112,6 +163,8 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
     }
+
+
 
 
     override fun googleSignInIntent(): Intent {

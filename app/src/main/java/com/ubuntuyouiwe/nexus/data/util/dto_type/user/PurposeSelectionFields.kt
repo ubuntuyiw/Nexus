@@ -1,0 +1,26 @@
+package com.ubuntuyouiwe.nexus.data.util.dto_type.user
+
+enum class PurposeSelectionFields(val key: String) {
+    IsDebateArena("isDebateArena"),
+    IsTravelAdvisor("isTravelAdvisor"),
+    IsAstrologer("isAstrologer"),
+    IsChef("isChef"),
+    IsSportsPolymath("isSportsPolymath"),
+    IsLiteratureTeacher("isLiteratureTeacher"),
+    IsPhilosophy("isPhilosophy"),
+    IsLawyer("isLawyer"),
+    IsDoctor("isDoctor"),
+    IsIslamicScholar("isIslamicScholar"),
+    IsBiologyTeacher("isBiologyTeacher"),
+    IsChemistryTeacher("isChemistryTeacher"),
+    IsGeographyTeacher("isGeographyTeacher"),
+    IsHistoryTeacher("isHistoryTeacher"),
+    IsMathematicsTeacher("isMathematicsTeacher"),
+    IsPhysicsTeacher("isPhysicsTeacher"),
+    IsPsychologist("isPsychologist"),
+    IsBishop("isBishop"),
+    IsEnglishTeacher("isEnglishTeacher"),
+    IsRelationshipCoach("isRelationshipCoach"),
+    IsVeterinarian("isVeterinarian"),
+    IsSoftwareDeveloper("isSoftwareDeveloper"),
+}

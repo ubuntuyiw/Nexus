@@ -40,7 +40,7 @@ fun InAppPurchaseItem(
             containerColor = MaterialTheme.colorScheme.scrim
         ),
         modifier = Modifier
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
             .clickable {
                 buyOnclick()
             }
@@ -61,20 +61,13 @@ fun InAppPurchaseItem(
                     ) {
                         Row(
                             modifier = Modifier.fillMaxSize()
+
                         ) {
-                            if (message.isNotEmpty()) {
-                                GlideImage(
-                                    model = R.drawable.star_product,
-                                    contentDescription = "star product",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            } else {
-                                GlideImage(
-                                    model = R.drawable.buy,
-                                    contentDescription = "Buy Icon",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+                            GlideImage(
+                                model = R.drawable.buy,
+                                contentDescription = "Buy Icon",
+                                modifier = Modifier.size(24.dp)
+                            )
 
                             Spacer(modifier = Modifier.padding(4.dp))
                             Text(
@@ -82,7 +75,54 @@ fun InAppPurchaseItem(
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
-                        Spacer(modifier = Modifier.padding(start = 28.dp, top = 8.dp))
+
+
+                    }
+                }
+            },
+            bottom = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize(),
+
+                    ) {
+                    if (message.isNotEmpty()) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            GlideImage(
+                                model = R.drawable.star_product,
+                                contentDescription = "star product",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.padding(start = 8.dp))
+                            Text(
+                                text = message,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.inversePrimary
+                            )
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.padding(bottom = 8.dp))
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Text(
+                            text = description.replace("\n",""),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(bottom = 8.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
                         Text(
                             text = "Price: $price",
                             style = MaterialTheme.typography.bodyLarge
@@ -92,26 +132,12 @@ fun InAppPurchaseItem(
                             text = "Discount: %$discount",
                             style = MaterialTheme.typography.bodyLarge
                         )
-                        if (message.isNotEmpty()) {
-                            Spacer(modifier = Modifier.padding(start = 28.dp, top = 8.dp))
-                            Text(
-                                text = message,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
+
                     }
 
 
                 }
 
-            },
-            bottom = {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                    Text(
-                        text = description.replace("\n",""),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
 
             }
         )

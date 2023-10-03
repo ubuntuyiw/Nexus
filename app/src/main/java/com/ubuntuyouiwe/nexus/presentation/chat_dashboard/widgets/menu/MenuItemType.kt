@@ -1,7 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu
 
 enum class MenuItemType(val menuName: String) {
-    PREMIUM("Premium"),
+    BUY_MESSAGES("Buy Messages"),
     SETTINGS("Settings"),
     PRIVACY_POLICY("Privacy Policy"),
     TERMS_OF_USE("Terms of Use"),

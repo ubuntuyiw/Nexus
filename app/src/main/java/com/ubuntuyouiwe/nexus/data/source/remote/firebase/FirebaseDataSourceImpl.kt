@@ -8,6 +8,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.AggregateQuerySnapshot
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.CollectionReference
@@ -53,6 +54,14 @@ class FirebaseDataSourceImpl @Inject constructor(
     override suspend fun loginIn(email: String, password: String): AuthResult {
         return auth.signInWithEmailAndPassword(email, password).await()
     }
+
+    override suspend fun updateDisplayName(name: String) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(name)
+            .build()
+        auth.currentUser?.updateProfile(profileUpdates)?.await()
+    }
+
 
 
     init {

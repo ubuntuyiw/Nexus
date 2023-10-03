@@ -1,10 +1,16 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import android.os.Build
+import android.os.CombinedVibration
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +23,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,7 +38,6 @@ import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterAltOff
 import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Unarchive
 import androidx.compose.material3.Button
@@ -56,7 +60,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -66,8 +69,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -80,7 +81,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
@@ -90,6 +90,7 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomFilterSt
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomShortState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.ChatRoom
+import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.ChatRoomBanner
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterDialog
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu.MenuItemType
@@ -103,15 +104,13 @@ import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
-import com.ubuntuyouiwe.nexus.presentation.util.RolesFilter
+import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
-@OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class,
-)
+@RequiresApi(Build.VERSION_CODES.S)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,)
 @Composable
 fun ChatDashBoard(
     navController: NavController,
@@ -125,11 +124,15 @@ fun ChatDashBoard(
     userState: UserOperationState,
     onEvent: (ChatDashBoardEvent) -> Unit
 ) {
+
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val hostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
+
+    val vibrator2 = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
 
     var selectedChatRooms by remember {
         mutableStateOf<Set<ChatRoom>>(setOf())
@@ -165,7 +168,6 @@ fun ChatDashBoard(
     var deleteTime by remember {
         mutableIntStateOf(5)
     }
-
 
     LaunchedEffect(key1 = workManagerState, key2 = chatRoomDeleteSate,) {
         //TODO
@@ -432,7 +434,7 @@ fun ChatDashBoard(
             SnackbarHost(hostState) { data ->
                 PrimarySnackbar(snackbarData = data)
             }
-        }
+        },
     ) { paddingValues ->
 
         Box(
@@ -545,12 +547,15 @@ fun ChatDashBoard(
                                 onEvent(
                                     ChatDashBoardEvent.ChatRoomFilterChange(
                                         when (roles) {
-                                            RolesFilter.All -> {
+                                            RolesCategory.All -> {
                                                 chatRoomFilterState.data.copy(
                                                     isNeutralMode = state,
                                                     isDebateArena = state,
                                                     isDoctor = state,
                                                     isChef = state,
+                                                    isLiteratureTeacher = state,
+                                                    isPhilosophy = state,
+                                                    isSportsPolymath = state,
                                                     isLawyer = state,
                                                     isRelationshipCoach = state,
                                                     isIslamicScholar = state,
@@ -570,88 +575,99 @@ fun ChatDashBoard(
                                                 )
                                             }
 
-                                            RolesFilter.NeutralMode -> chatRoomFilterState.data.copy(
+                                            RolesCategory.NeutralMode -> chatRoomFilterState.data.copy(
                                                 isNeutralMode = state
                                             )
 
-                                            RolesFilter.DebateArena -> chatRoomFilterState.data.copy(
+
+                                            RolesCategory.DebateArena -> chatRoomFilterState.data.copy(
                                                 isDebateArena = state
                                             )
 
-                                            RolesFilter.Doctor -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Doctor -> chatRoomFilterState.data.copy(
                                                 isDoctor = state
                                             )
 
-                                            RolesFilter.Chef -> chatRoomFilterState.data.copy(isChef = state)
-                                            RolesFilter.Lawyer -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Chef -> chatRoomFilterState.data.copy(isChef = state)
+
+                                            RolesCategory.SportsPolymath -> chatRoomFilterState.data.copy(isSportsPolymath = state)
+
+                                            RolesCategory.LiteratureTeacher -> chatRoomFilterState.data.copy(
+                                                isLiteratureTeacher = state
+                                            )
+                                            RolesCategory.Philosophy -> chatRoomFilterState.data.copy(
+                                                isPhilosophy = state
+                                            )
+
+                                            RolesCategory.Lawyer -> chatRoomFilterState.data.copy(
                                                 isLawyer = state
                                             )
 
-                                            RolesFilter.RelationshipCoach -> chatRoomFilterState.data.copy(
+                                            RolesCategory.RelationshipCoach -> chatRoomFilterState.data.copy(
                                                 isRelationshipCoach = state
                                             )
 
-                                            RolesFilter.IslamicScholar -> chatRoomFilterState.data.copy(
+                                            RolesCategory.IslamicScholar -> chatRoomFilterState.data.copy(
                                                 isIslamicScholar = state
                                             )
 
-                                            RolesFilter.Astrologer -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Astrologer -> chatRoomFilterState.data.copy(
                                                 isAstrologer = state
                                             )
 
-                                            RolesFilter.Bishop -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Bishop -> chatRoomFilterState.data.copy(
                                                 isBishop = state
                                             )
 
-                                            RolesFilter.Psychologist -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Psychologist -> chatRoomFilterState.data.copy(
                                                 isPsychologist = state
                                             )
 
-                                            RolesFilter.PhysicsTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.PhysicsTeacher -> chatRoomFilterState.data.copy(
                                                 isPhysicsTeacher = state
                                             )
 
-                                            RolesFilter.ChemistryTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.ChemistryTeacher -> chatRoomFilterState.data.copy(
                                                 isChemistryTeacher = state
                                             )
 
-                                            RolesFilter.BiologyTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.BiologyTeacher -> chatRoomFilterState.data.copy(
                                                 isBiologyTeacher = state
                                             )
 
-                                            RolesFilter.MathematicsTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.MathematicsTeacher -> chatRoomFilterState.data.copy(
                                                 isMathematicsTeacher = state
                                             )
 
-                                            RolesFilter.GeographyTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.GeographyTeacher -> chatRoomFilterState.data.copy(
                                                 isGeographyTeacher = state
                                             )
 
-                                            RolesFilter.EnglishTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.EnglishTeacher -> chatRoomFilterState.data.copy(
                                                 isEnglishTeacher = state
                                             )
 
-                                            RolesFilter.HistoryTeacher -> chatRoomFilterState.data.copy(
+                                            RolesCategory.HistoryTeacher -> chatRoomFilterState.data.copy(
                                                 isHistoryTeacher = state
                                             )
 
-                                            RolesFilter.Veterinarian -> chatRoomFilterState.data.copy(
+                                            RolesCategory.Veterinarian -> chatRoomFilterState.data.copy(
                                                 isVeterinarian = state
                                             )
 
-                                            RolesFilter.SoftwareDeveloper -> chatRoomFilterState.data.copy(
+                                            RolesCategory.SoftwareDeveloper -> chatRoomFilterState.data.copy(
                                                 isSoftwareDeveloper = state
                                             )
 
-                                            RolesFilter.TravelAdvisor -> chatRoomFilterState.data.copy(
+                                            RolesCategory.TravelAdvisor -> chatRoomFilterState.data.copy(
                                                 isTravelAdvisor = state
                                             )
 
-                                            RolesFilter.JustFavorited -> chatRoomFilterState.data.copy(
+                                            RolesCategory.JustFavorited -> chatRoomFilterState.data.copy(
                                                 isFavorited = state
                                             )
 
-                                            RolesFilter.JustArchived -> chatRoomFilterState.data.copy(
+                                            RolesCategory.JustArchived -> chatRoomFilterState.data.copy(
 
                                                 isArchived = state
                                             )
@@ -687,25 +703,12 @@ fun ChatDashBoard(
                                 sheetState.hide()
                             }.invokeOnCompletion {
                                 when (menuItemType) {
-                                    MenuItemType.PREMIUM -> {
+                                    MenuItemType.BUY_MESSAGES -> {
                                         navController.navigate(Screen.InAppPurchaseScreen.name)
                                     }
 
                                     MenuItemType.SETTINGS -> {
-                                        scope.launch { sheetState.expand() }
-                                    }
-
-                                    MenuItemType.PRIVACY_POLICY -> {
-                                    }
-
-                                    MenuItemType.TERMS_OF_USE -> {
-                                    }
-
-                                    MenuItemType.RATE_US -> {
-                                        val link = "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                                        context.startActivity(intent)
-
+                                        navController.navigate(Screen.MainSettings.name)
                                     }
 
                                     MenuItemType.ARCHIVED -> {
@@ -718,11 +721,37 @@ fun ChatDashBoard(
                                         )
                                     }
 
+                                    MenuItemType.PRIVACY_POLICY -> {
+                                        val link = "https://www.iubenda.com/privacy-policy/84531396"
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                                        context.startActivity(intent)
+                                    }
+
+                                    MenuItemType.TERMS_OF_USE -> {
+                                        navController.navigate(Screen.TermsOfUseScreen.name)
+
+                                    }
+
+                                    MenuItemType.RATE_US -> {
+                                        val link = "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                                        context.startActivity(intent)
+
+                                    }
+
                                     MenuItemType.HELP_CENTER -> {
-                                        val intent = Intent()
+                                        val email = "ubuntu@ubuntuyouiwe.com"
+                                        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                                            data = Uri.parse("mailto:$email")
+                                        }
+                                        context.startActivity(Intent.createChooser(emailIntent, "E-posta Gönder"))
+
+
+
+                                        /*val intent = Intent()
                                         intent.action = "com.android.settings.TTS_SETTINGS"
                                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                        context.startActivity(intent)
+                                        context.startActivity(intent)*/
                                     }
 
                                     MenuItemType.SIGN_OUT -> {
@@ -737,12 +766,9 @@ fun ChatDashBoard(
 
                 }
                 val state = rememberLazyListState()
-                val imageList = chatRoomsState.data.map { it.role.image.any() }
-
+                ChatRoomBanner()
                 LazyColumn(modifier = Modifier.fillMaxSize(), state = state) {
-
-
-                    itemsIndexed(chatRoomsState.data) { _, chatRoom ->
+                    itemsIndexed(chatRoomsState.data) { index, chatRoom ->
                         ChatRoom(
                             chatRoom,
                             selectedChatRooms,
@@ -755,28 +781,55 @@ fun ChatDashBoard(
                                         }
                                     }
                                 } else {
+
                                     selectedChatRooms = if (!selectedChatRooms.contains(chatRoom)) {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                            val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                                            vibrator.vibrate(
+                                                CombinedVibration.createParallel(
+                                                    VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE)))
+                                        } else {
+                                            vibrator2.vibrate(75)
+                                        }
                                         selectedChatRooms + setOf(chatRoom)
                                     } else selectedChatRooms.filter { it != chatRoom }.toSet()
-
-
                                 }
-
                             },
                             onLongClick = {
                                 selectedChatRooms = if (!selectedChatRooms.contains(chatRoom)) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                                        vibrator.vibrate(
+                                            CombinedVibration.createParallel(
+                                                VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE)))
+                                    } else {
+                                        vibrator2.vibrate(75)
+                                    }
                                     selectedChatRooms + setOf(chatRoom)
                                 } else selectedChatRooms.filter { it != chatRoom }.toSet()
-
-
                             }
                         )
                     }
+                    item {
+                        if (chatRoomsState.data.isEmpty()) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillParentMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "No content has been created yet.",
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
 
+                            }
+                        }
 
+                    }
                 }
-
-
             }
         }
         val snackbarHeight = 50.dp
@@ -852,6 +905,7 @@ fun ChatDashBoard(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Preview(showBackground = true)
 @Composable
 fun ChatDashBoardPreview() {

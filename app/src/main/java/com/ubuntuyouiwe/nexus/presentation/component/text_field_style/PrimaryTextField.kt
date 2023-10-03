@@ -1,6 +1,8 @@
 package com.ubuntuyouiwe.nexus.presentation.component.text_field_style
 
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +27,9 @@ fun PrimaryTextField(
     singleLine: Boolean = false,
     isError: Boolean = false,
     enabled: Boolean = true,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    suffix: @Composable (() -> Unit)? = null,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
 
@@ -38,6 +43,7 @@ fun PrimaryTextField(
         value = value,
         onValueChange = onValueChange,
         label = label,
+        maxLines = maxLines,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
@@ -64,8 +70,18 @@ fun PrimaryTextField(
             focusedTrailingIconColor = MaterialTheme.colorScheme.onSurface,
             disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
             unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            selectionColors = TextSelectionColors(
+                MaterialTheme.colorScheme.onPrimary,
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            ),
+
+
         ),
-        keyboardOptions = keyboardOptions,
+        suffix = suffix,
         visualTransformation = visualTransformation,
         singleLine = singleLine,
         textStyle = MaterialTheme.typography.bodyMedium,

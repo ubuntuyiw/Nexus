@@ -8,3 +8,10 @@ annotation class GoogleClientId
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RecognizerDefault
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SystemMessages
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TermsOfUse

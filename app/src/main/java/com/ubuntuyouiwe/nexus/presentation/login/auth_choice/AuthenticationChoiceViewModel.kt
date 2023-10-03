@@ -34,8 +34,7 @@ class AuthenticationChoiceViewModel @Inject constructor(
             googleSignInState.value.copy(intent = getGoogleSignInIntentUseCase())
     }
 
-    //TODO
-    private val url = "https://chat.openai.com/?model=gpt-4"
+    private val url = "https://www.iubenda.com/privacy-policy/84531396"
 
     fun onEvent(event: AuthChoiceEvent) {
         when (event) {
@@ -47,9 +46,6 @@ class AuthenticationChoiceViewModel @Inject constructor(
                 event.navController.navigate(Screen.EMAIL_WITH_LOGIN.name)
             }
 
-            is AuthChoiceEvent.TermsOfUse -> {
-                event.onNavigate(url)
-            }
 
             is AuthChoiceEvent.PrivacyPolicy -> {
                 event.onNavigate(url)

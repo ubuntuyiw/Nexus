@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 
 @Composable
 fun FullScreenTextField(
@@ -42,25 +43,9 @@ fun FullScreenTextField(
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
     ) {
-        TextField(
+        PrimaryTextField(
             value = messageText,
             onValueChange = onValueChange,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                selectionColors = TextSelectionColors(
-                    MaterialTheme.colorScheme.onPrimary,
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                ),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = MaterialTheme.colorScheme.onSurface,
-            ),
             label = if (messageText.length >= maxCharacter) {
                 {
                     Text(
@@ -92,7 +77,6 @@ fun FullScreenTextField(
                 .fillMaxHeight()
                 .weight(1f)
         )
-
 
     }
     BackHandler {

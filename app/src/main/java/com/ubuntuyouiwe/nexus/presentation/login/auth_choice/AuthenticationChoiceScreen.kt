@@ -42,6 +42,7 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_style.SecondaryIcon
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AppNameAnimation
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.LogoAnimation
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
@@ -172,10 +173,7 @@ fun AuthenticationChoiceScreen(
 
                 GetAnnotatedTermsAndPrivacyText(
                     termsOfUseOnClick = {
-                        onEvent(AuthChoiceEvent.TermsOfUse {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
-                            context.startActivity(intent)
-                        })
+                        navController.navigate(Screen.TermsOfUseScreen.name)
                     },
                     privacyPolicy = {
                         onEvent(AuthChoiceEvent.PrivacyPolicy {

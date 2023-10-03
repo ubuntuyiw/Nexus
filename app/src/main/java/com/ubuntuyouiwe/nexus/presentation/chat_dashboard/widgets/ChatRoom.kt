@@ -49,6 +49,7 @@ fun ChatRoom(
         )
         .animateContentSize()) {
 
+
         Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween,

@@ -9,6 +9,11 @@ enum class Screen {
     MessagingPanel,
     PhotoEditingScreen,
     CreateChatRoomScreen,
-    InAppPurchaseScreen
+    InAppPurchaseScreen,
+    TermsOfUseScreen,
+    MainSettings,
+    UserName,
+    PurposeSelection,
+    SystemMessage,
 
 }

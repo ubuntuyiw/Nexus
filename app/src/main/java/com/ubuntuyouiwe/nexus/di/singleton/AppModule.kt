@@ -10,12 +10,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.ubuntuyouiwe.nexus.data.dto.TermsOfUseDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
 import com.ubuntuyouiwe.nexus.data.manager.BillingManagerImpl
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
 import com.ubuntuyouiwe.nexus.data.util.Assets
 import com.ubuntuyouiwe.nexus.di.GoogleClientId
 import com.ubuntuyouiwe.nexus.di.RecognizerDefault
+import com.ubuntuyouiwe.nexus.di.SystemMessages
+import com.ubuntuyouiwe.nexus.di.TermsOfUse
 import com.ubuntuyouiwe.nexus.domain.manager.BillingManager
 import com.ubuntuyouiwe.nexus.util.Constant
 import dagger.Module
@@ -57,6 +61,9 @@ object AppModule {
             Assets.DebateArena.name + ".json",
             Assets.TravelAdvisor.name + ".json",
             Assets.Chef.name + ".json",
+            Assets.SportsPolymath.name + ".json",
+            Assets.LiteratureTeacher.name + ".json",
+            Assets.Philosophy.name + ".json",
             Assets.Astrologer.name + ".json",
             Assets.Lawyer.name + ".json",
             Assets.IslamicScholar.name + ".json",
@@ -77,6 +84,34 @@ object AppModule {
             val inputStream = context.assets.open(fileName)
             val jsonString = inputStream.bufferedReader().use { it.readText() }
             Json.decodeFromString<RoleDto>(jsonString)
+        }
+    }
+
+    @SystemMessages
+    @Provides
+    @Singleton
+    fun provideSystemMessage(@ApplicationContext context: Context): List<MessageItemDto> {
+        val files = listOf(
+            Assets.NexusSystem.name + ".json",
+        )
+        return files.map { fileName ->
+            val inputStream = context.assets.open(fileName)
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            Json.decodeFromString<MessageItemDto>(jsonString)
+        }
+    }
+
+    @TermsOfUse
+    @Provides
+    @Singleton
+    fun provideTermsOfUse(@ApplicationContext context: Context): List<TermsOfUseDto> {
+        val files = listOf(
+            Assets.TermsOfUse.name + ".json",
+        )
+        return files.map { fileName ->
+            val inputStream = context.assets.open(fileName)
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            Json.decodeFromString<TermsOfUseDto>(jsonString)
         }
     }
 

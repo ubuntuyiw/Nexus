@@ -35,7 +35,7 @@ fun MenuScreen(
     onClick: (MenuItemType) -> Unit
 ) {
     val menuItem = listOf<MenuItem>(
-        MenuItem(icon = ImageVector.vectorResource(R.drawable.premium) , text = MenuItemType.PREMIUM.menuName, type = MenuItemType.PREMIUM),
+        MenuItem(icon = ImageVector.vectorResource(R.drawable.premium) , text = MenuItemType.BUY_MESSAGES.menuName, type = MenuItemType.BUY_MESSAGES),
         MenuItem(icon = Icons.Default.Build, text = MenuItemType.SETTINGS.menuName, type = MenuItemType.SETTINGS),
         MenuItem(icon = ImageVector.vectorResource(R.drawable.privacy_policy), text = MenuItemType.PRIVACY_POLICY.menuName, type = MenuItemType.PRIVACY_POLICY),
         MenuItem(icon = ImageVector.vectorResource(R.drawable.terms_of_use), text = MenuItemType.TERMS_OF_USE.menuName, type = MenuItemType.TERMS_OF_USE),

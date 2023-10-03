@@ -1,7 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.photo_editing
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxScope
@@ -172,7 +171,6 @@ fun BoxScope.NewAreaArrangement(crop: (left: Float, top: Float, right: Float, bo
                 size = size
             )
         }
-        Log.v("dwadwadad","${left}, ${top}, ${right}, ${bottom}")
         drawRect(
             color = Color.Transparent,
             topLeft = Offset(x = left, y = top),

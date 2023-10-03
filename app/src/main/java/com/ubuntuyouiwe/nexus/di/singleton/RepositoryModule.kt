@@ -2,6 +2,8 @@ package com.ubuntuyouiwe.nexus.di.singleton
 
 import android.content.Context
 import com.android.billingclient.api.BillingClient
+import com.ubuntuyouiwe.nexus.data.dto.TermsOfUseDto
+import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.repository.AuthRepositoryImpl
 import com.ubuntuyouiwe.nexus.data.repository.ChatRoomFilterRepositoryImpl
 import com.ubuntuyouiwe.nexus.data.repository.ChatRoomShortRepositoryImpl
@@ -13,6 +15,8 @@ import com.ubuntuyouiwe.nexus.data.source.local.RoleDataSource
 import com.ubuntuyouiwe.nexus.data.source.local.proto.ProtoDataStoreDataSource
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.MlKit
+import com.ubuntuyouiwe.nexus.di.SystemMessages
+import com.ubuntuyouiwe.nexus.di.TermsOfUse
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
 import com.ubuntuyouiwe.nexus.domain.repository.ChatRoomFilterRepository
 import com.ubuntuyouiwe.nexus.domain.repository.ChatRoomShortRepository
@@ -50,8 +54,10 @@ object RepositoryModule {
     fun provideDataSyncRepository(
         firebaseDataSource: FirebaseDataSource,
         @ApplicationContext context: Context,
+        @SystemMessages systemMessages: List<MessageItemDto>,
+        @TermsOfUse termsOfUse: List<TermsOfUseDto>
     ): DataSyncRepository =
-        DataSyncRepositoryImpl(firebaseDataSource, context)
+        DataSyncRepositoryImpl(firebaseDataSource, context, systemMessages, termsOfUse)
 
 
     @Provides

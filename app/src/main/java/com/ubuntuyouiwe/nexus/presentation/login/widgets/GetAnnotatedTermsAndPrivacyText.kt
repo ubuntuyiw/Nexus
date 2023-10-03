@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.login.widgets
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,7 +10,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryClickableText
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.DeepBlueSea
 
 @Composable
 fun GetAnnotatedTermsAndPrivacyText(
@@ -58,7 +56,6 @@ fun GetAnnotatedTermsAndPrivacyText(
                 tag = "URl",
                 start = offset, end = offset
             ).firstOrNull()?.let { annotation ->
-                Log.v("aaaa","${annotation.start} ${annotation.end}")
                 when (annotation.item) {
                     "TermsOfUse" -> {
                         termsOfUseOnClick()

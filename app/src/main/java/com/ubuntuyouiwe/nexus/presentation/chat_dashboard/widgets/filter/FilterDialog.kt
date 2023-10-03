@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomFilterState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomShortState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.util.RolesFilter
+import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -48,36 +47,38 @@ fun FilterDialog(
     chatRoomShortOnEvent: (ShortDate) -> Unit,
     chatRoomFilterState: ChatRoomFilterState,
     setAllSelectedRole: ( allSelectedRole: Boolean) -> Unit,
-    chatRoomFilterOnEvent: (Boolean, RolesFilter) -> Unit
+    chatRoomFilterOnEvent: (Boolean, RolesCategory) -> Unit
 ) {
-    val isFavorited =  mapOf(RolesFilter.JustFavorited to chatRoomFilterState.data.isFavorited)
+    val isFavorited =  mapOf(RolesCategory.JustFavorited to chatRoomFilterState.data.isFavorited)
     var allSelectedRole by remember {
         mutableStateOf(false)
     }
 
     val roles = listOf(
-        mapOf(RolesFilter.NeutralMode to chatRoomFilterState.data.isNeutralMode),
-        mapOf(RolesFilter.DebateArena to chatRoomFilterState.data.isDebateArena),
-        mapOf(RolesFilter.TravelAdvisor to chatRoomFilterState.data.isTravelAdvisor),
-        mapOf(RolesFilter.Astrologer to chatRoomFilterState.data.isAstrologer),
-        mapOf(RolesFilter.Chef to chatRoomFilterState.data.isChef),
-        mapOf(RolesFilter.Lawyer to chatRoomFilterState.data.isLawyer),
-        mapOf(RolesFilter.Doctor to chatRoomFilterState.data.isDoctor),
-        mapOf(RolesFilter.IslamicScholar to chatRoomFilterState.data.isIslamicScholar),
-        mapOf(RolesFilter.BiologyTeacher to chatRoomFilterState.data.isBiologyTeacher),
-        mapOf(RolesFilter.ChemistryTeacher to chatRoomFilterState.data.isChemistryTeacher),
-        mapOf(RolesFilter.EnglishTeacher to chatRoomFilterState.data.isEnglishTeacher),
-        mapOf(RolesFilter.GeographyTeacher to chatRoomFilterState.data.isGeographyTeacher),
-        mapOf(RolesFilter.HistoryTeacher to chatRoomFilterState.data.isHistoryTeacher),
-        mapOf(RolesFilter.MathematicsTeacher to chatRoomFilterState.data.isMathematicsTeacher),
-        mapOf(RolesFilter.PhysicsTeacher to chatRoomFilterState.data.isPhysicsTeacher),
-        mapOf(RolesFilter.Psychologist to chatRoomFilterState.data.isPsychologist),
-        mapOf(RolesFilter.Bishop to chatRoomFilterState.data.isBishop),
-        mapOf(RolesFilter.RelationshipCoach to chatRoomFilterState.data.isRelationshipCoach),
-        mapOf(RolesFilter.Veterinarian to chatRoomFilterState.data.isVeterinarian),
-        mapOf(RolesFilter.SoftwareDeveloper to chatRoomFilterState.data.isSoftwareDeveloper),
+        mapOf(RolesCategory.NeutralMode to chatRoomFilterState.data.isNeutralMode),
+        mapOf(RolesCategory.DebateArena to chatRoomFilterState.data.isDebateArena),
+        mapOf(RolesCategory.TravelAdvisor to chatRoomFilterState.data.isTravelAdvisor),
+        mapOf(RolesCategory.Astrologer to chatRoomFilterState.data.isAstrologer),
+        mapOf(RolesCategory.Chef to chatRoomFilterState.data.isChef),
+        mapOf(RolesCategory.SportsPolymath to chatRoomFilterState.data.isSportsPolymath),
+        mapOf(RolesCategory.LiteratureTeacher to chatRoomFilterState.data.isLiteratureTeacher),
+        mapOf(RolesCategory.Philosophy to chatRoomFilterState.data.isPhilosophy),
+        mapOf(RolesCategory.Lawyer to chatRoomFilterState.data.isLawyer),
+        mapOf(RolesCategory.Doctor to chatRoomFilterState.data.isDoctor),
+        mapOf(RolesCategory.IslamicScholar to chatRoomFilterState.data.isIslamicScholar),
+        mapOf(RolesCategory.BiologyTeacher to chatRoomFilterState.data.isBiologyTeacher),
+        mapOf(RolesCategory.ChemistryTeacher to chatRoomFilterState.data.isChemistryTeacher),
+        mapOf(RolesCategory.EnglishTeacher to chatRoomFilterState.data.isEnglishTeacher),
+        mapOf(RolesCategory.GeographyTeacher to chatRoomFilterState.data.isGeographyTeacher),
+        mapOf(RolesCategory.HistoryTeacher to chatRoomFilterState.data.isHistoryTeacher),
+        mapOf(RolesCategory.MathematicsTeacher to chatRoomFilterState.data.isMathematicsTeacher),
+        mapOf(RolesCategory.PhysicsTeacher to chatRoomFilterState.data.isPhysicsTeacher),
+        mapOf(RolesCategory.Psychologist to chatRoomFilterState.data.isPsychologist),
+        mapOf(RolesCategory.Bishop to chatRoomFilterState.data.isBishop),
+        mapOf(RolesCategory.RelationshipCoach to chatRoomFilterState.data.isRelationshipCoach),
+        mapOf(RolesCategory.Veterinarian to chatRoomFilterState.data.isVeterinarian),
+        mapOf(RolesCategory.SoftwareDeveloper to chatRoomFilterState.data.isSoftwareDeveloper),
     )
-
     for (role in roles) {
         val isSelected = role.values.first()
         allSelectedRole = true
@@ -212,7 +213,7 @@ fun FilterDialog(
             Chapter(
                 top = {
                     Text(
-                        text = "RolesFilter Filter",
+                        text = "Roles Filter",
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -235,7 +236,7 @@ fun FilterDialog(
                                     uncheckedColor = MaterialTheme.colorScheme.onSurface
                                 ),
                                 onCheckedChange = {
-                                    chatRoomFilterOnEvent(it, RolesFilter.All)
+                                    chatRoomFilterOnEvent(it, RolesCategory.All)
                                 }
                             )
 

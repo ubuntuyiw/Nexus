@@ -7,7 +7,6 @@ sealed interface AuthChoiceEvent {
     class GoogleSignIn(val intent: Intent) : AuthChoiceEvent
     class Email(val navController: NavController) : AuthChoiceEvent
 
-    class TermsOfUse(val onNavigate: (String) -> Unit) : AuthChoiceEvent
     class PrivacyPolicy(val onNavigate: (String) -> Unit) : AuthChoiceEvent
 
 }

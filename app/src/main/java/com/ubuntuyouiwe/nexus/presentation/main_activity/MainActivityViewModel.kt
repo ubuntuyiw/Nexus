@@ -3,6 +3,7 @@ package com.ubuntuyouiwe.nexus.presentation.main_activity
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.AuthStateUseCase
@@ -10,6 +11,7 @@ import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserMessagingDataUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.SignOutUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.util.Resource
@@ -41,6 +43,8 @@ class MainActivityViewModel @Inject constructor(
 
     private val _authListenerRetryButton = mutableStateOf(ButtonState())
     val authListenerRetryButton: State<ButtonState> = _authListenerRetryButton
+
+    var startDestination =  mutableStateOf(Screen.SPLASH)
 
     private val _isDarkMode = sharedState.isDarkTheme
     val isDarkMode: State<Boolean> = _isDarkMode
@@ -107,6 +111,10 @@ class MainActivityViewModel @Inject constructor(
                         isError = false,
                         successData = resource.data
                     )
+                    userState.value.successData?.let {
+                        if (it.isOnBoarding) startDestination.value = Screen.UserName
+                        else startDestination.value = Screen.CHAT_DASHBOARD
+                    }
                 }
                 is Resource.Error -> {
                     _userState.value = userState.value.copy(
@@ -146,14 +154,15 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun getAuthStateListener() {
-        authStateUseCase().onEach {
-            when (it) {
+        authStateUseCase().onEach { resource ->
+            when (resource) {
                 is Resource.Loading -> {
                     _userOperationState.value = userOperationState.value.copy(
                         isSuccess = false,
                         isError = false,
                         isLoading = true
                     )
+                    startDestination.value = Screen.SPLASH
                     _authListenerRetryButton.value =
                         authListenerRetryButton.value.copy(enabled = false)
                 }
@@ -161,10 +170,17 @@ class MainActivityViewModel @Inject constructor(
                 is Resource.Success -> {
                     _userOperationState.value = userOperationState.value.copy(
                         isSuccess = true,
-                        successData = it.data,
+                        successData = resource.data,
                         isError = false,
                         isLoading = false
                     )
+
+                    userOperationState.value.successData?.let {
+                        startDestination.value = Screen.CHAT_DASHBOARD
+
+                    } ?: run {
+                        startDestination.value = Screen.AUTHENTICATION_CHOICE
+                    }
 
                     _authListenerRetryButton.value =
                         authListenerRetryButton.value.copy(enabled = true)
@@ -174,7 +190,7 @@ class MainActivityViewModel @Inject constructor(
                     _userOperationState.value = userOperationState.value.copy(
                         isSuccess = false,
                         isError = true,
-                        errorMessage = it.message,
+                        errorMessage = resource.message,
                         isLoading = false
                     )
                     _authListenerRetryButton.value =

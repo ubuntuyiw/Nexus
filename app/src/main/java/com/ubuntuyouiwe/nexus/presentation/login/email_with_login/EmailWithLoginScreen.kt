@@ -1,5 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.login.email_with_login
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,6 +56,7 @@ import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.widgets.Forgot
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyTextForLoggedInUser
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.PasswordForgetPrompt
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.SignUpPrompt
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
@@ -277,7 +280,16 @@ fun EmailWithLoginScreen(
                     .fillMaxWidth()
                     .weight(10f)
             ) {
-                GetAnnotatedTermsAndPrivacyTextForLoggedInUser()
+                GetAnnotatedTermsAndPrivacyTextForLoggedInUser(
+                    termsOfUseOnClick = {
+                        navController.navigate(Screen.TermsOfUseScreen.name)
+                    },
+                    privacyPolicy = {
+                        val link = "https://www.iubenda.com/privacy-policy/84531396"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                        context.startActivity(intent)
+                    }
+                )
             }
 
 

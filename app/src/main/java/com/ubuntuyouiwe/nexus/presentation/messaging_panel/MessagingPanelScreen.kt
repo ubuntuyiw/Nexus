@@ -2,10 +2,14 @@ package com.ubuntuyouiwe.nexus.presentation.messaging_panel
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +22,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +37,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -63,11 +69,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.PlatformSpanStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
@@ -75,8 +93,10 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
 import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIconButton
+import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ChatRoomUpdateState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
@@ -84,14 +104,18 @@ import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.FullScreenMessageArea
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.FullScreenTextField
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.MessageArea
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.MessageAreaBanner
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.RenameChatRoomDialog
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
+import com.ubuntuyouiwe.nexus.presentation.util.ImageUrl.SHAKE
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 fun MessagingPanelScreen(
     navController: NavController,
@@ -122,6 +146,7 @@ fun MessagingPanelScreen(
     var expendedMessageContent by remember {
         mutableStateOf<Messages?>(null)
     }
+
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val imageText by remember {
         mutableStateOf(savedStateHandle?.get<String>("image_text"))
@@ -142,7 +167,7 @@ fun MessagingPanelScreen(
             }
         }
     )
-
+    val focusManager = LocalFocusManager.current
     val activity = LocalContext.current as Activity
     val scope = rememberCoroutineScope()
 
@@ -252,7 +277,6 @@ fun MessagingPanelScreen(
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
-
                                 }
                             }
 
@@ -348,8 +372,7 @@ fun MessagingPanelScreen(
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.Center,
                 ) {
-
-                    TextField(
+                    PrimaryTextField(
                         value = messageTextFieldState.text,
                         onValueChange = {
                             onEvent(MessagingPanelOnEvent.EnterMessage(it))
@@ -370,26 +393,6 @@ fun MessagingPanelScreen(
                             }
                         } else null,
                         enabled = !expendedTextField,
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            disabledContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                            cursorColor = MaterialTheme.colorScheme.onSurface,
-                            selectionColors = TextSelectionColors(
-                                MaterialTheme.colorScheme.onPrimary,
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                            ),
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            errorIndicatorColor = Color.Transparent,
-                            errorContainerColor = MaterialTheme.colorScheme.surface,
-                            errorTextColor = MaterialTheme.colorScheme.onSurface,
-                            errorLabelColor = MaterialTheme.colorScheme.error,
-                            errorCursorColor = MaterialTheme.colorScheme.error,
-                        ),
                         suffix = {
                             Text(
                                 text = messageTextFieldState.text.length.toString(),
@@ -461,21 +464,22 @@ fun MessagingPanelScreen(
                     )
                     Spacer(modifier = Modifier.weight(2f))
 
+
                     AnimatedVisibility(
                         visible = sendMessageButtonState.enabled && !sendMessageState.isLoading && messageTextFieldState.text.length < maxCharacter,
                         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
                         exit = scaleOut()
                     ) {
                         Column {
+
                             IconButton(
                                 onClick = {
+                                    focusManager.clearFocus()
                                     onEvent(
                                         MessagingPanelOnEvent.SendMessage(
                                             content = messageTextFieldState.text
-
                                         )
                                     )
-
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
@@ -498,17 +502,17 @@ fun MessagingPanelScreen(
                 }
 
             }
-
-
         }
     ) { paddingValues ->
-        Box(
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
         ) {
+            MessageAreaBanner()
             LazyColumn(
                 verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier
-                    .padding(paddingValues)
                     .fillMaxSize(),
                 reverseLayout = true
             ) {
@@ -529,6 +533,7 @@ fun MessagingPanelScreen(
 
                }
                 getMessagesState.data.messages.let { list ->
+
                     itemsIndexed(list) { index, messages ->
                         Box(
                             contentAlignment = Alignment.BottomCenter,
@@ -554,23 +559,100 @@ fun MessagingPanelScreen(
                         }
 
                     }
+                    item {
+                        if (chatRoomState.data.isNew) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillParentMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    GlideImage(model = SHAKE, contentDescription = "shake the phone", modifier = Modifier.size(50.dp))
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    Text(
+                                        text = "Shake your phone quickly to earn message credits.",
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+
+
+                                }
+                                Spacer(modifier = Modifier.padding(8.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    val buyMessages = buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
+                                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                                color = MaterialTheme.typography.labelLarge.color,
+                                            )
+
+                                        ) {
+                                            append("Purchase a message package from the")
+                                        }
+
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = MaterialTheme.colorScheme.inversePrimary,
+                                                fontWeight = FontWeight.ExtraBold,
+                                            )
+                                        ) {
+                                            pushStringAnnotation(
+                                                tag = "go",
+                                                annotation = "go"
+                                            )
+                                            append(" Buy Messages ")
+                                            pop()
+                                        }
+                                        withStyle(
+                                            style = SpanStyle(
+                                                fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
+                                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                                color = MaterialTheme.typography.labelLarge.color,
+                                            )
+                                        ) {
+                                            append("screen.")
+                                        }
+
+                                    }
+
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    GlideImage(model = R.drawable.goldmessage, contentDescription = "Buy Messages", modifier = Modifier.size(50.dp))
+                                    Spacer(modifier = Modifier.padding(8.dp))
+                                    ClickableText(
+                                        text =  buyMessages,
+                                        onClick = { offset ->
+                                            buyMessages.getStringAnnotations(
+                                                tag = "go",
+                                                start = offset, end = offset
+                                            ).firstOrNull()?.let { annotation ->
+                                                when (annotation.item) {
+                                                    "go" -> {
+                                                        navController.navigate(Screen.InAppPurchaseScreen.name)
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                }
+                            }
+                        }
+                    }
+
                 }
 
             }
 
-            if (chatRoomState.data.isNew) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxWidth(0.95f)
-                        .fillMaxHeight(0.95f)
-                ) {
-
-
-                }
-            }
         }
 
 

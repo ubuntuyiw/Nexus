@@ -1,11 +1,15 @@
 package com.ubuntuyouiwe.nexus.presentation.util
 
-enum class RolesFilter(val roleName: String, val  id: String) {
+enum class RolesCategory(val roleName: String, val  id: String) {
     All("All", "All"),
     NeutralMode("Neutral Mode", "NeutralMode"),
     DebateArena("Debate Arena", "DebateArena"),
     Doctor("Doctor", "Doctor"),
+    TravelAdvisor("Travel Advisor", "TravelAdvisor"),
     Chef("Chef", "Chef"),
+    LiteratureTeacher("Literature Teacher", "LiteratureTeacher"),
+    Philosophy("Philosophy", "Philosophy"),
+    SportsPolymath("Sports Polymath", "SportsPolymath"),
     Lawyer("Lawyer", "Lawyer"),
     RelationshipCoach("Relationship Coach", "RelationshipCoach"),
     IslamicScholar("Islamic Scholar", "IslamicScholar"),
@@ -21,7 +25,6 @@ enum class RolesFilter(val roleName: String, val  id: String) {
     HistoryTeacher("History Teacher", "HistoryTeacher"),
     Veterinarian("Veterinarian", "Veterinarian"),
     SoftwareDeveloper("SoftwareDeveloper", "SoftwareDeveloper"),
-    TravelAdvisor("Travel Advisor", "TravelAdvisor"),
     JustFavorited("Just Favorited", "JustFavorited"),
     JustArchived("Just Archived", "JustArchived"),
 

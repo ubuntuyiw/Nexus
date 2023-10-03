@@ -62,7 +62,7 @@ fun MessageArea(
     var dropdownMenuState by remember {
         mutableStateOf(false)
     }
-
+    val maxText = 150
 
     Card(
         colors = CardDefaults.cardColors(
@@ -83,13 +83,13 @@ fun MessageArea(
             top = {
                 if (messages.messages.isNotEmpty()) {
                     val message =
-                        if (messages.messages[0].content.length > 50 && !messages.messages[0].isExpanded && index != 0 )
+                        if (messages.messages[0].content.length > maxText && !messages.messages[0].isExpanded && index != 0 )
                             buildAnnotatedString {
                                 pushStringAnnotation(
                                     tag = "See",
                                     annotation = ""
                                 )
-                                append(messages.messages[0].content.subSequence(0, 50))
+                                append(messages.messages[0].content.subSequence(0, maxText))
                                 pop()
                                 append("...")
                                 withStyle(
@@ -127,7 +127,7 @@ fun MessageArea(
                                         tag = "See",
                                         annotation = "SeeLess"
                                     )
-                                    append(if (messages.messages[0].content.length > 50  && index != 0) " See Less " else "")
+                                    append(if (messages.messages[0].content.length > maxText  && index != 0) " See Less " else "")
                                     pop()
                                 }
 
@@ -258,13 +258,13 @@ fun MessageArea(
                     if (messages.messages.size > 1) {
 
                         val message =
-                            if (messages.messages[1].content.length > 50 && !messages.messages[1].isExpanded && index != 0 )
+                            if (messages.messages[1].content.length > maxText && !messages.messages[1].isExpanded && index != 0 )
                                 buildAnnotatedString {
                                     pushStringAnnotation(
                                         tag = "See",
                                         annotation = ""
                                     )
-                                    append(messages.messages[1].content.subSequence(0, 50))
+                                    append(messages.messages[1].content.subSequence(0, maxText))
                                     pop()
                                     append("...")
                                     withStyle(
@@ -302,7 +302,7 @@ fun MessageArea(
                                             tag = "See",
                                             annotation = "SeeLess"
                                         )
-                                        append(if (messages.messages[1].content.length > 50 && index != 0) " See Less " else "")
+                                        append(if (messages.messages[1].content.length > maxText && index != 0) " See Less " else "")
                                         pop()
                                     }
 
