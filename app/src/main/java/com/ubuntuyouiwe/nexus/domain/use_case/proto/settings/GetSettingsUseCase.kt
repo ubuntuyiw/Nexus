@@ -18,6 +18,7 @@ class GetSettingsUseCase @Inject constructor(
         settingsProtoRepository.getSettings().catch {
             emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {
+
             emit(Resource.Success(it))
         }
 

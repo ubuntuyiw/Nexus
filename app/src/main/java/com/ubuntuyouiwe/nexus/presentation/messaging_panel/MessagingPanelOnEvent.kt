@@ -22,6 +22,7 @@ sealed interface MessagingPanelOnEvent {
 
     data class ChatRoomUpdate(val chatRooms: List<ChatRoom>): MessagingPanelOnEvent
 
+    data object ChangeSpeechListener: MessagingPanelOnEvent
 
 
 }

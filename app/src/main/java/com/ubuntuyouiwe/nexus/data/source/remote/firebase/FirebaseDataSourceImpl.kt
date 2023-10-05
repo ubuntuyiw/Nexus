@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.AggregateQuerySnapshot
@@ -60,6 +61,10 @@ class FirebaseDataSourceImpl @Inject constructor(
             .setDisplayName(name)
             .build()
         auth.currentUser?.updateProfile(profileUpdates)?.await()
+    }
+
+    override suspend fun changePassword(password: String) {
+        auth.currentUser?.updatePassword(password)?.await()
     }
 
 

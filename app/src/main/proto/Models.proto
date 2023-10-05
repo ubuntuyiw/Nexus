@@ -4,6 +4,7 @@ import "google/protobuf/wrappers.proto";
 option java_multiple_files = true;
 message SettingsDto {
   google.protobuf.FloatValue setSpeechRate = 1;
+  google.protobuf.Int32Value theme = 2;
 }
 message ChatRoomFilterDto {
   google.protobuf.BoolValue isAllRoles = 1;

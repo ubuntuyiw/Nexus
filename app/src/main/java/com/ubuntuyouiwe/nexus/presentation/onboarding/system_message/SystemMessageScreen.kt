@@ -114,7 +114,8 @@ fun SystemMessageScreen(
                 Text(
                     text = "You have the freedom to personalize your Nexus experience. Share details about yourself to receive more tailored interactions. \nExamples:\n\n-Please address me in a formal tone.\n-I specialize in Artificial Intelligence Engineering.\n-I reside in the United States.\n-Traveling is my passion.",
                     style = MaterialTheme.typography.labelLarge,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 if (systemMessage.length > 500) {

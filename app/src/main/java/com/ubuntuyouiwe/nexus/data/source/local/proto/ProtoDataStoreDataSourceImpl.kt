@@ -4,6 +4,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.datastore.core.DataStore
 import com.google.protobuf.BoolValue
 import com.google.protobuf.FloatValue
+import com.google.protobuf.Int32Value
 import com.ubuntuyouiwe.nexus.ChatRoomFilterDto
 import com.ubuntuyouiwe.nexus.ChatRoomShortDto
 import com.ubuntuyouiwe.nexus.SettingsDto
@@ -24,6 +25,12 @@ class ProtoDataStoreDataSourceImpl @Inject constructor(
             if (!data.hasSetSpeechRate()) {
                 updateSettings {
                     it.setSpeechRate = FloatValue.of(1f)
+                }
+            }
+
+            if (!data.hasTheme()) {
+                updateSettings {
+                    it.theme = Int32Value.of(2)
                 }
             }
         }

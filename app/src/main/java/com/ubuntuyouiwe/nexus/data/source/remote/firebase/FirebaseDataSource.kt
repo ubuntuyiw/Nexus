@@ -27,6 +27,8 @@ interface FirebaseDataSource {
 
     suspend fun updateDisplayName(name: String)
 
+    suspend fun changePassword(password: String)
+
     fun userStateListener(): Flow<UserDto?>
 
 /*    suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot

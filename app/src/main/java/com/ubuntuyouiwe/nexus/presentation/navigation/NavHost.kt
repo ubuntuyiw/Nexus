@@ -44,6 +44,11 @@ import com.ubuntuyouiwe.nexus.presentation.onboarding.user_preferences.PurposeSe
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingScreen
 import com.ubuntuyouiwe.nexus.presentation.photo_editing.PhotoEditingViewModel
 import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.MainSettingsScreen
+import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.MainSettingsViewModel
+import com.ubuntuyouiwe.nexus.presentation.settings.password.PasswordScreen
+import com.ubuntuyouiwe.nexus.presentation.settings.password.PasswordViewModel
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeScreen
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeViewModel
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseScreen
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseViewModel
 
@@ -72,11 +77,13 @@ fun NavHostScreen(startDestination: Screen) {
             val viewModel: AuthenticationChoiceViewModel = hiltViewModel(navBackStackEntry)
             val googleSignInState by viewModel.googleSignInState
             val googleSignInButtonState by viewModel.googleSignInButtonState
+            val settingsState by viewModel.settingsState
 
             AuthenticationChoiceScreen(
                 navController,
                 googleSignInState,
                 googleSignInButtonState,
+                settingsState,
                 viewModel::googleSignInCheckAndStart,
                 viewModel::onEvent
 
@@ -335,9 +342,11 @@ fun NavHostScreen(startDestination: Screen) {
                     animationSpec = tween(500)
                 ) + fadeOut(animationSpec = tween(500))
             }
-        ) {
+        ) { navBackStackEntry ->
+            val viewModel: MainSettingsViewModel = hiltViewModel(navBackStackEntry)
+            val useState by viewModel.getPurposeSelection
 
-            MainSettingsScreen(navController)
+            MainSettingsScreen(navController, useState)
         }
 
 
@@ -410,6 +419,28 @@ fun NavHostScreen(startDestination: Screen) {
             val updateSystemMessageState by viewModel.updateSystemMessageState
             val onEvent = viewModel::onEvent
             SystemMessageScreen(navController, isAuto, systemMessage, updateSystemMessageState, onEvent)
+        }
+
+        composable(Screen.Password.name) {  navBackStackEntry ->
+            val viewModel: PasswordViewModel = hiltViewModel(navBackStackEntry)
+            val passwordTextFieldState by viewModel.passwordTextFieldState
+            val passwordUpdateState by viewModel.passwordUpdateState
+            val onEvent = viewModel::onEvent
+            PasswordScreen(
+                navController,
+                passwordTextFieldState,
+                passwordUpdateState,
+                onEvent
+            )
+        }
+        composable(Screen.Theme.name) {  navBackStackEntry ->
+            val viewModel: ThemeViewModel = hiltViewModel(navBackStackEntry)
+            val settingsState by viewModel.settingsState
+            val onEvent = viewModel::onEvent
+            ThemeScreen(
+                settingsState,
+                onEvent
+            )
         }
 
 

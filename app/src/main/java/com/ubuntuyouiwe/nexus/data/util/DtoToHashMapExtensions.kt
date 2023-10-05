@@ -100,7 +100,8 @@ fun AIRequestBody.toHashMap(): HashMap<String, Any?> =
     hashMapOf(
         AIRequestBodyFields.MODEL.key to this.model,
         AIRequestBodyFields.MESSAGES.key to this.messages.map { it.toHashMap() },
-        AIRequestBodyFields.MAX_TOKENS.key to this.max_tokens
+        AIRequestBodyFields.MAX_TOKENS.key to this.max_tokens,
+        AIRequestBodyFields.TEMPERATURE.key to this.temperature
     )
 
 

@@ -8,11 +8,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +31,7 @@ import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.UserOperationErrorUi
 import com.ubuntuyouiwe.nexus.presentation.navigation.NavHostScreen
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,11 +53,19 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
 
             val mainAuthUiEvent by viewModel.userOperationState
             val user by viewModel.userState
+            val settingsState by viewModel.settingsState
+            var isDarkTheme by remember {
+                mutableStateOf<Boolean?>(null)
+            }
+            when(settingsState.successData.theme) {
+                0 -> isDarkTheme = true
+                1 -> isDarkTheme = false
+                2 -> isDarkTheme = null
+            }
 
 
             val authListenerRetryButtonState by viewModel.authListenerRetryButton
             LaunchedEffect(key1 = user.successData) {
-                Log.v("asdasd",user.successData?.purposeSelection.toString())
                 user.successData?.let {user ->
                     mainAuthUiEvent.successData?.let { auth ->
                         if (user.shouldLogout && !user.isFromCache && !user.hasPendingWrites) {
@@ -63,7 +75,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
                 }
             }
 
-            var startDestination by viewModel.startDestination
+            val startDestination by viewModel.startDestination
             LaunchedEffect(key1 = mainAuthUiEvent) {
                 mainAuthUiEvent.successData?.let {
                     viewModel.getUser(it.uid)
@@ -76,7 +88,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
             }
 
             NexusTheme(
-                viewModel.isDarkMode.value
+                isDarkTheme?: isSystemInDarkTheme()
             ) {
 
                 Surface(

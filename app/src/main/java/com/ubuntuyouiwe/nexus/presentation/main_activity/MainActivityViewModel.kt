@@ -3,15 +3,17 @@ package com.ubuntuyouiwe.nexus.presentation.main_activity
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubuntuyouiwe.nexus.domain.model.Settings
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.AuthStateUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserMessagingDataUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.SignOutUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.util.Resource
@@ -27,6 +29,7 @@ class MainActivityViewModel @Inject constructor(
     sharedState: SharedState,
     private val getUserUseCase: GetUserUseCase,
     private val signOutUseCase: SignOutUseCase,
+    private val getSettingsUseCase: GetSettingsUseCase,
     private val userMessagingDataUseCase: GetUserMessagingDataUseCase
 ) : ViewModel() {
 
@@ -35,6 +38,9 @@ class MainActivityViewModel @Inject constructor(
 
     private val _stateLogOut = mutableStateOf(SignOutState())
     val stateLogOut: State<SignOutState> = _stateLogOut
+
+    private val _settingsState = sharedState.settings
+    val settingsState: State<SettingsState> = _settingsState
 
     private val _userState = sharedState.userState
     val userState: State<UserOperationState> = _userState
@@ -46,8 +52,6 @@ class MainActivityViewModel @Inject constructor(
 
     var startDestination =  mutableStateOf(Screen.SPLASH)
 
-    private val _isDarkMode = sharedState.isDarkTheme
-    val isDarkMode: State<Boolean> = _isDarkMode
     var getUserJob: Job? = null
     var getUserMessagingJob: Job? = null
     fun onEvent(event: MainEvent) {
@@ -59,6 +63,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     init {
+        getSettings()
         getAuthStateListener()
     }
 
@@ -118,6 +123,37 @@ class MainActivityViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     _userState.value = userState.value.copy(
+                        isLoading = false,
+                        isSuccess = false,
+                        isError = true,
+                        errorMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getSettings() {
+        getSettingsUseCase().onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    _settingsState.value = settingsState.value.copy(
+                        isLoading = true,
+                        isSuccess = false,
+                        isError = false
+                    ) }
+
+                is Resource.Success -> {
+                    _settingsState.value = settingsState.value.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        isError = false,
+                        successData = resource.data ?: Settings()
+                    )
+                }
+
+                is Resource.Error -> {
+                    _settingsState.value = settingsState.value.copy(
                         isLoading = false,
                         isSuccess = false,
                         isError = true,

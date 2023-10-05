@@ -27,8 +27,13 @@ import com.ubuntuyouiwe.nexus.domain.use_case.firestore.SendFirstMessageUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.UpdateSettingsUseCase
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ChatRoomUpdateState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.ChatRoomState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.GetMessagesState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.RoleState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.SendMessageState
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
@@ -82,11 +87,12 @@ class MessagingPanelViewModel @Inject constructor(
     private val _getMessagesState = mutableStateOf(GetMessagesState())
     val getMessagesState: State<GetMessagesState> = _getMessagesState
 
-    private val _settingsState = mutableStateOf(SettingsState())
+    private val _settingsState = sharedState.settings
     val settingsState: State<SettingsState> = _settingsState
 
     private val _chatRoomUpdateState = mutableStateOf(ChatRoomUpdateState())
     val chatRoomUpdateState: State<ChatRoomUpdateState> = _chatRoomUpdateState
+
 
     init {
         if (textToSpeech.defaultEngine != "com.google.android.tts") {
@@ -100,7 +106,6 @@ class MessagingPanelViewModel @Inject constructor(
         getRoles()
         getChatRoomId()
         speechListener()
-        getSettings()
         getChatRoom(chatRoomState.value.data.id)
         getMessages(chatRoomState.value.data.id)
 
@@ -140,6 +145,8 @@ class MessagingPanelViewModel @Inject constructor(
                 _messageTextFieldState.value =
                     messageTextFieldState.value.copy(text = event.message)
                 buttonState()
+
+
             }
 
             is MessagingPanelOnEvent.SendMessage -> {
@@ -183,9 +190,19 @@ class MessagingPanelViewModel @Inject constructor(
             }
 
             is MessagingPanelOnEvent.SetSpeechRate -> {
-                if (settingsState.value.data.setSpeechRate == 1f)  setSpeechRate(1.5f)
-                if (settingsState.value.data.setSpeechRate == 1.5f)  setSpeechRate(2f)
-                if (settingsState.value.data.setSpeechRate == 2f)  setSpeechRate(1f)
+                when(settingsState.value.successData.setSpeechRate) {
+                    1f -> setSpeechRate(settingsState.value.successData.copy(setSpeechRate = 1.5f))
+                    1.5f -> setSpeechRate(settingsState.value.successData.copy(setSpeechRate = 2f))
+                    2f -> setSpeechRate(settingsState.value.successData.copy(setSpeechRate = 1f))
+                }
+            }
+            is MessagingPanelOnEvent.ChangeSpeechListener -> {
+                textToSpeech.setSpeechRate(settingsState.value.successData.setSpeechRate)
+                textToSpeech.stop()
+                val data = getMessagesState.value.data.messages.firstOrNull() { it.isSpeak }
+                data?.let {
+                    speechSpeak()
+                }
             }
             is MessagingPanelOnEvent.RenameChange -> {
                 _chatRoomUpdateState.value = event.chatRoomUpdateState
@@ -196,6 +213,7 @@ class MessagingPanelViewModel @Inject constructor(
         }
 
     }
+
 
     private fun chatRoomUpdate(chatRooms: List<ChatRoom>) {
         chatRoomUpdateUseCase(chatRooms).onEach { resource ->
@@ -274,50 +292,6 @@ class MessagingPanelViewModel @Inject constructor(
     }
 
 
-
-    private fun getSettings() {
-        getSettingsUseCase().onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    _settingsState.value = settingsState.value.copy(
-                        isLoading = true,
-                        isSuccess = false,
-                        isError = false
-                    )
-                    Log.v("aaaaaaaaa","loading")
-                }
-
-                is Resource.Success -> {
-                    _settingsState.value = settingsState.value.copy(
-                        isLoading = false,
-                        isSuccess = true,
-                        isError = false,
-                        data = resource.data ?: Settings()
-                    )
-                    Log.v("aaaaaaaaa","sss")
-
-                    textToSpeech.setSpeechRate(resource.data?.setSpeechRate?: 1f)
-                    textToSpeech.stop()
-                    val data = getMessagesState.value.data.messages.firstOrNull() { it.isSpeak }
-                    data?.let {
-                        speechSpeak()
-                    }
-                }
-
-                is Resource.Error -> {
-                    _settingsState.value = settingsState.value.copy(
-                        isLoading = false,
-                        isSuccess = false,
-                        isError = true,
-                        errorMessage = resource.message
-                    )
-                    Log.v("aaaaaaaaa","eee")
-
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
     private fun speechStop() {
 /*
         _speechState.value = speechState.value.copy(isSpeak = false)
@@ -367,8 +341,10 @@ class MessagingPanelViewModel @Inject constructor(
 
     }
 
-    private fun setSpeechRate(rate: Float) {
-        updateSettingsUseCase(rate).onEach {
+    private fun setSpeechRate(settings: Settings) {
+        Log.v("asdasd",settingsState.value.successData.setSpeechRate.toString())
+
+        updateSettingsUseCase(settings).onEach {
 
         }.launchIn(viewModelScope)
 

@@ -32,4 +32,6 @@ interface AuthRepository {
     suspend fun updatePurposeSelection(purposeSelection: PurposeSelection)
 
     suspend fun updateSystemMessage(systemMessage: String)
+
+    suspend fun changePassword(password: String)
 }

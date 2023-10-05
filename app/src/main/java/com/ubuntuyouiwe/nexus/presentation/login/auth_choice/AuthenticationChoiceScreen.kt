@@ -14,7 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.filled.TextSnippet
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -22,7 +29,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,9 +50,13 @@ import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryButton
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryVariantButton
 import com.ubuntuyouiwe.nexus.presentation.component.icon_style.SecondaryIcon
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AppNameAnimation
+import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AuthTheme
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.LogoAnimation
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
+import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
+import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeEvent
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
@@ -53,11 +67,15 @@ fun AuthenticationChoiceScreen(
     navController: NavController,
     googleSignInState: GoogleSignInState,
     googleSignInButtonState: ButtonState,
+    settingsState: SettingsState,
     googleSignInCheckAndStart: (ActivityResult) -> Unit,
     onEvent: (AuthChoiceEvent) -> Unit
 ) {
     val context = LocalContext.current
     val hostState = remember { SnackbarHostState() }
+    var dropdownMenuState by remember {
+        mutableStateOf(false)
+    }
 
 
     LaunchedEffect(key1 = googleSignInState) {
@@ -99,6 +117,20 @@ fun AuthenticationChoiceScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
+            Box(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                AuthTheme(
+                    dropdownMenuState = dropdownMenuState,
+                    dropdownMenuStateChange = {
+                        dropdownMenuState = it
+                    }
+                ) {
+                    onEvent(AuthChoiceEvent.ChangeTheme(it))
+                }
+            }
+
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -119,6 +151,8 @@ fun AuthenticationChoiceScreen(
                     .padding(16.dp)
                     .weight(40f)
             ) {
+
+
 
                 val launcher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.StartActivityForResult(),
@@ -214,11 +248,12 @@ fun AuthenticationChoiceScreenPreview() {
     NexusTheme {
         val googleSignInState = GoogleSignInState()
         val googleSignInButtonState = ButtonState()
-
+        val  settingsState = SettingsState()
         AuthenticationChoiceScreen(
             navController,
             googleSignInState,
             googleSignInButtonState,
+            settingsState,
             {}
         ) {}
     }

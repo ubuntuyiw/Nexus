@@ -7,10 +7,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubuntuyouiwe.nexus.domain.model.Settings
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetGoogleSignInIntentUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GoogleSignInUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.UpdateSettingsUseCase
+import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
+import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -20,7 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthenticationChoiceViewModel @Inject constructor(
     private val googleSignInUseCase: GoogleSignInUseCase,
-    getGoogleSignInIntentUseCase: GetGoogleSignInIntentUseCase
+    getGoogleSignInIntentUseCase: GetGoogleSignInIntentUseCase,
+    sharedState: SharedState,
+    private val updateSettingsUseCase: UpdateSettingsUseCase,
 ) : ViewModel() {
 
     private val _googleSignInState = mutableStateOf(GoogleSignInState())
@@ -28,6 +34,8 @@ class AuthenticationChoiceViewModel @Inject constructor(
 
     private val _googleSignInButtonState = mutableStateOf(ButtonState())
     val googleSignInButtonState: State<ButtonState> = _googleSignInButtonState
+    private val _settingsState = sharedState.settings
+    val settingsState: State<SettingsState> = _settingsState
 
     init {
         _googleSignInState.value =
@@ -50,6 +58,9 @@ class AuthenticationChoiceViewModel @Inject constructor(
             is AuthChoiceEvent.PrivacyPolicy -> {
                 event.onNavigate(url)
             }
+            is AuthChoiceEvent.ChangeTheme -> {
+                updateSettings(settingsState.value.successData.copy(theme = event.themeOrdinal))
+            }
         }
 
     }
@@ -57,6 +68,14 @@ class AuthenticationChoiceViewModel @Inject constructor(
     fun googleSignInCheckAndStart(result: ActivityResult) {
         if ((result.resultCode == Activity.RESULT_OK) && result.data != null)
             onEvent(AuthChoiceEvent.GoogleSignIn(result.data!!))
+    }
+
+
+    private fun updateSettings(settings: Settings) {
+        updateSettingsUseCase(settings).onEach {
+
+        }.launchIn(viewModelScope)
+
     }
 
 

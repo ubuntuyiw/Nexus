@@ -23,13 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.widgets.SettingsArea
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSettingsScreen(navController: NavHostController) {
+fun MainSettingsScreen(navController: NavHostController, useState: UserOperationState) {
+    val name = useState.successData?.name?: ""
+    val email = useState.successData?.email?: ""
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -77,7 +81,7 @@ fun MainSettingsScreen(navController: NavHostController) {
             ) {
                 SettingsArea(
                     title = "Name",
-                    content = "İbrahim",
+                    content = name,
                     isDetail = true,
                     isContent = true
                 ) {
@@ -86,7 +90,7 @@ fun MainSettingsScreen(navController: NavHostController) {
                 }
                 SettingsArea(
                     title = "Email",
-                    content = "amedli.ibo@windowslive.com",
+                    content = email,
                     isDetail = false,
                     isContent = true,
                     onClick = {}
@@ -97,7 +101,7 @@ fun MainSettingsScreen(navController: NavHostController) {
                     isDetail = true,
                     isContent = true
                 ) {
-
+                    navController.navigate(Screen.Password.name)
                 }
 
                 SettingsArea(
@@ -117,6 +121,16 @@ fun MainSettingsScreen(navController: NavHostController) {
                     isContent = false
                 ) {
                     navController.navigate(Screen.PurposeSelection.name + "/${false}")
+
+
+                }
+                SettingsArea(
+                    title = "Theme",
+                    content = "",
+                    isDetail = true,
+                    isContent = false
+                ) {
+                    navController.navigate(Screen.Theme.name)
 
 
                 }

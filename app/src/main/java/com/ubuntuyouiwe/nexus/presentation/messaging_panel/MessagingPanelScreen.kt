@@ -2,15 +2,10 @@ package com.ubuntuyouiwe.nexus.presentation.messaging_panel
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -22,13 +17,11 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,7 +31,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Camera
@@ -59,8 +51,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -69,18 +59,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
-import androidx.compose.ui.text.PlatformSpanStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -99,8 +81,13 @@ import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIc
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ChatRoomUpdateState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.ChatRoomState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.GetMessagesState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.RoleState
+import com.ubuntuyouiwe.nexus.presentation.messaging_panel.state.SendMessageState
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.FullScreenMessageArea
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.FullScreenTextField
 import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.MessageArea
@@ -113,9 +100,8 @@ import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.util.ImageUrl.SHAKE
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
-)
+
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MessagingPanelScreen(
     navController: NavController,
@@ -147,6 +133,10 @@ fun MessagingPanelScreen(
         mutableStateOf<Messages?>(null)
     }
 
+
+
+
+
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
     val imageText by remember {
         mutableStateOf(savedStateHandle?.get<String>("image_text"))
@@ -157,7 +147,6 @@ fun MessagingPanelScreen(
             savedStateHandle?.remove<String>("image_text")
         }
     }
-    val maxCharacter = 1000
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = {
@@ -170,6 +159,10 @@ fun MessagingPanelScreen(
     val focusManager = LocalFocusManager.current
     val activity = LocalContext.current as Activity
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = settingsState) {
+        onEvent(MessagingPanelOnEvent.ChangeSpeechListener)
+    }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -196,9 +189,6 @@ fun MessagingPanelScreen(
 
         }
     }
-
-
-
 
     Scaffold(
         snackbarHost = {
@@ -272,8 +262,9 @@ fun MessagingPanelScreen(
                                 PrimaryIconButton(onClick = {
                                     onEvent(MessagingPanelOnEvent.SetSpeechRate)
                                 }) {
+
                                     Text(
-                                        text = settingsState.data.setSpeechRate.toString() + "x",
+                                        text = settingsState.successData.setSpeechRate.toString() + "x",
                                         style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
@@ -384,22 +375,7 @@ fun MessagingPanelScreen(
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         },
-                        label = if (messageTextFieldState.text.length >= maxCharacter) {
-                            {
-                                Text(
-                                    text = "Message limit exceeded. Maximum 500 characters allowed.",
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-                        } else null,
                         enabled = !expendedTextField,
-                        suffix = {
-                            Text(
-                                text = messageTextFieldState.text.length.toString(),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = if (messageTextFieldState.text.length >= maxCharacter) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.onPrimary
-                            )
-                        },
                         leadingIcon = {
                             IconButton(
                                 onClick = {
@@ -456,7 +432,6 @@ fun MessagingPanelScreen(
                             }
 
                         },
-                        isError = messageTextFieldState.text.length >= maxCharacter,
                         maxLines = 8,
                         modifier = Modifier
                             .clip(RoundedCornerShape(32.dp))
@@ -466,7 +441,7 @@ fun MessagingPanelScreen(
 
 
                     AnimatedVisibility(
-                        visible = sendMessageButtonState.enabled && !sendMessageState.isLoading && messageTextFieldState.text.length < maxCharacter,
+                        visible = sendMessageButtonState.enabled && !sendMessageState.isLoading,
                         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
                         exit = scaleOut()
                     ) {
@@ -474,12 +449,12 @@ fun MessagingPanelScreen(
 
                             IconButton(
                                 onClick = {
-                                    focusManager.clearFocus()
                                     onEvent(
                                         MessagingPanelOnEvent.SendMessage(
                                             content = messageTextFieldState.text
                                         )
                                     )
+                                    focusManager.clearFocus()
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
@@ -520,7 +495,7 @@ fun MessagingPanelScreen(
                this.stickyHeader {
                    Box(
                        modifier = Modifier
-                           .background(MaterialTheme.colorScheme.background,)
+                           .background(MaterialTheme.colorScheme.background)
                            .fillMaxWidth(),
                        contentAlignment = Alignment.Center,
                    ) {
@@ -568,6 +543,11 @@ fun MessagingPanelScreen(
                                     .fillParentMaxSize()
                                     .padding(16.dp)
                             ) {
+                                Text(
+                                    text = "Please be specific and descriptive when requesting information or answers from Nexus. Be aware that the provided information or responses may be inaccurate",
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                                Spacer(modifier = Modifier.padding(16.dp))
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center,
@@ -664,7 +644,6 @@ fun MessagingPanelScreen(
     ) {
         FullScreenTextField(
             messageText = messageTextFieldState.text,
-            maxCharacter,
             onValueChange = { onEvent(MessagingPanelOnEvent.EnterMessage(it)) },
             visibility = expendedTextField
         ) {

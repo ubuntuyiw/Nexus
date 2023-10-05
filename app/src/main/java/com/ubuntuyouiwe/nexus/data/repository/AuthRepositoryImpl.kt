@@ -129,6 +129,9 @@ class AuthRepositoryImpl @Inject constructor(
             throw Exception("No active user found")
         }
     }
+    override suspend fun changePassword(password: String) {
+        firebaseDatasource.changePassword(password)
+    }
 
 
     override suspend fun updateDisplayName(name: String) {

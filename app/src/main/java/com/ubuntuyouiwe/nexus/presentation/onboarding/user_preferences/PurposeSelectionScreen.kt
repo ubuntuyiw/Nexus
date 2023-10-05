@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
-import com.ubuntuyouiwe.nexus.presentation.onboarding.on_boarding_navigation.OnBoardingScreen
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import kotlinx.coroutines.launch
@@ -153,7 +153,7 @@ fun PurposeSelectionScreen(
                             }
                         } else if(!updatePurposeSelection.isLoading && !updatePurposeSelection.isError) {
                             if (isAuto) {
-                                navController.navigate(OnBoardingScreen.SystemMessage.name + "/${true}")
+                                navController.navigate(Screen.SystemMessage.name + "/${true}")
                             } else {
                                 navController.navigateUp()
                             }

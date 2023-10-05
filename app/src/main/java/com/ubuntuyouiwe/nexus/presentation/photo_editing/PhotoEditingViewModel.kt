@@ -31,12 +31,8 @@ class PhotoEditingViewModel @Inject constructor(
     private val bitmapToStringUseCase: BitmapToStringUseCase,
     private val application: Application,
     private val getBitmapFormUriUseCase: GetBitmapFormUriUseCase,
-    sharedState: SharedState
 ) : AndroidViewModel(application) {
 
-
-    var _isDarkMode = sharedState.isDarkTheme
-    val isDarkMode: State<Boolean> = _isDarkMode
 
     var image by mutableStateOf<InputImage?>(null)
 

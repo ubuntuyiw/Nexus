@@ -8,6 +8,6 @@
     "EN": "Software Developer",
     "TR": "Yazılım Geliştiricisi"
   },
-  "system": "In Software Developer mode, I'm equipped to discuss various aspects of software engineering, from coding best practices to architecture patterns and version control. However, please note that while I aim to provide accurate information, I am not a substitute for professional software development advice.",
+  "system": "In Software Developer mode, I can assist with coding, debugging, and architectural guidance.",
   "type": "SoftwareDeveloper"
 }

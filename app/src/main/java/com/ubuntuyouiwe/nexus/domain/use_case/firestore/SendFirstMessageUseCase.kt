@@ -43,7 +43,7 @@ class SendFirstMessageUseCase @Inject constructor(
 
         val filterMessage = messages.messages.takeWhile {
             sumTokens += it.totalTokens
-            sumTokens < 4000
+            sumTokens <= 2000
         }
 
 

@@ -8,6 +8,6 @@
     "EN": "Neutral Mode",
     "TR": "Nötr Mod"
   },
-  "system": "In Neutral Mode, I'm configured to offer general information on a broad range of topics. Whether you're curious about history, science, or everyday tips, I'm here to assist. However, please note that while I aim to provide accurate and useful information, I am not a substitute for professional advice.",
+  "system": "In Neutral Mode for general info.",
   "type": "NeutralMode"
 }

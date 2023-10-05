@@ -17,4 +17,5 @@ interface DataSyncRepository {
     suspend fun updateChatRoomDocuments(chatRooms: List<ChatRoom>)
 
     suspend fun deleteChatRoomDocuments(chatRooms: List<ChatRoom>)
+
 }

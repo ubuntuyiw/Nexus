@@ -156,7 +156,9 @@ fun MessageItemDto.toMessageItem(): MessageItem =
 
 fun SettingsDto.toSettings(): com.ubuntuyouiwe.nexus.domain.model.Settings =
     com.ubuntuyouiwe.nexus.domain.model.Settings(
-        setSpeechRate = this.setSpeechRate.value
+        setSpeechRate = this.setSpeechRate.value,
+        theme = this.theme.value
+
     )
 
 fun ChatRoomFilterDto.toChatRoomFilter(): ChatRoomFilter =

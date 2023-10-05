@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.onboarding.user_name
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -28,8 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
-import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
-import com.ubuntuyouiwe.nexus.presentation.onboarding.on_boarding_navigation.OnBoardingScreen
+import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +42,7 @@ fun UserNameScreen(
 
         if (updateDisplayNameState.isSuccess) {
             if (isAuto) {
-                navController.navigate(OnBoardingScreen.PurposeSelection.name + "/${true}")
+                navController.navigate(Screen.PurposeSelection.name + "/${true}")
                 onEvent(UserNameEvent.UpdateDisplayNameStateReset)
             } else {
                 navController.navigateUp()

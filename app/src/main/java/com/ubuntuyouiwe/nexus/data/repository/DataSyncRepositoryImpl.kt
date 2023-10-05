@@ -2,6 +2,7 @@ package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.functions.HttpsCallableResult
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
@@ -11,6 +12,7 @@ import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
+import com.ubuntuyouiwe.nexus.data.util.CloudFunctions
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
 import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
 import com.ubuntuyouiwe.nexus.data.util.firstToHashMap
@@ -133,6 +135,7 @@ class DataSyncRepositoryImpl @Inject constructor(
         )
         firebaseDataSource.ai(aiRequest)
     }
+
 
     private suspend fun sendSubsequentMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
 

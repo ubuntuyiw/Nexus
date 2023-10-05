@@ -1,4 +1,4 @@
-package com.ubuntuyouiwe.nexus.presentation.messaging_panel
+package com.ubuntuyouiwe.nexus.presentation.messaging_panel.state
 
 data class SendMessageState(
     val isSuccess: Boolean = false,

@@ -31,8 +31,8 @@ android {
     buildTypes {
         release {
             ndk.debugSymbolLevel = "FULL"
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -158,6 +158,7 @@ dependencies {
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("com.google.protobuf:protobuf-javalite:3.22.3")
     implementation("androidx.datastore:datastore-core:1.0.0")
+
 }
 
 protobuf {

@@ -15,5 +15,7 @@ enum class Screen {
     UserName,
     PurposeSelection,
     SystemMessage,
+    Password,
+    Theme
 
 }

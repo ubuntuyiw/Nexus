@@ -26,7 +26,6 @@ import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTex
 @Composable
 fun FullScreenTextField(
     messageText: String,
-    maxCharacter: Int,
     onValueChange: (String) -> Unit,
     visibility: Boolean,
     hide: () -> Unit
@@ -46,14 +45,6 @@ fun FullScreenTextField(
         PrimaryTextField(
             value = messageText,
             onValueChange = onValueChange,
-            label = if (messageText.length >= maxCharacter) {
-                {
-                    Text(
-                        text = "Message limit exceeded. Maximum 500 characters allowed.",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            } else null,
             enabled = visibility,
             leadingIcon = {
                 IconButton(onClick = hide, modifier = Modifier) {
@@ -64,14 +55,6 @@ fun FullScreenTextField(
                     )
                 }
             },
-            suffix = {
-                Text(
-                    text = messageText.length.toString(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = if (messageText.length >= maxCharacter) MaterialTheme.colorScheme.inversePrimary else MaterialTheme.colorScheme.onPrimary
-                )
-            },
-            isError = messageText.length >= maxCharacter,
             modifier = Modifier
                 .focusRequester(emailStateFocusRequester)
                 .fillMaxHeight()
