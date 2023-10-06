@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nexus</string>
+    <string name="your_web_client_id">652042565767-hmtngu8b73sftlrkapi2po4g824a1ekh.apps.googleusercontent.com</string>
+    <string name="logo">Logo</string>
+    <string name="google">Google</string>
+    <string name="email">Email</string>
+    <string name="password">Şifre</string>
+    <string name="signup">Kaydol</string>
+    <string name="password_visibility">Şifre Görünürlüğü</string>
+    <string name="reset_password">Şifreyi Sıfırla</string>
+    <string name="from_ubuntuyouiwe">From\nUBUNTUYOUIWE</string>
+    <string name="login">Giriş Yap</string>
+    <string name="left_arrow">Sol Ok</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="creation_successful">Oluşturma başarılı</string>
+    <string name="login_successful">Giriş başarılı.</string>
+    <string name="password_reset_link_sent">Şifre sıfırlama bağlantınız e-posta adresinize gönderildi. Lütfen gereksiz/junk klasörünüze de bakmayı unutmayın.</string>
+    <string name="enter_email_for_reset">Şifreyi sıfırlamak için e-posta adresinizi girin.</string>
+    <string name="deleting">Siliniyor</string>
+    <string name="error_occurred">Bir hata oluştu. Lütfen tekrar deneyin.</string>
+    <string name="logging_out">Çıkış yapılıyor</string>
+    <string name="retry">Tekrar Dene</string>
+    <string name="archived">Arşivlendi</string>
+    <string name="remove_pin">Pini Kaldır</string>
+    <string name="new_chat">Yeni Sohbet</string>
+    <string name="chat_rooms">Sohbet Odaları</string>
+    <string name="filter">Filtrele</string>
+    <string name="send_email">E-posta Gönder</string>
+    <string name="no_content_created">Henüz içerik oluşturulmadı.</string>
+    <string name="time_remaining_deletion">Silinmeye kalan süre</string>
+    <string name="cancel">İptal</string>
+    <string name="roles_sort">Rolleri Sırala</string>
+    <string name="roles_filter">Roller Filtresi</string>
+    <string name="all">Tümü</string>
+    <string name="who_talk_with">Kiminle Konuşmak İstersiniz?</string>
+    <string name="loading_ad">Reklam yükleniyor</string>
+    <string name="ads_unavailable">Reklamlar kullanılamıyor. Daha sonra deneyin.</string>
+    <string name="reward_loaded">Ödül yüklendi.</string>
+    <string name="buy_messages">Mesaj Satın Al</string>
+    <string name="available_messages">Kalan Mesajlar</string>
+    <string name="shake_phone">Telefonu Salla</string>
+    <string name="shake_for_credits">Mesaj kredisi kazanmak için telefonunuzu hızla sallayın.</string>
+    <string name="best_selling_package">En Çok Satan Paket</string>
+    <string name="most_advantageous_package">En Avantajlı Paket</string>
+    <string name="theme">Tema</string>
+    <string name="password_reset_email">E-posta adresinize bir şifre sıfırlama bağlantısı gönderildi.</string>
+    <string name="send">Gönder</string>
+
+
+
+
+</resources>

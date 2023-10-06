@@ -22,6 +22,7 @@ import com.ubuntuyouiwe.nexus.R
 @Composable
 fun AppNameAnimation() {
     val infiniteTransition = rememberInfiniteTransition(label = "")
+    val nexus = stringResource(id = R.string.app_name)
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
@@ -45,7 +46,7 @@ fun AppNameAnimation() {
         )
     )
     Text(
-        text = stringResource(id = R.string.app_name),
+        text = nexus,
         style = textStyle
     )
 }

@@ -1,6 +1,10 @@
 package com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.widgets
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,21 +21,22 @@ import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTo
 fun EmailWithSignUpTopBar(
     onClick: () -> Unit
 ) {
+    val signup = stringResource(id = R.string.signup)
     PrimaryTopAppBar(
         title = {
             Text(
-                text = stringResource(id = R.string.SignUp),
+                text = signup,
                 style = MaterialTheme.typography.headlineSmall
             )
         },
         navigationIcon = {
-            PrimaryIconButton(
+            IconButton(
                 onClick = onClick,
                 modifier = Modifier.padding(start = 16.dp)
             ) {
-                SecondaryIcon(
-                    painter = painterResource(id = R.drawable.left_arrow),
-                    contentDescription = stringResource(id = R.string.left_arrow)
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = Icons.Default.ArrowBack.name,
                 )
             }
         },

@@ -39,16 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ubuntuyouiwe.nexus.R
-import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIconButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.PrimaryIcon
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.SecondaryIcon
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
+import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
-import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
-import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
-import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.SignInEvent
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_signup.widgets.EmailWithSignUpTopBar
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetLoginSuggestionText
@@ -56,7 +49,6 @@ import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @Composable
 fun EmailWithSignUp(
@@ -72,14 +64,20 @@ fun EmailWithSignUp(
     val hostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
+    val creationSuccessful = stringResource(id = R.string.creation_successful)
+    val loading = stringResource(id = R.string.loading)
+    val signup = stringResource(id = R.string.signup)
+    val email = stringResource(id = R.string.email)
+    val password = stringResource(id = R.string.password)
+    val passwordVisibility = stringResource(id = R.string.password_visibility)
 
     LaunchedEffect(key1 = signUpState) {
         if (signUpState.isSuccess) {
-            hostState.showSnackbar(context.resources.getString(R.string.creation_was_successful))
+            hostState.showSnackbar(creationSuccessful)
 
         } else if (signUpState.isLoading) {
             hostState.showSnackbar(
-                message = context.resources.getString(R.string.loading),
+                message = loading,
                 duration = SnackbarDuration.Indefinite
             )
 
@@ -149,19 +147,19 @@ fun EmailWithSignUp(
                     isError = emailState.isError,
                     label = {
                         Text(
-                            text = stringResource(id = R.string.email),
+                            text = email,
                             style = MaterialTheme.typography.bodySmall,
                         )
                     },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.email),
-                            contentDescription = stringResource(id = R.string.email),
+                            contentDescription = email,
                         )
                     },
                     singleLine = true,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.9f)
                         .focusRequester(emailStateFocusRequester)
                 )
 
@@ -177,14 +175,14 @@ fun EmailWithSignUp(
                     isError = passwordState.isError,
                     label = {
                         Text(
-                            text = stringResource(id = R.string.password),
+                            text = password,
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = stringResource(id = R.string.password)
+                            contentDescription = password
                         )
                     },
                     trailingIcon = {
@@ -194,14 +192,14 @@ fun EmailWithSignUp(
                             Icon(
                                 imageVector =   if (passwordState.isVisibility) Icons.Default.Password
                                 else Icons.Default.RemoveRedEye,
-                                contentDescription = stringResource(id = R.string.passwordVisibility),
+                                contentDescription = passwordVisibility,
                             )
                         }
                     },
                     visualChar = if (passwordState.isVisibility) null else '*',
                     singleLine = true,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.9f)
                         .focusRequester(passwordStateFocusRequester)
                 )
 
@@ -216,7 +214,7 @@ fun EmailWithSignUp(
                         .height(36.dp),
 
                     ) {
-                    Text(text = stringResource(id = R.string.SignUp), style = MaterialTheme.typography.bodyMedium)
+                    Text(text = signup, style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Spacer(modifier = Modifier.padding(16.dp))

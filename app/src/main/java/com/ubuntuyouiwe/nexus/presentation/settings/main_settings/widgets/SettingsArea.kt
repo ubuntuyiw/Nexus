@@ -32,7 +32,7 @@ fun SettingsArea(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.secondary
         ),
         onClick = onClick,
         modifier = Modifier
@@ -47,7 +47,7 @@ fun SettingsArea(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Column(
                 modifier = Modifier
@@ -71,7 +71,7 @@ fun SettingsArea(
                 Icon(
                     imageVector = Icons.Default.ArrowRight,
                     contentDescription = Icons.Default.ArrowRight.name,
-                    tint = White
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
 

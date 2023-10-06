@@ -1,4 +1,4 @@
-package com.ubuntuyouiwe.nexus.presentation.settings.theme
+package com.ubuntuyouiwe.nexus.presentation.util
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode

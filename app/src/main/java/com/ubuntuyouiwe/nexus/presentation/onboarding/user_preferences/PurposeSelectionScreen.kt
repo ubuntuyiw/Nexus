@@ -29,6 +29,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -98,6 +99,8 @@ fun PurposeSelectionScreen(
 
     val scrollState = rememberScrollState()
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = {
             SnackbarHost(hostState) {
                 Snackbar(snackbarData = it)
@@ -106,6 +109,12 @@ fun PurposeSelectionScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 navigationIcon = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -118,7 +127,6 @@ fun PurposeSelectionScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                     }

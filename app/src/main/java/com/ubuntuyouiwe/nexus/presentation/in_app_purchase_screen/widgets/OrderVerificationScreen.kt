@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,10 +32,19 @@ fun OrderVerificationScreen(
     orderVerificationScreenVisibility: () -> Unit
 ) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
-            TopAppBar(title = {
-                Text(text = "Untouched Products", style = MaterialTheme.typography.titleMedium)
-            },
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                title = {
+                    Text(text = "Untouched Products", style = MaterialTheme.typography.titleMedium)
+                },
                 navigationIcon = {
                     IconButton(onClick = orderVerificationScreenVisibility) {
                         Icon(
@@ -97,7 +107,10 @@ fun OrderVerificationScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "You have no unused or unconsumed products.", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = "You have no unused or unconsumed products.",
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
     if (consumeState.isLoading) {

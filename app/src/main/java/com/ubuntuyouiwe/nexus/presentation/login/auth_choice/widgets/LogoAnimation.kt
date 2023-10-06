@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.R
 import kotlinx.coroutines.delay
@@ -27,6 +28,7 @@ fun LogoAnimation() {
     val scale = remember { Animatable(1f) }
     val coroutineScope = rememberCoroutineScope()
     val infiniteTransition = rememberInfiniteTransition(label = "")
+    val logo = stringResource(id = R.string.logo)
     val scaleEffect by infiniteTransition.animateFloat(
         initialValue = 0.9f,
         targetValue = 1.1f,
@@ -45,7 +47,7 @@ fun LogoAnimation() {
     }
     Image(
         painter = painterResource(id = R.drawable.logo),
-        contentDescription = "Logo",
+        contentDescription = logo,
         modifier = Modifier
             .size(150.dp)
             .scale(scale.value)

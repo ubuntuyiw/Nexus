@@ -1,22 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Nexus</string>
-    <string name="logo_name">Logo</string>
-    <string name="google_name">Google</string>
+    <string name="logo">Logo</string>
+    <string name="google">Google</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="SignUp">SignUp</string>
-    <string name="passwordVisibility">Password Visibility</string>
-    <string name="resetPassword">Reset Password</string>
-    <string name="From_UBUNTUYOUIWE">"From\nUBUNTUYOUIWE"</string>
+    <string name="signup">SignUp</string>
+    <string name="password_visibility">Password Visibility</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="from_ubuntuyouiwe">From\nUBUNTUYOUIWE</string>
     <string name="login">Login</string>
     <string name="left_arrow">Left Arrow</string>
-    <string name="loading">"Loading…"</string>
-    <string name="creation_was_successful">Creation was successful</string>
-    <string name="loginSuccessful">Login successful.</string>
+    <string name="loading">Loading…</string>
+    <string name="creation_successful">Creation was successful</string>
+    <string name="login_successful">Login successful.</string>
+    <string name="password_reset_link_sent">A password reset link has been sent to your email. Please remember to check your junk/spam folder as well.</string>
+    <string name="enter_email_for_reset">Enter the email for password reset.</string>
     <string name="your_web_client_id">652042565767-hmtngu8b73sftlrkapi2po4g824a1ekh.apps.googleusercontent.com</string>
-    <string name="resetPasswordSendSuccessful">A password reset link has been sent to your email. Please remember to check your junk/spam folder as well.</string>
-    <string name="enterTheEmailForPasswordReset">Enter the email for password reset.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="deleting">Deleting</string>
+    <string name="error_occurred">An error occurred. Please try again.</string>
+    <string name="logging_out">Logging out</string>
+    <string name="retry">Retry</string>
+    <string name="archived">Archived</string>
+    <string name="remove_pin">Remove Pin</string>
+    <string name="new_chat">New Chat</string>
+    <string name="chat_rooms">Chat Rooms</string>
+    <string name="filter">Filter</string>
+    <string name="send_email">Send Email</string>
+    <string name="no_content_created">No content has been created yet.</string>
+    <string name="time_remaining_deletion">Time remaining until deletion</string>
+    <string name="cancel">Cancel</string>
+    <string name="roles_sort">Sort Roles</string>
+    <string name="roles_filter">Roles Filter</string>
+    <string name="all">All</string>
+    <string name="who_talk_with">Who Would You Like to Talk With?</string>
+    <string name="loading_ad">Ad is loading</string>
+    <string name="ads_unavailable">Ads unavailable. Try later.</string>
+    <string name="reward_loaded">Reward loaded.</string>
+    <string name="buy_messages">Buy Messages</string>
+    <string name="available_messages">Available Messages</string>
+    <string name="shake_phone">Shake the Phone</string>
+    <string name="shake_for_credits">Shake your phone quickly to earn message credits.</string>
+    <string name="best_selling_package">Best-Selling Package</string>
+    <string name="most_advantageous_package">Most Advantageous Package</string>
+    <string name="theme">Theme</string>
+    <string name="password_reset_email">A password reset link has been sent to your email.</string>
+    <string name="send">Send</string>
+
+
+
 
 </resources>

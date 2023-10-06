@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
@@ -17,7 +18,7 @@ fun PrimaryCircularProgressIndicator() {
         modifier = Modifier
             .padding(16.dp),
         colors = CardDefaults.elevatedCardColors(
-            containerColor = LightGray
+            containerColor = MaterialTheme.colorScheme.secondary
         )
 
     ) {
@@ -25,6 +26,7 @@ fun PrimaryCircularProgressIndicator() {
             modifier = Modifier
                 .padding(8.dp)
                 .size(24.dp),
+            color = MaterialTheme.colorScheme.onSecondary,
             strokeCap = StrokeCap.Square,
             strokeWidth = 3.dp)
     }

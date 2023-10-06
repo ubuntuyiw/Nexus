@@ -31,9 +31,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomFilterState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomShortState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
@@ -53,6 +55,10 @@ fun FilterDialog(
     var allSelectedRole by remember {
         mutableStateOf(false)
     }
+    val filter = stringResource(id = R.string.filter)
+    val rolesShort = stringResource(id = R.string.roles_sort)
+    val rolesFilter = stringResource(id = R.string.roles_filter)
+    val all = stringResource(id = R.string.all)
 
     val roles = listOf(
         mapOf(RolesCategory.NeutralMode to chatRoomFilterState.data.isNeutralMode),
@@ -102,7 +108,7 @@ fun FilterDialog(
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             .fillMaxWidth()
     ) {
-        Text(text = "Filter", style = MaterialTheme.typography.titleMedium)
+        Text(text = filter, style = MaterialTheme.typography.titleMedium)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -152,7 +158,7 @@ fun FilterDialog(
             Chapter(
                 top = {
                     Text(
-                        text = "Short",
+                        text = rolesShort,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -213,7 +219,7 @@ fun FilterDialog(
             Chapter(
                 top = {
                     Text(
-                        text = "Roles Filter",
+                        text = rolesFilter,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
@@ -241,7 +247,7 @@ fun FilterDialog(
                             )
 
                             Text(
-                                text = "All",
+                                text = all,
                                 style = MaterialTheme.typography.bodyMedium,
                                 modifier = if (widthPx > 0) Modifier
                                     .padding(4.dp)

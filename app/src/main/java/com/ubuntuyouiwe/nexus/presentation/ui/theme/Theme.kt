@@ -21,7 +21,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = DeepBlueSeaDark,
     onPrimary = White,
     inversePrimary = Slate,
-    secondary = aa,
+    secondary = DeepBlueSeaDark,
     onSecondary = White,
     background = DeepTwilight,
     onBackground = White,
@@ -31,22 +31,26 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = White,
     error = Color.Red,
     onError = White,
-    errorContainer = DeepTwilight,
+    errorContainer = DeepBlueSeaDark,
     onErrorContainer = White,
-    scrim = scrim
+    scrim = scrimDark
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = DeepBlueSea,
-    onPrimary = Color.White,
-    secondary = DeepBlueSea,
-    onSecondary = Color.White,
+    onPrimary = Black,
+    inversePrimary = Deneme,
+    secondary = SoftCloud,
+    onSecondary = Black,
     background = Whisper,
     onBackground = Color.Black,
     surface = White,
     onSurface = Color.Black,
     error = Color.Red,
-    onError = Color.White,
+    onError = White,
+    errorContainer = DeepBlueSea,
+    onErrorContainer = Black,
+    scrim = scrimLight
 )
 
 

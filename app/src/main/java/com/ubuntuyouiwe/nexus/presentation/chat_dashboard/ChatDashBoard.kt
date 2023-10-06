@@ -40,6 +40,8 @@ import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Unarchive
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -102,15 +104,15 @@ import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.S)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ChatDashBoard(
     navController: NavController,
@@ -168,14 +170,28 @@ fun ChatDashBoard(
     var deleteTime by remember {
         mutableIntStateOf(5)
     }
+    val nexus = stringResource(id = R.string.app_name)
+    val deleting = stringResource(id = R.string.deleting)
+    val errorOccurred = stringResource(id = R.string.error_occurred)
+    val loggingOut = stringResource(id = R.string.logging_out)
+    val retry = stringResource(id = R.string.retry)
+    val archived = stringResource(id = R.string.archived)
+    val removePin = stringResource(id = R.string.remove_pin)
+    val newChat = stringResource(id = R.string.new_chat)
+    val chatRooms = stringResource(id = R.string.chat_rooms)
+    val filter = stringResource(id = R.string.filter)
+    val sendEmail = stringResource(id = R.string.send_email)
+    val noContentCreated = stringResource(id = R.string.no_content_created)
+    val timeRemainingDeletion = stringResource(id = R.string.time_remaining_deletion)
+    val cancel = stringResource(id = R.string.cancel)
 
-    LaunchedEffect(key1 = workManagerState, key2 = chatRoomDeleteSate,) {
+    LaunchedEffect(key1 = workManagerState, key2 = chatRoomDeleteSate) {
         //TODO
         if (chatRoomDeleteSate.isSuccess) {
-             if (workManagerState.isRunning) {
-                hostState.showSnackbar("Siliniyor")
-            } else if(workManagerState.isFailed) {
-                hostState.showSnackbar("Hata")
+            if (workManagerState.isRunning) {
+                hostState.showSnackbar(deleting)
+            } else if (workManagerState.isFailed) {
+                hostState.showSnackbar(errorOccurred)
             }
         } else if (chatRoomDeleteSate.isError) {
             hostState.showSnackbar(chatRoomDeleteSate.errorMessage)
@@ -187,7 +203,7 @@ fun ChatDashBoard(
 
     LaunchedEffect(key1 = stateSignOut) {
         if (stateSignOut.isLoading) {
-            hostState.showSnackbar("Logging out...")
+            hostState.showSnackbar(loggingOut)
         } else if (stateSignOut.isError) {
             hostState.showSnackbar(stateSignOut.errorMessage)
         }
@@ -198,7 +214,7 @@ fun ChatDashBoard(
             val result = hostState.showSnackbar(
                 chatRoomsState.errorMessage,
                 duration = SnackbarDuration.Indefinite,
-                actionLabel = "Retry"
+                actionLabel = retry
             )
             if (result == SnackbarResult.ActionPerformed) {
                 onEvent(ChatDashBoardEvent.ChatRoomsRetry)
@@ -222,13 +238,13 @@ fun ChatDashBoard(
                             if (chatRoomFilterState.data.isArchived) {
 
                                 Text(
-                                    text = "Archived",
+                                    text = archived,
                                     style = MaterialTheme.typography.titleMedium
                                 )
 
                             } else {
                                 Text(
-                                    text = stringResource(id = R.string.app_name),
+                                    text = nexus,
                                     style = MaterialTheme.typography.titleLarge
                                 )
                             }
@@ -272,7 +288,6 @@ fun ChatDashBoard(
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = Icons.Default.ArrowBack.name,
-                                tint = White,
                                 modifier = Modifier.size(24.dp)
                             )
 
@@ -297,7 +312,6 @@ fun ChatDashBoard(
                                 Icon(
                                     imageVector = Icons.Default.MoreVert,
                                     contentDescription = Icons.Default.MoreVert.name,
-                                    tint = White,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
@@ -317,7 +331,6 @@ fun ChatDashBoard(
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = Icons.Default.Delete.name,
-                                    tint = White,
                                     modifier = Modifier.size(24.dp)
                                 )
 
@@ -341,8 +354,7 @@ fun ChatDashBoard(
                                         imageVector = if (hasPinned) ImageVector.vectorResource(
                                             id = R.drawable.remove_pin
                                         ) else Icons.Default.PushPin,
-                                        contentDescription = if (hasPinned) "Remove Pin" else Icons.Default.PushPin.name,
-                                        tint = White,
+                                        contentDescription = if (hasPinned) removePin else Icons.Default.PushPin.name,
                                         modifier = Modifier.size(24.dp)
                                     )
 
@@ -367,7 +379,6 @@ fun ChatDashBoard(
                                     Icon(
                                         imageVector = if (hasFavorited) Icons.Default.HeartBroken else Icons.Default.Favorite,
                                         contentDescription = if (hasFavorited) Icons.Default.HeartBroken.name else Icons.Default.Favorite.name,
-                                        tint = White,
                                         modifier = Modifier.size(24.dp)
                                     )
 
@@ -390,7 +401,6 @@ fun ChatDashBoard(
                                 Icon(
                                     imageVector = if (chatRoomFilterState.data.isArchived) Icons.Default.Unarchive else Icons.Default.Archive,
                                     contentDescription = if (chatRoomFilterState.data.isArchived) Icons.Default.Unarchive.name else Icons.Default.Archive.name,
-                                    tint = White,
                                     modifier = Modifier.size(24.dp)
                                 )
 
@@ -405,13 +415,14 @@ fun ChatDashBoard(
                     containerColor = topAppBarColor,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
         floatingActionButton = {
             if (!chatRoomFilterState.data.isArchived) {
                 ExtendedFloatingActionButton(
-                    text = { Text(text = "New Chat") },
+                    text = { Text(text = newChat) },
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Chat,
@@ -422,11 +433,11 @@ fun ChatDashBoard(
                     onClick = { navController.navigate(Screen.CreateChatRoomScreen.name) },
                     expanded = false,
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.onGloballyPositioned { coordinates ->
-                            fabHeight = coordinates.size.height
-                            fabPosition = coordinates.positionInRoot().y
-                        }
+                        fabHeight = coordinates.size.height
+                        fabPosition = coordinates.positionInRoot().y
+                    }
                 )
             }
         },
@@ -463,7 +474,7 @@ fun ChatDashBoard(
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         Text(
-                            text = "Chat Rooms",
+                            text = chatRooms,
                             color = MaterialTheme.colorScheme.onBackground,
                             style = MaterialTheme.typography.bodyLarge,
                         )
@@ -498,7 +509,7 @@ fun ChatDashBoard(
                             )
                             Spacer(modifier = Modifier.padding(4.dp))
                             Text(
-                                text = "Filter",
+                                text = filter,
                                 style = MaterialTheme.typography.labelLarge,
                                 color = filterColor,
                                 overflow = TextOverflow.Ellipsis,
@@ -514,12 +525,14 @@ fun ChatDashBoard(
                     ModalBottomSheet(
                         dragHandle = {},
                         onDismissRequest = {
-                        onEvent(
-                            ChatDashBoardEvent.ChangeFilterDialogVisibility(
-                                false
+                            onEvent(
+                                ChatDashBoardEvent.ChangeFilterDialogVisibility(
+                                    false
+                                )
                             )
-                        )
-                    }, containerColor = MaterialTheme.colorScheme.background) {
+                        }, containerColor = MaterialTheme.colorScheme.background,
+                        scrimColor = MaterialTheme.colorScheme.primary.copy(0.6f)
+                    ) {
                         FilterDialog(
                             chatRoomShortState,
                             chatRoomShortOnEvent = {
@@ -588,13 +601,18 @@ fun ChatDashBoard(
                                                 isDoctor = state
                                             )
 
-                                            RolesCategory.Chef -> chatRoomFilterState.data.copy(isChef = state)
+                                            RolesCategory.Chef -> chatRoomFilterState.data.copy(
+                                                isChef = state
+                                            )
 
-                                            RolesCategory.SportsPolymath -> chatRoomFilterState.data.copy(isSportsPolymath = state)
+                                            RolesCategory.SportsPolymath -> chatRoomFilterState.data.copy(
+                                                isSportsPolymath = state
+                                            )
 
                                             RolesCategory.LiteratureTeacher -> chatRoomFilterState.data.copy(
                                                 isLiteratureTeacher = state
                                             )
+
                                             RolesCategory.Philosophy -> chatRoomFilterState.data.copy(
                                                 isPhilosophy = state
                                             )
@@ -695,8 +713,10 @@ fun ChatDashBoard(
                         dragHandle = {},
                         onDismissRequest = {},
                         sheetState = sheetState,
-                        containerColor = MaterialTheme.colorScheme.background
-                        ) {
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrimColor = MaterialTheme.colorScheme.primary.copy(0.6f)
+
+                    ) {
 
                         MenuScreen { menuItemType ->
                             scope.launch {
@@ -733,7 +753,8 @@ fun ChatDashBoard(
                                     }
 
                                     MenuItemType.RATE_US -> {
-                                        val link = "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
+                                        val link =
+                                            "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                                         context.startActivity(intent)
 
@@ -744,8 +765,12 @@ fun ChatDashBoard(
                                         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                                             data = Uri.parse("mailto:$email")
                                         }
-                                        context.startActivity(Intent.createChooser(emailIntent, "E-posta Gönder"))
-
+                                        context.startActivity(
+                                            Intent.createChooser(
+                                                emailIntent,
+                                                sendEmail
+                                            )
+                                        )
 
 
                                         /*val intent = Intent()
@@ -784,10 +809,16 @@ fun ChatDashBoard(
 
                                     selectedChatRooms = if (!selectedChatRooms.contains(chatRoom)) {
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                            val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                                            val vibrator =
+                                                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                                             vibrator.vibrate(
                                                 CombinedVibration.createParallel(
-                                                    VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE)))
+                                                    VibrationEffect.createOneShot(
+                                                        75,
+                                                        VibrationEffect.DEFAULT_AMPLITUDE
+                                                    )
+                                                )
+                                            )
                                         } else {
                                             vibrator2.vibrate(75)
                                         }
@@ -798,10 +829,16 @@ fun ChatDashBoard(
                             onLongClick = {
                                 selectedChatRooms = if (!selectedChatRooms.contains(chatRoom)) {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        val vibrator = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                                        val vibrator =
+                                            context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                                         vibrator.vibrate(
                                             CombinedVibration.createParallel(
-                                                VibrationEffect.createOneShot(75, VibrationEffect.DEFAULT_AMPLITUDE)))
+                                                VibrationEffect.createOneShot(
+                                                    75,
+                                                    VibrationEffect.DEFAULT_AMPLITUDE
+                                                )
+                                            )
+                                        )
                                     } else {
                                         vibrator2.vibrate(75)
                                     }
@@ -820,7 +857,7 @@ fun ChatDashBoard(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "No content has been created yet.",
+                                    text = noContentCreated,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.labelLarge,
                                 )
@@ -850,9 +887,10 @@ fun ChatDashBoard(
 
         if (chatRoomDeleteSate.isSuccess && workManagerState.isEnqueued) {
 
-            Box(modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
+            Box(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Card(
@@ -880,15 +918,20 @@ fun ChatDashBoard(
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
 
-                        Text(text = "Silinecek: $deleteTime", style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            text = "$timeRemainingDeletion $deleteTime",
+                            style = MaterialTheme.typography.bodySmall
+                        )
 
                         Button(onClick = {
-                            onEvent(ChatDashBoardEvent.ChatRoomCancelDelete(
-                                chatRoomDeleteSate.data
-                            ))
+                            onEvent(
+                                ChatDashBoardEvent.ChatRoomCancelDelete(
+                                    chatRoomDeleteSate.data
+                                )
+                            )
                         }) {
 
-                            Text(text = "İptal")
+                            Text(text = cancel)
                         }
 
                     }
@@ -897,7 +940,6 @@ fun ChatDashBoard(
             }
 
         }
-
 
 
     }

@@ -96,7 +96,6 @@ import com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets.RenameChatRoo
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.util.ImageUrl.SHAKE
 import kotlinx.coroutines.launch
 
@@ -215,7 +214,6 @@ fun MessagingPanelScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                         GlideImage(
@@ -257,7 +255,6 @@ fun MessagingPanelScreen(
                                 Text(
                                     text = it.codeLanguage.uppercase(),
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary
                                 )
                                 PrimaryIconButton(onClick = {
                                     onEvent(MessagingPanelOnEvent.SetSpeechRate)
@@ -266,7 +263,6 @@ fun MessagingPanelScreen(
                                     Text(
                                         text = settingsState.successData.setSpeechRate.toString() + "x",
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                             }
@@ -280,7 +276,6 @@ fun MessagingPanelScreen(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = Icons.Default.MoreVert.name,
-                            tint = White
                         )
                     }
 
@@ -371,7 +366,6 @@ fun MessagingPanelScreen(
                         placeholder = {
                             Text(
                                 text = "Type a message",
-                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         },
@@ -382,8 +376,7 @@ fun MessagingPanelScreen(
                                     expendedTextField = true
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
                                 ),
                             ) {
                                 Icon(
@@ -420,8 +413,7 @@ fun MessagingPanelScreen(
 
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface,
                                 ),
                             ) {
                                 Icon(
@@ -457,7 +449,6 @@ fun MessagingPanelScreen(
                                     focusManager.clearFocus()
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary,
                                 ),
                                 modifier = Modifier
@@ -657,7 +648,7 @@ fun MessagingPanelScreen(
         exit = scaleOut() + fadeOut(targetAlpha = 0.3f),
     ) {
         expendedMessageContent?.let {
-            FullScreenMessageArea(it) {
+            FullScreenMessageArea(it, userState) {
                 expendedMessageState = false
             }
         }

@@ -47,8 +47,6 @@ import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.MainSettingsSc
 import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.MainSettingsViewModel
 import com.ubuntuyouiwe.nexus.presentation.settings.password.PasswordScreen
 import com.ubuntuyouiwe.nexus.presentation.settings.password.PasswordViewModel
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeScreen
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeViewModel
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseScreen
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseViewModel
 
@@ -345,8 +343,10 @@ fun NavHostScreen(startDestination: Screen) {
         ) { navBackStackEntry ->
             val viewModel: MainSettingsViewModel = hiltViewModel(navBackStackEntry)
             val useState by viewModel.getPurposeSelection
+            val settingsState by viewModel.settingsState
+            val onEvent = viewModel::onEvent
 
-            MainSettingsScreen(navController, useState)
+            MainSettingsScreen(navController, useState, settingsState, onEvent)
         }
 
 
@@ -433,15 +433,7 @@ fun NavHostScreen(startDestination: Screen) {
                 onEvent
             )
         }
-        composable(Screen.Theme.name) {  navBackStackEntry ->
-            val viewModel: ThemeViewModel = hiltViewModel(navBackStackEntry)
-            val settingsState by viewModel.settingsState
-            val onEvent = viewModel::onEvent
-            ThemeScreen(
-                settingsState,
-                onEvent
-            )
-        }
+
 
 
     }

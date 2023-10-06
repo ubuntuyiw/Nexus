@@ -1,13 +1,18 @@
 package com.ubuntuyouiwe.nexus.presentation.main_activity
 
+import android.app.LocaleManager
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -31,7 +37,7 @@ import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.UserOperationErrorUi
 import com.ubuntuyouiwe.nexus.presentation.navigation.NavHostScreen
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
+import com.ubuntuyouiwe.nexus.presentation.util.ThemeCategory
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -124,18 +130,13 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
     private var isShowAd: Boolean = true
 
     override fun hearShake() {
-        Toast.makeText(this, "sallandı", Toast.LENGTH_SHORT).show()
-        Log.v("asdasd","sallandı")
         val viewModel: MainActivityViewModel by viewModels()
         val mainAuthUiEvent by viewModel.userOperationState
-
         mainAuthUiEvent.successData?.let { user ->
             loadAd(user)
-
         }
-
-
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -160,13 +161,15 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
     private fun loadAd(user: User) {
         if (!isShowAd) return
         else isShowAd = false
-        Toast.makeText(this@MainActivity, "reklam yükleniyor", Toast.LENGTH_SHORT).show()
+        val loadingAd = this.resources.getString(R.string.loading_ad)
+        val adsUnavailable = this.resources.getString(R.string.ads_unavailable)
+        Toast.makeText(this@MainActivity, loadingAd, Toast.LENGTH_SHORT).show()
         val adRequest = AdRequest.Builder().build()
         RewardedAd.load(this,"ca-app-pub-8437475970369583/4956584331", adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Toast.makeText(
                     this@MainActivity,
-                    "Ads unavailable. Try later.",
+                    adsUnavailable,
                     Toast.LENGTH_SHORT
                 ).show()
                 isShowAd = true

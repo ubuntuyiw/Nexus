@@ -1,5 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.settings.main_settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,37 +8,58 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.settings.main_settings.widgets.SettingsArea
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
+import com.ubuntuyouiwe.nexus.presentation.util.ThemeCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSettingsScreen(navController: NavHostController, useState: UserOperationState) {
+fun MainSettingsScreen(
+    navController: NavHostController,
+    useState: UserOperationState,
+    settingsState: SettingsState,
+    onEvent: (event: MainSettingsEvent) -> Unit
+) {
     val name = useState.successData?.name?: ""
     val email = useState.successData?.email?: ""
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
                 navigationIcon = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -50,7 +72,6 @@ fun MainSettingsScreen(navController: NavHostController, useState: UserOperation
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                     }
@@ -124,15 +145,75 @@ fun MainSettingsScreen(navController: NavHostController, useState: UserOperation
 
 
                 }
-                SettingsArea(
-                    title = "Theme",
-                    content = "",
-                    isDetail = true,
-                    isContent = false
+
+                val short = ThemeCategory.values()
+                var dropdownMenuState by remember {
+                    mutableStateOf(false)
+                }
+
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondary
+                    ),
+                    onClick = {
+                        dropdownMenuState = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+
+
                 ) {
-                    navController.navigate(Screen.Theme.name)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.secondary)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                        ) {
+                            Text(
+                                text = "Theme",
+                                style = MaterialTheme.typography.bodyMedium,
+
+                                )
+
+                        }
+                        DropdownMenu(
+                            expanded = dropdownMenuState,
+                            onDismissRequest = { dropdownMenuState = false },
+                            modifier = Modifier.background(MaterialTheme.colorScheme.scrim)
+                        ) {
+                            short.forEach { shortDate ->
+                                DropdownMenuItem(
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = shortDate.icon,
+                                            tint = MaterialTheme.colorScheme.onSurface,
+                                            contentDescription =shortDate.icon.name
+                                        )
+                                    },
+                                    text = {
+                                        Text(
+                                            text = shortDate.field,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }, onClick = {
+                                        dropdownMenuState = false
+                                        onEvent(MainSettingsEvent.ChangeMainSettings(shortDate.ordinal))
+                                    }
+
+                                )
+                            }
+                        }
 
 
+
+                    }
                 }
 
             }

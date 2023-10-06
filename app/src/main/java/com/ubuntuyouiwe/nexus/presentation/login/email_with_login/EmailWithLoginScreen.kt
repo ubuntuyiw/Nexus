@@ -77,12 +77,17 @@ fun EmailWithLoginScreen(
 
     val hostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val login = stringResource(id = R.string.login)
+    val loginSuccessful = stringResource(id = R.string.login_successful)
+    val email = stringResource(id = R.string.email)
+    val password = stringResource(id = R.string.password)
+    val passwordVisibility = stringResource(id = R.string.password_visibility)
 
 
     LaunchedEffect(key1 = signInState) {
         if (signInState.isLoading) {
             hostState.showSnackbar(
-                message = context.resources.getString(R.string.loading),
+                message = login,
                 duration = SnackbarDuration.Indefinite
             )
         } else if (signInState.isError) {
@@ -93,7 +98,7 @@ fun EmailWithLoginScreen(
             )
 
         } else if (signInState.isSuccess) {
-            hostState.showSnackbar(context.resources.getString(R.string.loginSuccessful))
+            hostState.showSnackbar(loginSuccessful)
         }
     }
     val emailStateFocusRequester = remember { emailState.focusRequester }
@@ -155,19 +160,19 @@ fun EmailWithLoginScreen(
                     isError = emailState.isError,
                     label = {
                         Text(
-                            text = stringResource(id = R.string.email),
+                            text = email,
                             style = MaterialTheme.typography.bodySmall,
                         )
                     },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.email),
-                            contentDescription = stringResource(id = R.string.email),
+                            contentDescription = email,
                         )
                     },
                     singleLine = true,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.9f)
                         .focusRequester(emailStateFocusRequester)
                 )
 
@@ -182,7 +187,7 @@ fun EmailWithLoginScreen(
                     ),
                     label = {
                         Text(
-                            text = stringResource(id = R.string.password),
+                            text = password,
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
@@ -190,7 +195,7 @@ fun EmailWithLoginScreen(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = stringResource(id = R.string.password)
+                            contentDescription = password
                         )
                     },
                     trailingIcon = {
@@ -201,14 +206,14 @@ fun EmailWithLoginScreen(
                             Icon(
                                 imageVector =   if (passwordState.isVisibility) Icons.Default.Password
                                 else Icons.Default.RemoveRedEye,
-                                contentDescription = stringResource(id = R.string.passwordVisibility),
+                                contentDescription = passwordVisibility,
                             )
                         }
                     },
                     visualChar = if (passwordState.isVisibility) null else '*',
                     singleLine = true,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.9f)
                         .focusRequester(passwordStateFocusRequester)
                 )
 
@@ -226,7 +231,7 @@ fun EmailWithLoginScreen(
 
                     ) {
                     Text(
-                        text = stringResource(id = R.string.login),
+                        text = login,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

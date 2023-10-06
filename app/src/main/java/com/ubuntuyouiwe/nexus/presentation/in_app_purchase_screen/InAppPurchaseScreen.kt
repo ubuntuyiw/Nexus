@@ -37,6 +37,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +56,8 @@ import androidx.navigation.NavHostController
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.ProductDetails
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.util.ProductsFields
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ConnectionState
@@ -66,7 +70,8 @@ import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.widgets.Loadin
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.widgets.OrderVerificationScreen
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserMessagingDataState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
+import com.ubuntuyouiwe.nexus.presentation.util.ImageUrl
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class,
     ExperimentalFoundationApi::class
@@ -90,11 +95,20 @@ fun InAppPurchaseScreen(
     }
     val context = LocalContext.current
     val hostState = remember { SnackbarHostState() }
+
+    val retry = stringResource(id = R.string.retry)
+    val buyMessages = stringResource(id = R.string.buy_messages)
+    val availableMessages = stringResource(id = R.string.available_messages)
+    val shakePhone = stringResource(id = R.string.shake_phone)
+    val shakeForCredits = stringResource(id = R.string.shake_for_credits)
+    val bestSellingPackage = stringResource(id = R.string.best_selling_package)
+    val mostAdvantageousPackage = stringResource(id = R.string.most_advantageous_package)
+
     LaunchedEffect(key1 = connectionState) {
         if (connectionState.isError) {
             val result = hostState.showSnackbar(
                 connectionState.errorMessage,
-                actionLabel = "Retry",
+                actionLabel = retry,
                 duration = SnackbarDuration.Indefinite
             )
             if (result == SnackbarResult.ActionPerformed) {
@@ -108,6 +122,7 @@ fun InAppPurchaseScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = {
             SnackbarHost(hostState) {
                 PrimarySnackbar(snackbarData = it)
@@ -115,6 +130,12 @@ fun InAppPurchaseScreen(
         },
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 navigationIcon = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -127,14 +148,13 @@ fun InAppPurchaseScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                     }
                 },
                 title = {
                     Column {
-                        Text(text = "Buy Messages", style = MaterialTheme.typography.titleMedium)
+                        Text(text = buyMessages, style = MaterialTheme.typography.titleMedium)
                     }
 
                 },
@@ -196,14 +216,24 @@ fun InAppPurchaseScreen(
                     ) {
                         Spacer(modifier = Modifier.padding(8.dp))
                         Text(
-                            text = "Available Messages: " + userMessagingDataState.successData?.totalMessages.toString(),
+                            text = "$availableMessages: " + userMessagingDataState.successData?.totalMessages.toString(),
                             style = MaterialTheme.typography.labelLarge,
                         )
                         Spacer(modifier = Modifier.padding(8.dp))
-                        Text(
-                            text = "Shake your phone quickly to earn message credits.",
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            GlideImage(model = ImageUrl.SHAKE, contentDescription = shakePhone, modifier = Modifier.size(28.dp))
+                            Spacer(modifier = Modifier.padding(8.dp))
+                            Text(
+                                text = shakeForCredits,
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+
+
+                        }
                         Spacer(modifier = Modifier.padding(8.dp))
                     }
 
@@ -247,7 +277,7 @@ fun InAppPurchaseScreen(
 
                         ProductsFields.Message500 -> {
                             discount = "25"
-                            message = "Best-Selling Package"
+                            message = bestSellingPackage
                         }
 
                         ProductsFields.Message1000 -> {
@@ -256,7 +286,7 @@ fun InAppPurchaseScreen(
 
                         ProductsFields.Message10000 -> {
                             discount = "50"
-                            message = "Most Advantageous Package"
+                            message = mostAdvantageousPackage
                         }
                     }
 

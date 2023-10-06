@@ -26,15 +26,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import java.util.Locale
 
@@ -43,15 +46,19 @@ import java.util.Locale
 @Composable
 fun CreateChatRoomScreen(navController: NavHostController, roleState: RolesState) {
     val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+    val whoTalkWith = stringResource(id = R.string.who_talk_with)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
                 title = {
                     Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Who Would You Like to Talk With?",
+                            text = whoTalkWith,
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
@@ -61,7 +68,7 @@ fun CreateChatRoomScreen(navController: NavHostController, roleState: RolesState
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = Icons.Default.Close.name,
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
 
                     }
@@ -99,7 +106,9 @@ fun CreateChatRoomScreen(navController: NavHostController, roleState: RolesState
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxWidth().padding(4.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
                         ) {
                             Text(text = if (systemLanguage.equals("TR")) it.name.TR else it.name.EN, style = MaterialTheme.typography.bodySmall)
 

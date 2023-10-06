@@ -2,6 +2,7 @@ package com.ubuntuyouiwe.nexus.presentation.component.snacbar_style
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarData
 import androidx.compose.runtime.Composable
@@ -21,11 +22,11 @@ fun PrimarySnackbar(
         modifier = modifier,
         snackbarData = snackbarData,
         shape = RoundedCornerShape(32.dp),
-        containerColor = SoftGray,
-        contentColor = DeepBlueSea,
-        actionColor = DeepBlueSea,
+        containerColor = MaterialTheme.colorScheme.onPrimary,
+        contentColor = MaterialTheme.colorScheme.primary,
+        actionColor =MaterialTheme.colorScheme.primary,
         actionOnNewLine = actionOnNewLine,
-        actionContentColor = DeepBlueSea,
-        dismissActionContentColor = DeepBlueSea
+        actionContentColor = MaterialTheme.colorScheme.primary,
+        dismissActionContentColor = MaterialTheme.colorScheme.primary,
     )
 }

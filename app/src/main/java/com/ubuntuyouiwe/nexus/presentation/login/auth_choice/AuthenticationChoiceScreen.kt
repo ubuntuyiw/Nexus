@@ -14,14 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.filled.TextSnippet
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -55,10 +49,7 @@ import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.LogoAnimati
 import com.ubuntuyouiwe.nexus.presentation.login.widgets.GetAnnotatedTermsAndPrivacyText
 import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeEvent
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
@@ -77,14 +68,20 @@ fun AuthenticationChoiceScreen(
         mutableStateOf(false)
     }
 
+    val loginSuccessful = stringResource(id = R.string.login_successful)
+    val loading = stringResource(id = R.string.loading)
+    val google = stringResource(id = R.string.google)
+    val email = stringResource(id = R.string.email)
+    val fromUbuntuyouiwe = stringResource(id = R.string.from_ubuntuyouiwe)
+
 
     LaunchedEffect(key1 = googleSignInState) {
         if (googleSignInState.isSuccess) {
-            hostState.showSnackbar(context.resources.getString(R.string.loginSuccessful))
+            hostState.showSnackbar(loginSuccessful)
 
         } else if (googleSignInState.isLoading) {
             hostState.showSnackbar(
-                message = context.resources.getString(R.string.loading),
+                message = loading,
                 duration = SnackbarDuration.Indefinite
             )
 
@@ -170,11 +167,11 @@ fun AuthenticationChoiceScreen(
                 ) {
                     Image(
                         imageVector = ImageVector.vectorResource(id = R.drawable.google),
-                        contentDescription = stringResource(id = R.string.google_name)
+                        contentDescription = google
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(
-                        text = stringResource(id = R.string.google_name),
+                        text = google,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -192,13 +189,14 @@ fun AuthenticationChoiceScreen(
 
 
                     ) {
-                    SecondaryIcon(
+
+                    Icon(
                         painter = painterResource(id = R.drawable.email),
-                        contentDescription = stringResource(id = R.string.email)
+                        contentDescription = email,
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
                     Text(
-                        text = stringResource(id = R.string.email),
+                        text = email,
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -227,7 +225,7 @@ fun AuthenticationChoiceScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(id = R.string.From_UBUNTUYOUIWE),
+                    text = fromUbuntuyouiwe,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -240,7 +238,7 @@ fun AuthenticationChoiceScreen(
 
 }
 
-@Preview(showBackground = true, device = "id:pixel_7_pro")
+@Preview(showBackground = true)
 @Composable
 fun AuthenticationChoiceScreenPreview() {
     val navController = rememberNavController()

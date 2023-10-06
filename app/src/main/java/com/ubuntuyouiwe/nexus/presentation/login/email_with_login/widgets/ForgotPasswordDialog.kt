@@ -44,6 +44,13 @@ fun ForgotPasswordDialog(
     approvalOnClick: () -> Unit,
     rejectOnClick: () -> Unit,
 ) {
+    val passwordVisibility = stringResource(id = R.string.password_visibility)
+    val resetPassword = stringResource(id = R.string.reset_password)
+    val email = stringResource(id = R.string.email)
+    val enterEmailForReset = stringResource(id = R.string.enter_email_for_reset)
+    val cancel = stringResource(id = R.string.cancel)
+    val passwordResetEmail = stringResource(id = R.string.password_reset_email)
+    val send = stringResource(id = R.string.send)
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
@@ -79,10 +86,10 @@ fun ForgotPasswordDialog(
                         painter = painterResource(
                             id = R.drawable.reset_password
                         ),
-                        contentDescription = stringResource(id = R.string.passwordVisibility),
+                        contentDescription = passwordVisibility,
                     )
                     Text(
-                        text = stringResource(id = R.string.resetPassword),
+                        text = resetPassword,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -114,13 +121,13 @@ fun ForgotPasswordDialog(
                 singleLine = true,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.email),
+                        text = email,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 },
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.enterTheEmailForPasswordReset),
+                        text = enterEmailForReset,
                         style = MaterialTheme.typography.bodySmall,
                     )
                 },
@@ -128,7 +135,7 @@ fun ForgotPasswordDialog(
             )
             if (resetPasswordState.isSuccess)
                 Text(
-                    text = "A password reset link has been sent to your email.",
+                    text = passwordResetEmail,
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -147,11 +154,11 @@ fun ForgotPasswordDialog(
                     .background(MaterialTheme.colorScheme.scrim)
             ) {
                 SecondaryButton(onClick = rejectOnClick) {
-                    Text(text = "Cancel", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
+                    Text(text = cancel, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 SecondaryButton(onClick = approvalOnClick) {
-                    Text(text = "Send", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
+                    Text(text = send, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
             }

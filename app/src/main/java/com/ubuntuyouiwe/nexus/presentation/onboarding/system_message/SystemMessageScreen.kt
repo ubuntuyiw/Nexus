@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -19,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,9 +41,18 @@ fun SystemMessageScreen(
     updateSystemMessageState: UpdateSystemMessageState,
     onEvent: (event: SystemMessageEvent) -> Unit
 ) {
+    val scrollState = rememberScrollState()
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 navigationIcon = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -53,7 +65,7 @@ fun SystemMessageScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                     }
@@ -67,6 +79,7 @@ fun SystemMessageScreen(
                 actions = {
                     if (updateSystemMessageState.isLoading) {
                         PrimaryCircularProgressIndicator()
+
                     }
                 }
             )
@@ -107,7 +120,7 @@ fun SystemMessageScreen(
             Column(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
+                modifier = Modifier.verticalScroll(scrollState)
                     .padding(16.dp)
                     .fillMaxSize()
             ) {

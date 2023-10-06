@@ -28,6 +28,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -67,6 +68,8 @@ fun PasswordScreen(
         }
     }
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = {
             SnackbarHost(hostState) {
                 Snackbar(snackbarData = it)
@@ -75,6 +78,9 @@ fun PasswordScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
                 navigationIcon = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -87,7 +93,7 @@ fun PasswordScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = Icons.Default.ArrowBack.name,
-                            tint = White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.padding(start = 8.dp))
                     }
@@ -171,14 +177,14 @@ fun PasswordScreen(
                             Icon(
                                 imageVector = if (passwordTextFieldState.isVisibility) Icons.Default.Password
                                 else Icons.Default.RemoveRedEye,
-                                contentDescription = stringResource(id = R.string.passwordVisibility),
+                                contentDescription = stringResource(id = R.string.password_visibility),
                             )
                         }
                     },
                     visualChar = if (passwordTextFieldState.isVisibility) null else '*',
                     singleLine = true,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth(0.9f)
                         .focusRequester(passwordStateFocusRequester)
                 )
 

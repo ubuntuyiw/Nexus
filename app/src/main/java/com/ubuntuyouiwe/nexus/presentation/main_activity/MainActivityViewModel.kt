@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.main_activity
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,7 +12,6 @@ import com.ubuntuyouiwe.nexus.domain.use_case.auth.SignOutUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
-import com.ubuntuyouiwe.nexus.presentation.settings.theme.ThemeCategory
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.util.Resource

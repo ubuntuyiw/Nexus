@@ -16,6 +16,5 @@ enum class Screen {
     PurposeSelection,
     SystemMessage,
     Password,
-    Theme
 
 }
