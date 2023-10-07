@@ -23,12 +23,16 @@ class SignUpUseCase @Inject constructor(
             authRepository.signUp(param)
             emit(Resource.Success())
         } catch (e: FirebaseAuthException) {
-            emit(Resource.Error(errorCode = e.errorCode, message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(
+                Resource.Error(
+                    errorCode = e.errorCode,
+                    message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name
+                )
+            )
         } catch (e: Exception) {
             emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
-
 
 
 }

@@ -40,8 +40,6 @@ import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Unarchive
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -95,7 +93,7 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.ChatRoom
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.ChatRoomBanner
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterDialog
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterState
-import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu.MenuItemType
+import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu.MenuItemCategory
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu.MenuScreen
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.SecondaryButton
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
@@ -104,7 +102,6 @@ import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
@@ -176,6 +173,7 @@ fun ChatDashBoard(
     val loggingOut = stringResource(id = R.string.logging_out)
     val retry = stringResource(id = R.string.retry)
     val archived = stringResource(id = R.string.archived)
+    val archive = stringResource(id = R.string.archive)
     val removePin = stringResource(id = R.string.remove_pin)
     val newChat = stringResource(id = R.string.new_chat)
     val chatRooms = stringResource(id = R.string.chat_rooms)
@@ -238,7 +236,7 @@ fun ChatDashBoard(
                             if (chatRoomFilterState.data.isArchived) {
 
                                 Text(
-                                    text = archived,
+                                    text = archive,
                                     style = MaterialTheme.typography.titleMedium
                                 )
 
@@ -723,15 +721,15 @@ fun ChatDashBoard(
                                 sheetState.hide()
                             }.invokeOnCompletion {
                                 when (menuItemType) {
-                                    MenuItemType.BUY_MESSAGES -> {
+                                    MenuItemCategory.BUY_MESSAGES -> {
                                         navController.navigate(Screen.InAppPurchaseScreen.name)
                                     }
 
-                                    MenuItemType.SETTINGS -> {
+                                    MenuItemCategory.SETTINGS -> {
                                         navController.navigate(Screen.MainSettings.name)
                                     }
 
-                                    MenuItemType.ARCHIVED -> {
+                                    MenuItemCategory.ARCHIVED -> {
                                         onEvent(
                                             ChatDashBoardEvent.ChatRoomFilterChange(
                                                 chatRoomFilterState.data.copy(
@@ -741,18 +739,18 @@ fun ChatDashBoard(
                                         )
                                     }
 
-                                    MenuItemType.PRIVACY_POLICY -> {
+                                    MenuItemCategory.PRIVACY_POLICY -> {
                                         val link = "https://www.iubenda.com/privacy-policy/84531396"
                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                                         context.startActivity(intent)
                                     }
 
-                                    MenuItemType.TERMS_OF_USE -> {
+                                    MenuItemCategory.TERMS_OF_USE -> {
                                         navController.navigate(Screen.TermsOfUseScreen.name)
 
                                     }
 
-                                    MenuItemType.RATE_US -> {
+                                    MenuItemCategory.RATE_US -> {
                                         val link =
                                             "https://play.google.com/store/apps/details?id=com.ubuntuyouiwe.nexus"
                                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
@@ -760,7 +758,7 @@ fun ChatDashBoard(
 
                                     }
 
-                                    MenuItemType.HELP_CENTER -> {
+                                    MenuItemCategory.HELP_CENTER -> {
                                         val email = "ubuntu@ubuntuyouiwe.com"
                                         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                                             data = Uri.parse("mailto:$email")
@@ -773,13 +771,9 @@ fun ChatDashBoard(
                                         )
 
 
-                                        /*val intent = Intent()
-                                        intent.action = "com.android.settings.TTS_SETTINGS"
-                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                        context.startActivity(intent)*/
                                     }
 
-                                    MenuItemType.SIGN_OUT -> {
+                                    MenuItemCategory.SIGN_OUT -> {
                                         onEvent(ChatDashBoardEvent.LogOut)
                                     }
                                 }

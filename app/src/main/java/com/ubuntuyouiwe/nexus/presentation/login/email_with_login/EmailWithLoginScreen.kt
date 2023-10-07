@@ -29,11 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,12 +41,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_button_style.PrimaryIconButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.PrimaryIcon
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.TertiaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
-import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.SignInState
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.widgets.EmailWithLoginTopBar
@@ -59,9 +53,6 @@ import com.ubuntuyouiwe.nexus.presentation.login.widgets.SignUpPrompt
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.DarkGray
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 
 @Composable
@@ -289,7 +280,7 @@ fun EmailWithLoginScreen(
                     termsOfUseOnClick = {
                         navController.navigate(Screen.TermsOfUseScreen.name)
                     },
-                    privacyPolicy = {
+                    privacyPolicyOnClick = {
                         val link = "https://www.iubenda.com/privacy-policy/84531396"
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
                         context.startActivity(intent)

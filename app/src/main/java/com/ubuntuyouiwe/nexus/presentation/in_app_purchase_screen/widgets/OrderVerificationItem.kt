@@ -15,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ubuntuyouiwe.nexus.R
 
 @Composable
 fun OrderVerificationItem(
@@ -23,6 +25,8 @@ fun OrderVerificationItem(
     count: String,
     consumeOnClick: () ->Unit
 ) {
+    val countText = stringResource(id = R.string.count)
+    val consumeText = stringResource(id = R.string.consume)
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.scrim
@@ -41,11 +45,11 @@ fun OrderVerificationItem(
             Column {
                 Text(text = title)
                 Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = "Count: $count")
+                Text(text = "$countText: $count", style = MaterialTheme.typography.bodySmall)
             }
 
             Button(onClick = consumeOnClick) {
-                Text(text = "Consume")
+                Text(text = consumeText, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

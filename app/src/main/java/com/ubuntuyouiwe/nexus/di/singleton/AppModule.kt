@@ -1,9 +1,7 @@
 package com.ubuntuyouiwe.nexus.di.singleton
 
-import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.PurchasesUpdatedListener
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -13,14 +11,11 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.ubuntuyouiwe.nexus.data.dto.TermsOfUseDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
-import com.ubuntuyouiwe.nexus.data.manager.BillingManagerImpl
-import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
 import com.ubuntuyouiwe.nexus.data.util.Assets
 import com.ubuntuyouiwe.nexus.di.GoogleClientId
 import com.ubuntuyouiwe.nexus.di.RecognizerDefault
 import com.ubuntuyouiwe.nexus.di.SystemMessages
 import com.ubuntuyouiwe.nexus.di.TermsOfUse
-import com.ubuntuyouiwe.nexus.domain.manager.BillingManager
 import com.ubuntuyouiwe.nexus.util.Constant
 import dagger.Module
 import dagger.Provides
@@ -130,7 +125,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRecognizerDefault(): TextRecognizer {
-        return  TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        return TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
 
     @Provides
@@ -138,15 +133,6 @@ object AppModule {
     fun provideBillingClient(@ApplicationContext context: Context): BillingClient.Builder {
         return BillingClient.newBuilder(context)
     }
-
-
-
-
-
-
-
-
-
 
 
 }

@@ -40,14 +40,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ubuntuyouiwe.nexus.R
+import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.menu.MenuItemCategory
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -58,6 +62,14 @@ fun PurposeSelectionScreen(
     updatePurposeSelection: UpdatePurposeSelectionState,
     onEvent: (event: PurposeSelectionEvent) -> Unit
 ) {
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+
+    val save = stringResource(id = R.string.save)
+    val next = stringResource(id = R.string.next)
+    val appUseIntent = stringResource(id = R.string.app_use_intent)
+    val minSelections = stringResource(id = R.string.min_selections)
+    val selectionBenefit = stringResource(id = R.string.selection_benefit)
+
 
     var widthPx by remember { mutableIntStateOf(0) }
     var withDp by remember { mutableStateOf(0.dp) }
@@ -93,7 +105,6 @@ fun PurposeSelectionScreen(
     }.size
     val hostState = remember {
         SnackbarHostState()
-
     }
     val scope = rememberCoroutineScope()
 
@@ -133,7 +144,7 @@ fun PurposeSelectionScreen(
                 },
                 title = {
                     Text(
-                        text = "App Use Intent",
+                        text = appUseIntent,
                         style = MaterialTheme.typography.titleMedium
                     )
                 },
@@ -157,7 +168,7 @@ fun PurposeSelectionScreen(
                     onClick = {
                         if (minSelected < 3) {
                             scope.launch {
-                                hostState.showSnackbar("A minimum of 3 selections is required.")
+                                hostState.showSnackbar(minSelections)
                             }
                         } else if(!updatePurposeSelection.isLoading && !updatePurposeSelection.isError) {
                             if (isAuto) {
@@ -172,7 +183,7 @@ fun PurposeSelectionScreen(
                         .fillMaxWidth(0.8f)
                 ) {
                     Text(
-                        text = if (isAuto) "Next" else "Save",
+                        text = if (isAuto) next else save,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -200,7 +211,7 @@ fun PurposeSelectionScreen(
                 Spacer(modifier = Modifier.padding(8.dp))
 
                 Text(
-                    text = "By selecting these options, Nexus can get to know you better. This will allow for more personalized topic suggestions and notifications.",
+                    text = selectionBenefit,
                     style = MaterialTheme.typography.labelLarge
                 )
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -351,14 +362,14 @@ fun PurposeSelectionScreen(
                                 )
 
                                 Text(
-                                    text = selection.keys.first().roleName,
+
+                                    text = if (systemLanguage == "TR") selection.keys.first().roleNameTR else selection.keys.first().roleName,
                                     style = MaterialTheme.typography.bodyMedium,
                                     onTextLayout = {
                                         widthPx =
                                             if (widthPx < it.size.width) it.size.width else widthPx
                                     },
                                     modifier = if (widthPx > 0) Modifier
-                                        .background(MaterialTheme.colorScheme.primary)
                                         .padding(4.dp)
                                         .width(withDp)
                                     else Modifier.padding(4.dp),

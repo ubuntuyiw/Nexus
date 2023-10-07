@@ -1,18 +1,13 @@
 package com.ubuntuyouiwe.nexus.data.source.remote.firebase
 
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.AggregateQuerySnapshot
-import com.google.firebase.firestore.AggregateSource
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -68,7 +63,6 @@ class FirebaseDataSourceImpl @Inject constructor(
     }
 
 
-
     init {
         val fireStoreSettings = FirebaseFirestoreSettings.Builder()
             .setLocalCacheSettings(
@@ -122,7 +116,10 @@ class FirebaseDataSourceImpl @Inject constructor(
     override suspend fun getAllDocumentListener(database: FirebaseCollections): Flow<Result<QuerySnapshot>> =
         callbackFlow {
             val registration = fireStore.collection(database.name)
-                .whereEqualTo(CommonCollectionFields.OWNER_ID.key, auth.currentUser?.toUserDto()?.uid)
+                .whereEqualTo(
+                    CommonCollectionFields.OWNER_ID.key,
+                    auth.currentUser?.toUserDto()?.uid
+                )
                 .orderBy(CommonCollectionFields.LAST_MESSAGE_DATE.key, Query.Direction.DESCENDING)
                 .addSnapshotListener(MetadataChanges.INCLUDE) { value, error ->
                     error?.let {
@@ -239,20 +236,21 @@ class FirebaseDataSourceImpl @Inject constructor(
     }
 
     override suspend fun createUserMessagingData(): HttpsCallableResult? {
-        return functions.getHttpsCallable(CloudFunctions.CREATE_USER_MESSAGING_DATA.key).call().await()
+        return functions.getHttpsCallable(CloudFunctions.CREATE_USER_MESSAGING_DATA.key).call()
+            .await()
     }
 
- /*   override fun documentToSubCollection(
-        database: FirebaseCollections,
-        document: String,
-        subDataBases: FirebaseCollections
-    ): CollectionReference {
-        return fireStore.collection(database.name).document(document).collection(subDataBases.name)
-    }*/
+    /*   override fun documentToSubCollection(
+           database: FirebaseCollections,
+           document: String,
+           subDataBases: FirebaseCollections
+       ): CollectionReference {
+           return fireStore.collection(database.name).document(document).collection(subDataBases.name)
+       }*/
 
-   /* override suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot {
+    /*override suspend fun getAllDocument(database: FirebaseCollections): QuerySnapshot {
         return fireStore.collection(database.name).get().await()
-    }
+    }*/
 
     override suspend fun getDocument(
         database: FirebaseCollections,
@@ -260,7 +258,7 @@ class FirebaseDataSourceImpl @Inject constructor(
     ): QuerySnapshot {
         return fireStore.collection(database.name)
             .whereEqualTo(CommonCollectionFields.ID.key, document).get().await()
-    }*/
+    }
 
     override suspend fun set(
         collection: FirebaseCollections,
@@ -285,19 +283,19 @@ class FirebaseDataSourceImpl @Inject constructor(
         return batch.commit().await()
     }
 
-/*    override suspend fun batchDelete(
-        collection: FirebaseCollections,
-        ids: List<String>
-    ): Void? {
-        val batch = fireStore.batch()
+    /*    override suspend fun batchDelete(
+            collection: FirebaseCollections,
+            ids: List<String>
+        ): Void? {
+            val batch = fireStore.batch()
 
-        for (docId in ids) {
-            val docRef = fireStore.collection(collection.name).document(docId)
-            batch.delete(docRef)
-        }
+            for (docId in ids) {
+                val docRef = fireStore.collection(collection.name).document(docId)
+                batch.delete(docRef)
+            }
 
-        return batch.commit().await()
-    }*/
+            return batch.commit().await()
+        }*/
 
     override suspend fun batchDeleteWithSubCollections(
         collection: FirebaseCollections,
@@ -319,17 +317,17 @@ class FirebaseDataSourceImpl @Inject constructor(
         return batch.commit().await()
     }
 
-/*    override suspend fun isDocumentExist(
-        collection: FirebaseCollections,
-        documentId: String
-    ): Boolean {
-        val docRef = fireStore.collection(collection.name).document(documentId)
-        return docRef.get().await().exists()
-    }
+    /*    override suspend fun isDocumentExist(
+            collection: FirebaseCollections,
+            documentId: String
+        ): Boolean {
+            val docRef = fireStore.collection(collection.name).document(documentId)
+            return docRef.get().await().exists()
+        }
 
-    suspend fun count(collection: FirebaseCollections): AggregateQuerySnapshot? {
-        return fireStore.collection(collection.name).count().get((AggregateSource.SERVER)).await()
-    }*/
+        suspend fun count(collection: FirebaseCollections): AggregateQuerySnapshot? {
+            return fireStore.collection(collection.name).count().get((AggregateSource.SERVER)).await()
+        }*/
 
 
     override suspend fun addSubCollection(

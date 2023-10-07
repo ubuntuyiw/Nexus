@@ -12,10 +12,10 @@ class GetChatRoomMessageUseCase @Inject constructor(
     private val dataSyncRepository: DataSyncRepository
 ) {
 
-    operator fun invoke(id: String) = flow<Resource<Message?>>{
+    operator fun invoke(id: String) = flow<Resource<Message?>> {
         emit(Resource.Loading)
         dataSyncRepository.getChatRoomMessage(id).catch {
-            emit(Resource.Error(message = it.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = it.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }.collect {
             emit(Resource.Success(it))
         }

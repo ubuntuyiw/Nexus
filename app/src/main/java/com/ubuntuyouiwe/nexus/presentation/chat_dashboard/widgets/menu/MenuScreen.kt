@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.MoveToInbox
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.SupportAgent
 import androidx.compose.material3.Icon
@@ -29,20 +28,55 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.R
+import java.util.Locale
 
 @Composable
 fun MenuScreen(
-    onClick: (MenuItemType) -> Unit
+    onClick: (MenuItemCategory) -> Unit
 ) {
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+
     val menuItem = listOf<MenuItem>(
-        MenuItem(icon = ImageVector.vectorResource(R.drawable.premium) , text = MenuItemType.BUY_MESSAGES.menuName, type = MenuItemType.BUY_MESSAGES),
-        MenuItem(icon = Icons.Default.Build, text = MenuItemType.SETTINGS.menuName, type = MenuItemType.SETTINGS),
-        MenuItem(icon = ImageVector.vectorResource(R.drawable.privacy_policy), text = MenuItemType.PRIVACY_POLICY.menuName, type = MenuItemType.PRIVACY_POLICY),
-        MenuItem(icon = ImageVector.vectorResource(R.drawable.terms_of_use), text = MenuItemType.TERMS_OF_USE.menuName, type = MenuItemType.TERMS_OF_USE),
-        MenuItem(icon = Icons.Default.StarRate, text = MenuItemType.RATE_US.menuName, type = MenuItemType.RATE_US),
-        MenuItem(icon = Icons.Default.Archive, text = MenuItemType.ARCHIVED.menuName, type = MenuItemType.ARCHIVED),
-        MenuItem(icon = Icons.Default.SupportAgent, text = MenuItemType.HELP_CENTER.menuName, type = MenuItemType.HELP_CENTER),
-        MenuItem(icon = Icons.Default.Logout, text = MenuItemType.SIGN_OUT.menuName, type = MenuItemType.SIGN_OUT),
+        MenuItem(
+            icon = ImageVector.vectorResource(R.drawable.premium),
+            text = if (systemLanguage == "TR") MenuItemCategory.BUY_MESSAGES.menuNameTR else MenuItemCategory.BUY_MESSAGES.menuName,
+            type = MenuItemCategory.BUY_MESSAGES
+        ),
+        MenuItem(
+            icon = Icons.Default.Build,
+            text = if (systemLanguage == "TR") MenuItemCategory.SETTINGS.menuNameTR else MenuItemCategory.SETTINGS.menuName,
+            type = MenuItemCategory.SETTINGS
+        ),
+        MenuItem(
+            icon = ImageVector.vectorResource(R.drawable.privacy_policy),
+            text = if (systemLanguage == "TR") MenuItemCategory.PRIVACY_POLICY.menuNameTR else MenuItemCategory.PRIVACY_POLICY.menuName,
+            type = MenuItemCategory.PRIVACY_POLICY
+        ),
+        MenuItem(
+            icon = ImageVector.vectorResource(R.drawable.terms_of_use),
+            text = if (systemLanguage == "TR") MenuItemCategory.TERMS_OF_USE.menuNameTR else MenuItemCategory.TERMS_OF_USE.menuName,
+            type = MenuItemCategory.TERMS_OF_USE
+        ),
+        MenuItem(
+            icon = Icons.Default.StarRate,
+            text = if (systemLanguage == "TR") MenuItemCategory.RATE_US.menuNameTR else MenuItemCategory.RATE_US.menuName,
+            type = MenuItemCategory.RATE_US
+        ),
+        MenuItem(
+            icon = Icons.Default.Archive,
+            text = if (systemLanguage == "TR") MenuItemCategory.ARCHIVED.menuNameTR else MenuItemCategory.ARCHIVED.menuName,
+            type = MenuItemCategory.ARCHIVED
+        ),
+        MenuItem(
+            icon = Icons.Default.SupportAgent,
+            text = if (systemLanguage == "TR") MenuItemCategory.HELP_CENTER.menuNameTR else MenuItemCategory.HELP_CENTER.menuName,
+            type = MenuItemCategory.HELP_CENTER
+        ),
+        MenuItem(
+            icon = Icons.Default.Logout,
+            text = if (systemLanguage == "TR") MenuItemCategory.SIGN_OUT.menuNameTR else MenuItemCategory.SIGN_OUT.menuName,
+            type = MenuItemCategory.SIGN_OUT
+        ),
     )
 
     val scrollState = rememberScrollState()

@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 
 @Composable
@@ -30,6 +32,7 @@ fun FullScreenTextField(
     visibility: Boolean,
     hide: () -> Unit
 ) {
+
     val emailStateFocusRequester = remember { FocusRequester() }
     LaunchedEffect(key1 = visibility) {
         if (visibility) {

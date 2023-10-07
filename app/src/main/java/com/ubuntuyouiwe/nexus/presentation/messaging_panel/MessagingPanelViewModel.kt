@@ -95,13 +95,7 @@ class MessagingPanelViewModel @Inject constructor(
 
 
     init {
-        if (textToSpeech.defaultEngine != "com.google.android.tts") {
-            Toast.makeText(
-                application.applicationContext,
-                "Lütfen Motoru değiştir.",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+
         buttonState()
         getRoles()
         getChatRoomId()
@@ -116,6 +110,9 @@ class MessagingPanelViewModel @Inject constructor(
             getRole(roleId)
         }
     }
+
+    fun getTextToSpeech() = textToSpeech
+
 
     private fun getChatRoomId() {
         savedStateHandle.get<String>("id")?.let { data ->

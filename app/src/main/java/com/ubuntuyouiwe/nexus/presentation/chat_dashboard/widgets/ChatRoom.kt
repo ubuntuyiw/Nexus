@@ -1,18 +1,13 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +30,7 @@ import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 import com.ubuntuyouiwe.nexus.presentation.util.customCombinedClickable
+import java.util.Locale
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -46,16 +41,20 @@ fun ChatRoom(
     onLongClick: () -> Unit
 
 ) {
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
 
     val interactionSource = remember { MutableInteractionSource() }
-    Box(modifier = Modifier
-        .customCombinedClickable(
-            selectedChatRooms.isNotEmpty(),
-            interactionSource = interactionSource,
-            onClick = onClick,
-            onLongClick = onLongClick,
+    Box(
+        modifier = Modifier
+            .customCombinedClickable(
+                selectedChatRooms.isNotEmpty(),
+                interactionSource = interactionSource,
+                onClick = onClick,
+                onLongClick = onLongClick,
 
-        ).animateContentSize()) {
+                )
+            .animateContentSize()
+    ) {
 
 
         Row(
@@ -96,7 +95,7 @@ fun ChatRoom(
                             modifier = Modifier.weight(1f)
                         )
                         Text(
-                            text = chatRoom.role.name.EN,
+                            text = if (systemLanguage == "TR") chatRoom.role.name.TR else chatRoom.role.name.EN,
                             style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -171,15 +170,15 @@ fun ChatRoom(
 
         }
         if (selectedChatRooms.contains(chatRoom)) {
-            Box(modifier = Modifier
-                .matchParentSize()
-                .background(Black.copy(0.2f))) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Black.copy(0.2f))
+            ) {
 
             }
         }
     }
-
-
 
 
 }

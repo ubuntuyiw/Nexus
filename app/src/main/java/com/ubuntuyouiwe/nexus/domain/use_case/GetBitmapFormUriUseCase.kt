@@ -8,7 +8,7 @@ import android.media.ExifInterface
 import android.net.Uri
 import javax.inject.Inject
 
-class GetBitmapFormUriUseCase @Inject constructor(){
+class GetBitmapFormUriUseCase @Inject constructor() {
     operator fun invoke(context: Context, uri: Uri): Bitmap? {
         var resultBitmap: Bitmap? = null
         context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->

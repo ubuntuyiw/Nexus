@@ -1,6 +1,8 @@
 package com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets
 
-import android.util.Log
+import android.content.Intent
+import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -28,16 +30,21 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,7 +55,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
+import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.ChatDashBoardEvent
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.Chapter
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -56,9 +65,21 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.Chapter
 fun MessageArea(
     messages: Messages,
     index: Int,
+    textToSpeech: TextToSpeech,
+    hostState: SnackbarHostState,
     expendedMessage: () -> Unit,
     speechStateChange: (Messages) -> Unit,
 ) {
+    val seeMore = stringResource(id = R.string.see_more)
+    val seeLess = stringResource(id = R.string.see_less)
+    val selectText = stringResource(id = R.string.select_text)
+    val messageSending = stringResource(id = R.string.message_sending)
+    val aiWriting = stringResource(id = R.string.ai_writing)
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val settings = stringResource(id = R.string.settings)
+    val textToSpeechSettings = stringResource(id = R.string.textToSpeechSettings)
+
     var dropdownMenuState by remember {
         mutableStateOf(false)
     }
@@ -103,7 +124,7 @@ fun MessageArea(
                                         tag = "See",
                                         annotation = "SeeMore"
                                     )
-                                    append(" See More")
+                                    append(" $seeMore")
                                     pop()
                                 }
 
@@ -127,7 +148,7 @@ fun MessageArea(
                                         tag = "See",
                                         annotation = "SeeLess"
                                     )
-                                    append(if (messages.messages[0].content.length > maxText  && index != 0) " See Less " else "")
+                                    append(if (messages.messages[0].content.length > maxText  && index != 0) " $seeLess " else "")
                                     pop()
                                 }
 
@@ -141,7 +162,9 @@ fun MessageArea(
                             lineHeight = 24.sp,
                             color = MaterialTheme.colorScheme.onSurface,
                         ),
-                        modifier = Modifier.weight(1f, false).animateContentSize(animationSpec = tween(1000)),
+                        modifier = Modifier
+                            .weight(1f, false)
+                            .animateContentSize(animationSpec = tween(1000)),
                         onClick = { offset ->
                             message.getStringAnnotations(
                                 tag = "See",
@@ -188,9 +211,28 @@ fun MessageArea(
                 ) {
                     IconButton(
                         onClick = {
-                            speechStateChange(
-                                messages.copy(isSpeak = !messages.isSpeak,)
-                            )
+                            if (textToSpeech.defaultEngine != "com.google.android.tts") {
+                                scope.launch {
+                                    val result = hostState.showSnackbar(
+                                        textToSpeechSettings,
+                                        duration = SnackbarDuration.Indefinite,
+                                        actionLabel = settings,
+                                        withDismissAction = true,
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        val intent = Intent()
+                                        intent.action = "com.android.settings.TTS_SETTINGS"
+                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        context.startActivity(intent)
+                                    }
+                                }
+                            } else {
+                                speechStateChange(
+                                    messages.copy(isSpeak = !messages.isSpeak,)
+                                )
+                            }
+
+
                         },
 
                         modifier = Modifier
@@ -238,8 +280,8 @@ fun MessageArea(
                             },
                             text = {
                                 Text(
-                                    text = "Select Text",
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    text = selectText,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }, onClick = {
@@ -278,7 +320,7 @@ fun MessageArea(
                                             tag = "See",
                                             annotation = "SeeMore"
                                         )
-                                        append(" See More")
+                                        append(" $seeMore")
                                         pop()
                                     }
 
@@ -302,7 +344,7 @@ fun MessageArea(
                                             tag = "See",
                                             annotation = "SeeLess"
                                         )
-                                        append(if (messages.messages[1].content.length > maxText && index != 0) " See Less " else "")
+                                        append(if (messages.messages[1].content.length > maxText && index != 0) " $seeLess " else "")
                                         pop()
                                     }
 
@@ -356,12 +398,12 @@ fun MessageArea(
 
                 AnimatedVisibility(visible = messages.messages.size <= 1) {
                     if (messages.hasPendingWrites) Text(
-                        text = "Your message is being sent...",
+                        text = messageSending,
                         style = MaterialTheme.typography.labelMedium
                     )
                     AnimatedVisibility(visible = !messages.hasPendingWrites) {
                         Text(
-                            text = "Artificial Intelligence is writing...",
+                            text = aiWriting,
                             style = MaterialTheme.typography.labelMedium
                         )
                     }

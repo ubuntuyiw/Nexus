@@ -24,7 +24,7 @@ object ProtoDataStoreModule {
 
     @Provides
     @Singleton
-    fun provideSettingsSerializer(): Serializer<SettingsDto> = object: Serializer<SettingsDto> {
+    fun provideSettingsSerializer(): Serializer<SettingsDto> = object : Serializer<SettingsDto> {
         override val defaultValue: SettingsDto = SettingsDto.getDefaultInstance()
         override suspend fun readFrom(input: InputStream): SettingsDto {
             try {
@@ -33,11 +33,13 @@ object ProtoDataStoreModule {
                 throw CorruptionException("Cannot read proto.", exception)
             }
         }
+
         override suspend fun writeTo(
             t: SettingsDto,
             output: OutputStream
         ) = t.writeTo(output)
     }
+
     @Provides
     @Singleton
     fun provideSettingsDataStore(
@@ -50,20 +52,23 @@ object ProtoDataStoreModule {
 
     @Provides
     @Singleton
-    fun provideChatRoomFilterSerializer(): Serializer<ChatRoomFilterDto> = object: Serializer<ChatRoomFilterDto> {
-        override val defaultValue: ChatRoomFilterDto = ChatRoomFilterDto.getDefaultInstance()
-        override suspend fun readFrom(input: InputStream): ChatRoomFilterDto {
-            try {
-                return ChatRoomFilterDto.parseFrom(input)
-            } catch (exception: InvalidProtocolBufferException) {
-                throw CorruptionException("Cannot read proto.", exception)
+    fun provideChatRoomFilterSerializer(): Serializer<ChatRoomFilterDto> =
+        object : Serializer<ChatRoomFilterDto> {
+            override val defaultValue: ChatRoomFilterDto = ChatRoomFilterDto.getDefaultInstance()
+            override suspend fun readFrom(input: InputStream): ChatRoomFilterDto {
+                try {
+                    return ChatRoomFilterDto.parseFrom(input)
+                } catch (exception: InvalidProtocolBufferException) {
+                    throw CorruptionException("Cannot read proto.", exception)
+                }
             }
+
+            override suspend fun writeTo(
+                t: ChatRoomFilterDto,
+                output: OutputStream
+            ) = t.writeTo(output)
         }
-        override suspend fun writeTo(
-            t: ChatRoomFilterDto,
-            output: OutputStream
-        ) = t.writeTo(output)
-    }
+
     @Provides
     @Singleton
     fun provideChatRoomFilterDataStore(
@@ -77,20 +82,23 @@ object ProtoDataStoreModule {
 
     @Provides
     @Singleton
-    fun provideChatRoomShortSerializer(): Serializer<ChatRoomShortDto> = object: Serializer<ChatRoomShortDto> {
-        override val defaultValue: ChatRoomShortDto = ChatRoomShortDto.getDefaultInstance()
-        override suspend fun readFrom(input: InputStream): ChatRoomShortDto {
-            try {
-                return ChatRoomShortDto.parseFrom(input)
-            } catch (exception: InvalidProtocolBufferException) {
-                throw CorruptionException("Cannot read proto.", exception)
+    fun provideChatRoomShortSerializer(): Serializer<ChatRoomShortDto> =
+        object : Serializer<ChatRoomShortDto> {
+            override val defaultValue: ChatRoomShortDto = ChatRoomShortDto.getDefaultInstance()
+            override suspend fun readFrom(input: InputStream): ChatRoomShortDto {
+                try {
+                    return ChatRoomShortDto.parseFrom(input)
+                } catch (exception: InvalidProtocolBufferException) {
+                    throw CorruptionException("Cannot read proto.", exception)
+                }
             }
+
+            override suspend fun writeTo(
+                t: ChatRoomShortDto,
+                output: OutputStream
+            ) = t.writeTo(output)
         }
-        override suspend fun writeTo(
-            t: ChatRoomShortDto,
-            output: OutputStream
-        ) = t.writeTo(output)
-    }
+
     @Provides
     @Singleton
     fun provideChatRoomShortDataStore(
@@ -100,8 +108,6 @@ object ProtoDataStoreModule {
         fileName = "chat_room_short.pb",
         serializer = settingsSerializer
     )
-
-
 
 
 }

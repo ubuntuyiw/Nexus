@@ -42,7 +42,13 @@ object DataSourceModule {
         googleClientId: GoogleSignInClient,
     ): FirebaseDataSource {
 
-        return FirebaseDataSourceImpl(fireStore, firebaseAuth, firebaseMessaging, functions, googleClientId)
+        return FirebaseDataSourceImpl(
+            fireStore,
+            firebaseAuth,
+            firebaseMessaging,
+            functions,
+            googleClientId
+        )
     }
 
     @Provides

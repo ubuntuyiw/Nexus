@@ -19,7 +19,7 @@ class UpdatePasswordUseCase @Inject constructor(
             authRepository.changePassword(newPassword)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 }

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class MlKitRepositoryImpl @Inject constructor(
     private val mlKit: MlKit
-): MlKitRepository {
+) : MlKitRepository {
 
     override suspend fun getText(inputImage: InputImage): String? {
         return mlKit.imageToText(inputImage)?.text

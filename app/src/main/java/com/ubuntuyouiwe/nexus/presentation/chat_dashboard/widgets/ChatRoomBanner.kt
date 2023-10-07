@@ -1,9 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,7 +13,9 @@ import com.google.android.gms.ads.AdView
 @Composable
 fun ChatRoomBanner() {
     AndroidView(
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxWidth(),
         factory = { context ->
             AdView(context).apply {
                 setAdSize(AdSize.FULL_BANNER)

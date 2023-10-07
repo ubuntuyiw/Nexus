@@ -54,6 +54,12 @@ fun PasswordScreen(
     passwordUpdateState: PasswordUpdateState,
     onEvent: (event: PasswordEvent) -> Unit,
 ) {
+    val password = stringResource(id = R.string.password)
+    val save = stringResource(id = R.string.save)
+    val passwordVisibility = stringResource(id = R.string.password_visibility)
+    val successful = stringResource(id = R.string.successful)
+    val newPassword = stringResource(id = R.string.new_password)
+
     val passwordStateFocusRequester = remember { passwordTextFieldState.focusRequester }
     val hostState = remember {
         SnackbarHostState()
@@ -64,7 +70,7 @@ fun PasswordScreen(
             passwordStateFocusRequester.requestFocus()
         }
         if (passwordUpdateState.isSuccess) {
-            hostState.showSnackbar(message = "Successful")
+            hostState.showSnackbar(message = successful)
         }
     }
     Scaffold(
@@ -100,7 +106,7 @@ fun PasswordScreen(
                 },
                 title = {
                     Text(
-                        text = "Password",
+                        text = password,
                         style = MaterialTheme.typography.titleMedium
                     )
                 },
@@ -128,7 +134,7 @@ fun PasswordScreen(
                 ) {
 
                     Text(
-                        text = "Save",
+                        text = save,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -158,7 +164,7 @@ fun PasswordScreen(
                     ),
                     label = {
                         Text(
-                            text = "New Password",
+                            text = newPassword,
                             style = MaterialTheme.typography.bodySmall
                         )
                     },
@@ -166,7 +172,7 @@ fun PasswordScreen(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "New Password"
+                            contentDescription = newPassword
                         )
                     },
                     trailingIcon = {
@@ -177,7 +183,7 @@ fun PasswordScreen(
                             Icon(
                                 imageVector = if (passwordTextFieldState.isVisibility) Icons.Default.Password
                                 else Icons.Default.RemoveRedEye,
-                                contentDescription = stringResource(id = R.string.password_visibility),
+                                contentDescription = passwordVisibility,
                             )
                         }
                     },

@@ -17,7 +17,7 @@ class ConsumeTheProductUseCase @Inject constructor(
             emit(Resource.Success())
 
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
 
     }

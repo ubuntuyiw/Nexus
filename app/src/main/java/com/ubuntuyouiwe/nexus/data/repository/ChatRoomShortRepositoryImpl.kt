@@ -12,10 +12,11 @@ import javax.inject.Inject
 class ChatRoomShortRepositoryImpl @Inject constructor(
     private val protoDataStoreDataSource: ProtoDataStoreDataSource
 
-): ChatRoomShortRepository {
+) : ChatRoomShortRepository {
     override suspend fun updateChatRoomShort(updateAction: (ChatRoomShortDto.Builder) -> Unit): ChatRoomShort {
         return protoDataStoreDataSource.updateChatRoomShort(updateAction).toChatRoomShort()
     }
 
-    override fun getChatRoomShort(): Flow<ChatRoomShort> = protoDataStoreDataSource.getChatRoomShort().map { it.toChatRoomShort() }
+    override fun getChatRoomShort(): Flow<ChatRoomShort> =
+        protoDataStoreDataSource.getChatRoomShort().map { it.toChatRoomShort() }
 }

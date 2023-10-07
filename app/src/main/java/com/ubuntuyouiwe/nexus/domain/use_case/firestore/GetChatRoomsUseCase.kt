@@ -21,12 +21,11 @@ class GetChatRoomsUseCase @Inject constructor(
             emit(Resource.Error(message = it.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }.map { chatRooms ->
             val filterFavorited = filterFavorited(chatRooms, filter)
-            val filterRoles =filterRoles(filterFavorited, filter)
+            val filterRoles = filterRoles(filterFavorited, filter)
             val filterArchived = filterArchived(filterRoles, filter)
             val shortDate = short(filterArchived, short)
 
             sortMessages(shortDate)
-
 
 
         }.collect {
@@ -36,6 +35,7 @@ class GetChatRoomsUseCase @Inject constructor(
 
 
     }
+
     private fun sortMessages(chatRooms: ChatRooms): ChatRooms {
         val pinnedMessages = chatRooms.messageResult.filter { it.isPinned }
         val unpinnedMessages = chatRooms.messageResult.filter { !it.isPinned }
@@ -52,10 +52,11 @@ class GetChatRoomsUseCase @Inject constructor(
             )
         } else chatRooms
     }
+
     private fun filterFavorited(chatRooms: ChatRooms, filter: ChatRoomFilter): ChatRooms {
         return chatRooms.copy(
             messageResult = chatRooms.messageResult.filter {
-                if (filter.isFavorited )  it.isFavorited else true
+                if (filter.isFavorited) it.isFavorited else true
             }
         )
     }
@@ -63,14 +64,14 @@ class GetChatRoomsUseCase @Inject constructor(
     private fun filterArchived(chatRooms: ChatRooms, filter: ChatRoomFilter): ChatRooms {
         return chatRooms.copy(
             messageResult = chatRooms.messageResult.filter {
-                if (filter.isArchived)  it.isArchived else !it.isArchived
+                if (filter.isArchived) it.isArchived else !it.isArchived
             }
         )
     }
 
 
     private fun filterRoles(chatRooms: ChatRooms, filter: ChatRoomFilter): ChatRooms {
-        return  chatRooms.copy(
+        return chatRooms.copy(
             messageResult = chatRooms.messageResult.filter { message ->
                 listOf(
                     filter.isNeutralMode && message.roleId == RolesCategory.NeutralMode.id,

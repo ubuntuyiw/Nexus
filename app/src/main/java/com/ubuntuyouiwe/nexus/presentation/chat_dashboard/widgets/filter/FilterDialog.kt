@@ -41,6 +41,7 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomShortSta
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import com.ubuntuyouiwe.nexus.presentation.util.RolesCategory
 import com.ubuntuyouiwe.nexus.presentation.util.ShortDate
+import java.util.Locale
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -48,10 +49,12 @@ fun FilterDialog(
     chatRoomShortState: ChatRoomShortState,
     chatRoomShortOnEvent: (ShortDate) -> Unit,
     chatRoomFilterState: ChatRoomFilterState,
-    setAllSelectedRole: ( allSelectedRole: Boolean) -> Unit,
+    setAllSelectedRole: (allSelectedRole: Boolean) -> Unit,
     chatRoomFilterOnEvent: (Boolean, RolesCategory) -> Unit
 ) {
-    val isFavorited =  mapOf(RolesCategory.JustFavorited to chatRoomFilterState.data.isFavorited)
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+
+    val isFavorited = mapOf(RolesCategory.JustFavorited to chatRoomFilterState.data.isFavorited)
     var allSelectedRole by remember {
         mutableStateOf(false)
     }
@@ -93,7 +96,7 @@ fun FilterDialog(
             break
         }
     }
-    LaunchedEffect(key1 = chatRoomFilterState.data.isAllRoles != allSelectedRole ) {
+    LaunchedEffect(key1 = chatRoomFilterState.data.isAllRoles != allSelectedRole) {
         if (chatRoomFilterState.data.isAllRoles != allSelectedRole) {
             setAllSelectedRole(allSelectedRole)
         }
@@ -121,9 +124,12 @@ fun FilterDialog(
                     uncheckedColor = MaterialTheme.colorScheme.onBackground
                 ),
                 onCheckedChange = {
-                chatRoomFilterOnEvent(it, isFavorited.keys.first())
-            })
-            Text(text = isFavorited.keys.first().roleName, style = MaterialTheme.typography.bodyMedium)
+                    chatRoomFilterOnEvent(it, isFavorited.keys.first())
+                })
+            Text(
+                text = if (systemLanguage == "TR") isFavorited.keys.first().roleNameTR
+                else isFavorited.keys.first().roleName, style = MaterialTheme.typography.bodyMedium
+            )
 
         }
 
@@ -170,17 +176,17 @@ fun FilterDialog(
                         verticalArrangement = Arrangement.Center,
                         maxItemsInEachRow = 3
                     ) {
-                        short.forEach { shortDate ->
+                        short.forEach { sortDate ->
                             Row(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                             ) {
                                 RadioButton(
-                                    selected = shortDate == selectedShortDate,
+                                    selected = sortDate == selectedShortDate,
                                     onClick = {
-                                        selectedShortDate = shortDate
-                                        chatRoomShortOnEvent(shortDate)
+                                        selectedShortDate = sortDate
+                                        chatRoomShortOnEvent(sortDate)
                                     },
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = MaterialTheme.colorScheme.onSurface,
@@ -188,7 +194,7 @@ fun FilterDialog(
                                     )
                                 )
                                 Text(
-                                    text = shortDate.shortName,
+                                    text = if (systemLanguage == "TR") sortDate.sortNameTR else sortDate.sortName,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
 
@@ -201,7 +207,6 @@ fun FilterDialog(
                 }
             )
         }
-
 
 
         var widthPx by remember { mutableIntStateOf(0) }
@@ -271,10 +276,11 @@ fun FilterDialog(
                                 )
 
                                 Text(
-                                    text = map.keys.first().roleName,
+                                    text = if (systemLanguage == "TR") map.keys.first().roleNameTR else map.keys.first().roleName,
                                     style = MaterialTheme.typography.bodyMedium,
                                     onTextLayout = {
-                                        widthPx = if (widthPx < it.size.width) it.size.width else widthPx
+                                        widthPx =
+                                            if (widthPx < it.size.width) it.size.width else widthPx
                                     },
                                     modifier = if (widthPx > 0) Modifier
                                         .padding(4.dp)

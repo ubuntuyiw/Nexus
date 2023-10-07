@@ -23,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
@@ -39,6 +41,13 @@ fun UserNameScreen(
     updateDisplayNameState: UpdateDisplayNameState,
     onEvent: (event: UserNameEvent) -> Unit
 ) {
+    val userNameString = stringResource(id = R.string.user_name)
+    val next = stringResource(id = R.string.next)
+    val name = stringResource(id = R.string.name)
+    val enterNameInfo = stringResource(id = R.string.enter_name_info)
+    val nameLimit = stringResource(id = R.string.name_limit)
+    val save = stringResource(id = R.string.save)
+
     LaunchedEffect(key1 = updateDisplayNameState) {
 
         if (updateDisplayNameState.isSuccess) {
@@ -59,7 +68,10 @@ fun UserNameScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 navigationIcon = {
                     if (!isAuto) {
@@ -74,14 +86,13 @@ fun UserNameScreen(
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = Icons.Default.ArrowBack.name,
-                                tint = White
                             )
                             Spacer(modifier = Modifier.padding(start = 8.dp))
                         }
                     }
                 },
                 title = {
-                    Text(text = "User Name", style = MaterialTheme.typography.titleMedium)
+                    Text(text = userNameString, style = MaterialTheme.typography.titleMedium)
                 },
                 actions = {
                     if (updateDisplayNameState.isLoading) {
@@ -107,7 +118,7 @@ fun UserNameScreen(
                 ) {
 
                     Text(
-                        text = if (isAuto) "Next" else "Save",
+                        text = if (isAuto) next else save,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -141,7 +152,7 @@ fun UserNameScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "Name",
+                                text = name,
                                 style = MaterialTheme.typography.labelLarge
                             )
 
@@ -166,13 +177,13 @@ fun UserNameScreen(
 
                 Spacer(modifier = Modifier.padding(8.dp))
                 Text(
-                    text = "You can personalize your Nexus experience by entering your name.",
+                    text = enterNameInfo,
                     style = MaterialTheme.typography.labelLarge
                 )
                 if (userName.length > 30) {
                     Spacer(modifier = Modifier.padding(8.dp))
                     Text(
-                        text = "Text must be under 30 characters",
+                        text = nameLimit,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.error
                     )

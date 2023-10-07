@@ -21,7 +21,8 @@
     <string name="error_occurred">Bir hata oluştu. Lütfen tekrar deneyin.</string>
     <string name="logging_out">Çıkış yapılıyor</string>
     <string name="retry">Tekrar Dene</string>
-    <string name="archived">Arşivlendi</string>
+    <string name="archived">Arşivlenmiş</string>
+    <string name="archive">Arşiv</string>
     <string name="remove_pin">Pini Kaldır</string>
     <string name="new_chat">Yeni Sohbet</string>
     <string name="chat_rooms">Sohbet Odaları</string>
@@ -30,7 +31,7 @@
     <string name="no_content_created">Henüz içerik oluşturulmadı.</string>
     <string name="time_remaining_deletion">Silinmeye kalan süre</string>
     <string name="cancel">İptal</string>
-    <string name="roles_sort">Rolleri Sırala</string>
+    <string name="roles_sort">Sırala</string>
     <string name="roles_filter">Roller Filtresi</string>
     <string name="all">Tümü</string>
     <string name="who_talk_with">Kiminle Konuşmak İstersiniz?</string>
@@ -46,8 +47,60 @@
     <string name="theme">Tema</string>
     <string name="password_reset_email">E-posta adresinize bir şifre sıfırlama bağlantısı gönderildi.</string>
     <string name="send">Gönder</string>
+    <string name="you">Siz</string>
+    <string name="see_more">Daha Fazla</string>
+    <string name="see_less">Daha Az</string>
+    <string name="select_text">Metni Seç</string>
+    <string name="message_sending">Mesajınız gönderiliyor&#8230;</string>
+    <string name="ai_writing">Yapay Zeka yazıyor&#8230;</string>
+    <string name="new_name">Yeni İsim</string>
+    <string name="ok">Tamam</string>
+    <string name="specific_request_notice">"Lütfen Nexus'tan bilgi veya yanıt talep ederken belirgin ve tanımlayıcı olun. Sağlanan bilgilerin veya yanıtların yanıltıcı olabileceğini unutmayın."</string>
+    <string name="permission_denied">İzin reddedildi. Lütfen ayarlardan erişime izin verin.</string>
+    <string name="settings">Ayarlar</string>
+    <string name="rename">Yeniden Adlandır</string>
+    <string name="type_message">Bir mesaj yazın</string>
+    <string name="camera_access_needed">Fotoğrafınızı metne dönüştürmek için kamera erişimine ihtiyacımız var.</string>
+    <string name="grant_permission">İzin Ver</string>
+    <string name="introduce_yourself">"Nexus'a Kendinizi Tanıtın"</string>
+    <string name="finish">Bitir</string>
+    <string name="save">Kaydet</string>
+    <string name="personalize_info">"Nexus deneyiminizi kişiselleştirme özgürlüğüne sahipsiniz. Daha özelleştirilmiş etkileşimler almak için kendiniz hakkında detayları paylaşın.
+Örnekler:
 
-
-
+-Lütfen bana resmi bir dille hitap edin.
+-Yapay Zeka Mühendisliği konusunda uzmanım.
+-Amerika'da yaşıyorum.
+-Seyahat etmek benim tutkum."</string>
+    <string name="text_limit">Metin 500 karakterin altında olmalıdır</string>
+    <string name="personalize_experience">Deneyiminizi Kişiselleştirin</string>
+    <string name="user_name">Kullanıcı Adı</string>
+    <string name="next">İleri</string>
+    <string name="name">Ad</string>
+    <string name="enter_name_info">Adınızı girerek Nexus deneyiminizi kişiselleştirebilirsiniz.</string>
+    <string name="name_limit">Metin 30 karakterin altında olmalıdır</string>
+    <string name="app_use_intent">Uygulama Kullanım Amacı</string>
+    <string name="min_selections">En az 3 seçim yapılmalıdır.</string>
+    <string name="selection_benefit">Bu seçenekleri belirleyerek Nexus sizi daha iyi tanıyabilir. Bu, daha kişiselleştirilmiş konu önerileri ve bildirimler için olanak tanır.</string>
+    <string name="preview">Önizleme</string>
+    <string name="cropped_image">Kırpılmış Resim</string>
+    <string name="edit_crop">Kırpma Düzenle</string>
+    <string name="apply_crop">Kırpma Uygula</string>
+    <string name="crop">Kırp</string>
+    <string name="crop_instruction">"Lütfen Nexus'a göndermek istediğiniz metni odaklamak için fotoğrafı kırpın. İstenmeyen kelimeleri veya nesneleri dahil etmemeyi unutmayın."</string>
+    <string name="successful">Başarılı</string>
+    <string name="new_password">Yeni Şifre</string>
+    <string name="login_acceptance">"Giriş yaparak, Nexus uygulamasının %1$s ve %2$s'ını kabul ediyorum."</string>
+    <string name="signup_acceptance">"Kayıt olarak, Nexus uygulamasının %1$s ve %2$s'ını kabul ediyorum."</string>
+    <string name="terms_of_use">Kullanım Şartları</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="login_suggestion">"Zaten bir hesabınız var mı? %1$s"</string>
+    <string name="password_forget_prompt">"%1$s"</string>
+    <string name="forgot_password">Şifrenizi mi unuttunuz?</string>
+    <string name="sign_up_prompt">"Bir hesabınız yok mu? %1$s"</string>
+    <string name="buy_messages_prompt">"Mesaj paketi satın almak için %1$s ekranına gidin."</string>
+    <string name="textToSpeechSettings">"Lütfen ayarlar kısmından tercih edilen arama motorunu Google olarak belirleyiniz."</string>
+    <string name="count">"Miktar"</string>
+    <string name="consume">"Tüket"</string>
 
 </resources>

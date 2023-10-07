@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class BillingManagerImpl @Inject constructor(
-    private val billingClient: BillingClient.Builder,
+    billingClient: BillingClient.Builder,
     private val firebaseDataSource: FirebaseDataSource,
     private val json: Json,
 ) : BillingManager {
@@ -113,6 +113,7 @@ class BillingManagerImpl @Inject constructor(
             override fun onBillingSetupFinished(setupBillingResult: BillingResult) {
                 connectionResultFlow.tryEmit(setupBillingResult to false)
             }
+
             override fun onBillingServiceDisconnected() {
                 connectionResultFlow.tryEmit(null to true)
             }

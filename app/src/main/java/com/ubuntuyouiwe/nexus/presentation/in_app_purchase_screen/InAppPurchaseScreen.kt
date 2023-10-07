@@ -219,21 +219,7 @@ fun InAppPurchaseScreen(
                             text = "$availableMessages: " + userMessagingDataState.successData?.totalMessages.toString(),
                             style = MaterialTheme.typography.labelLarge,
                         )
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            GlideImage(model = ImageUrl.SHAKE, contentDescription = shakePhone, modifier = Modifier.size(28.dp))
-                            Spacer(modifier = Modifier.padding(8.dp))
-                            Text(
-                                text = shakeForCredits,
-                                style = MaterialTheme.typography.labelLarge,
-                            )
 
-
-                        }
                         Spacer(modifier = Modifier.padding(8.dp))
                     }
 
@@ -252,6 +238,24 @@ fun InAppPurchaseScreen(
                     } else {
                         5
                     }
+                }
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        GlideImage(model = ImageUrl.SHAKE, contentDescription = shakePhone, modifier = Modifier.size(28.dp))
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        Text(
+                            text = shakeForCredits,
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                textAlign = TextAlign.Start
+                            ),
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(8.dp))
+
                 }
 
                 val sortedList = productDetailsState.data.sortedWith(comparator)

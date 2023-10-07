@@ -25,9 +25,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
@@ -41,6 +43,13 @@ fun SystemMessageScreen(
     updateSystemMessageState: UpdateSystemMessageState,
     onEvent: (event: SystemMessageEvent) -> Unit
 ) {
+    val introduceYourself = stringResource(id = R.string.introduce_yourself)
+    val finish = stringResource(id = R.string.finish)
+    val save = stringResource(id = R.string.save)
+    val personalizeInfo = stringResource(id = R.string.personalize_info)
+    val textLimit = stringResource(id = R.string.text_limit)
+    val personalizeExperience = stringResource(id = R.string.personalize_experience)
+
     val scrollState = rememberScrollState()
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -72,7 +81,7 @@ fun SystemMessageScreen(
                 },
                 title = {
                     Text(
-                        text = "Introduce Yourself to Nexus",
+                        text = introduceYourself,
                         style = MaterialTheme.typography.titleMedium
                     )
                 },
@@ -105,7 +114,7 @@ fun SystemMessageScreen(
                         .fillMaxWidth(0.8f)
                 ) {
                     Text(
-                        text = if (isAuto) "Finish" else "Save",
+                        text = if (isAuto) finish else save,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -125,7 +134,7 @@ fun SystemMessageScreen(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "You have the freedom to personalize your Nexus experience. Share details about yourself to receive more tailored interactions. \nExamples:\n\n-Please address me in a formal tone.\n-I specialize in Artificial Intelligence Engineering.\n-I reside in the United States.\n-Traveling is my passion.",
+                    text = personalizeInfo,
                     style = MaterialTheme.typography.labelLarge,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
@@ -134,7 +143,7 @@ fun SystemMessageScreen(
                 if (systemMessage.length > 500) {
                     Spacer(modifier = Modifier.padding(8.dp))
                     Text(
-                        text = "Text must be under 500 characters",
+                        text = textLimit,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -153,7 +162,7 @@ fun SystemMessageScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "Personalize Your Experience",
+                                text = personalizeExperience,
                                 style = MaterialTheme.typography.labelLarge
                             )
                             Text(

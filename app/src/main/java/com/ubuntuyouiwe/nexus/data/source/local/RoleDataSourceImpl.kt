@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class RoleDataSourceImpl @Inject constructor(
     private val roles: List<RoleDto>
-): RoleDataSource {
+) : RoleDataSource {
     override fun getRoles(): List<RoleDto> {
         return roles
     }

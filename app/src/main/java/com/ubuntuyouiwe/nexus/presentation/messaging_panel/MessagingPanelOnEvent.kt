@@ -1,5 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.messaging_panel
 
+import android.speech.tts.TextToSpeech
 import androidx.navigation.NavController
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.image.Image
@@ -23,6 +24,7 @@ sealed interface MessagingPanelOnEvent {
     data class ChatRoomUpdate(val chatRooms: List<ChatRoom>): MessagingPanelOnEvent
 
     data object ChangeSpeechListener: MessagingPanelOnEvent
+
 
 
 }

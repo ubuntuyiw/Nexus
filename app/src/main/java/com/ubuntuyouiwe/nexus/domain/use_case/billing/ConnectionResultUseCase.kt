@@ -4,7 +4,6 @@ import com.android.billingclient.api.BillingClient
 import com.ubuntuyouiwe.nexus.domain.manager.BillingManager
 import com.ubuntuyouiwe.nexus.domain.util.ProductsFields
 import com.ubuntuyouiwe.nexus.util.Resource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 

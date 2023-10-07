@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.data.source.local.proto
 
-import androidx.compose.ui.text.capitalize
 import androidx.datastore.core.DataStore
 import com.google.protobuf.BoolValue
 import com.google.protobuf.FloatValue
@@ -11,7 +10,6 @@ import com.ubuntuyouiwe.nexus.SettingsDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import java.util.Locale
 import javax.inject.Inject
 
 class ProtoDataStoreDataSourceImpl @Inject constructor(

@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +43,6 @@ import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryButton
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.PrimaryVariantButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.SecondaryIcon
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AppNameAnimation
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AuthTheme
 import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.LogoAnimation
@@ -51,7 +51,7 @@ import com.ubuntuyouiwe.nexus.presentation.main_activity.SettingsState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
+import java.util.Locale
 
 @Composable
 fun AuthenticationChoiceScreen(
@@ -67,6 +67,7 @@ fun AuthenticationChoiceScreen(
     var dropdownMenuState by remember {
         mutableStateOf(false)
     }
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
 
     val loginSuccessful = stringResource(id = R.string.login_successful)
     val loading = stringResource(id = R.string.loading)
@@ -114,9 +115,12 @@ fun AuthenticationChoiceScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Box(modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()) {
                 AuthTheme(
                     dropdownMenuState = dropdownMenuState,
                     dropdownMenuStateChange = {
@@ -125,6 +129,12 @@ fun AuthenticationChoiceScreen(
                 ) {
                     onEvent(AuthChoiceEvent.ChangeTheme(it))
                 }
+                Spacer(modifier = Modifier.padding(16.dp))
+                Text(
+                    text = systemLanguage,
+                    style = MaterialTheme.typography.labelLarge
+                )
+
             }
 
 

@@ -5,5 +5,5 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class MenuItem(
     val icon: ImageVector,
     val text: String,
-    val type: MenuItemType
+    val type: MenuItemCategory
 )

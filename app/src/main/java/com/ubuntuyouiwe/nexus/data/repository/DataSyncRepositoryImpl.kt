@@ -2,7 +2,6 @@ package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Context
 import android.util.Log
-import com.google.firebase.functions.HttpsCallableResult
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
@@ -11,8 +10,8 @@ import com.ubuntuyouiwe.nexus.data.dto.messages.MessageDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessageItemDto
 import com.ubuntuyouiwe.nexus.data.dto.messages.MessagesDto
 import com.ubuntuyouiwe.nexus.data.dto.roles.RoleDto
+import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
-import com.ubuntuyouiwe.nexus.data.util.CloudFunctions
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
 import com.ubuntuyouiwe.nexus.data.util.dto_type.messages.MessagesFields
 import com.ubuntuyouiwe.nexus.data.util.firstToHashMap
@@ -45,7 +44,7 @@ class DataSyncRepositoryImpl @Inject constructor(
 ) : DataSyncRepository {
 
     override fun getTermsOfUse(): TermsOfUseModel {
-        return termsOfUseDto.map { it.toTermsOfUseModel()  }.first()
+        return termsOfUseDto.map { it.toTermsOfUseModel() }.first()
     }
 
 
@@ -60,7 +59,6 @@ class DataSyncRepositoryImpl @Inject constructor(
             }
         }
     }
-
 
 
     override suspend fun sendMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
@@ -82,7 +80,7 @@ class DataSyncRepositoryImpl @Inject constructor(
             }
         }
 
-        firebaseDataSource.batchSet(FirebaseCollections.ChatRooms,finalHashMap)
+        firebaseDataSource.batchSet(FirebaseCollections.ChatRooms, finalHashMap)
     }
 
     override suspend fun deleteChatRoomDocuments(chatRooms: List<ChatRoom>) {
@@ -123,15 +121,28 @@ class DataSyncRepositoryImpl @Inject constructor(
         system: String,
         messages: List<MessageItemDto>
     ) {
+        val uid = firebaseDataSource.userState()?.uid.orEmpty()
+        val userInfo = firebaseDataSource.getDocument(FirebaseCollections.Users, uid)
+            .toObjects(UserDto::class.java).first()
+        val userInfoName =
+            MessageItemDto(role = "system", content = "User Name: " + userInfo.displayName)
+        val userInfoSystemMessage =
+            MessageItemDto(role = "system", content = "User Info: " + userInfo.systemMessage)
         val systemMessageRole = MessageItemDto(role = "system", content = system)
-        val aiRequestBody = AIRequestBody(messages = this.systemMessages + listOf(systemMessageRole) + messages)
+        val aiRequestBody = AIRequestBody(
+            messages = this.systemMessages + listOf(
+                systemMessageRole,
+                userInfoSystemMessage,
+                userInfoName
+            ) + messages
+        )
 
         val aiRequest = AIRequest(
             aiRequestBody = aiRequestBody,
             chatRoomId = chatroomId,
             info = listOf(systemMessageRole),
             messageId = messageId,
-            ownerId = firebaseDataSource.userState()?.uid?: return
+            ownerId = firebaseDataSource.userState()?.uid ?: return
         )
         firebaseDataSource.ai(aiRequest)
     }
@@ -172,7 +183,6 @@ class DataSyncRepositoryImpl @Inject constructor(
                         ChatRooms(
                             messageResult = result.getOrNull()?.let { querySnapshot ->
                                 querySnapshot.documents.map { documentSnapshot ->
-
 
 
                                     documentSnapshot.toObject(ChatRoomDto::class.java)?.toChatRoom()

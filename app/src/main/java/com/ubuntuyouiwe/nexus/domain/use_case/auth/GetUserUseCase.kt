@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.domain.use_case.auth
 
-import android.util.Log
 import com.ubuntuyouiwe.nexus.domain.model.User
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
 import com.ubuntuyouiwe.nexus.util.Resource
@@ -18,7 +17,7 @@ class GetUserUseCase @Inject constructor(
                 emit(Resource.Success(it))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -16,8 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.SoftCloud
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
 
 @Composable
 fun Chapter(
@@ -34,7 +31,7 @@ fun Chapter(
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             ),
-            shape = RoundedCornerShape(topStart =  4.dp, topEnd = 4.dp),
+            shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 4.dp
             ),
@@ -44,7 +41,8 @@ fun Chapter(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth()
             ) {
                 top()

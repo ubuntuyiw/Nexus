@@ -46,6 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
         return authResult.user?.toUserDto()?.toUser()
     }
+
     override suspend fun signIn(userCredentials: UserCredentials): User? {
         val userCredentialsDto = userCredentials.toUserCredentialsDto()
         val result =
@@ -101,7 +102,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun updatePurposeSelection(purposeSelection: PurposeSelection) {
         val uid = firebaseDatasource.userState()?.uid
         val purposeSelectionDtoHashMap = purposeSelection.toPurposeSelectionDto().toHashMap()
-        val data = hashMapOf<String, Any?>("purposeSelection" to purposeSelectionDtoHashMap )
+        val data = hashMapOf<String, Any?>("purposeSelection" to purposeSelectionDtoHashMap)
         if (uid != null) {
             firebaseDatasource.set(
                 FirebaseCollections.Users,
@@ -129,6 +130,7 @@ class AuthRepositoryImpl @Inject constructor(
             throw Exception("No active user found")
         }
     }
+
     override suspend fun changePassword(password: String) {
         firebaseDatasource.changePassword(password)
     }
@@ -151,29 +153,28 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserMessagingData(id: String): Flow<UserMessagingData?> {
-        return firebaseDatasource.getDocumentListener(FirebaseCollections.UserMessagingData, id).map {
-            if (it.isSuccess) {
-                val userDto =
-                    it.getOrNull()?.documents?.firstOrNull()?.toObject(UserMessagingDataDto::class.java)
-                val addIsFromCache = userDto?.copy(
-                    isFromCache = it.getOrNull()?.metadata?.isFromCache,
-                    hasPendingWrites = it.getOrNull()?.metadata?.hasPendingWrites()
-                )
-                addIsFromCache?.toUserMessagingData()
+        return firebaseDatasource.getDocumentListener(FirebaseCollections.UserMessagingData, id)
+            .map {
+                if (it.isSuccess) {
+                    val userDto =
+                        it.getOrNull()?.documents?.firstOrNull()
+                            ?.toObject(UserMessagingDataDto::class.java)
+                    val addIsFromCache = userDto?.copy(
+                        isFromCache = it.getOrNull()?.metadata?.isFromCache,
+                        hasPendingWrites = it.getOrNull()?.metadata?.hasPendingWrites()
+                    )
+                    addIsFromCache?.toUserMessagingData()
 
-            } else {
-                throw it.exceptionOrNull()!!
+                } else {
+                    throw it.exceptionOrNull()!!
+                }
             }
-        }
     }
-
-
 
 
     override fun googleSignInIntent(): Intent {
         return firebaseDatasource.signInIntent()
     }
-
 
 
     override suspend fun logOut() {

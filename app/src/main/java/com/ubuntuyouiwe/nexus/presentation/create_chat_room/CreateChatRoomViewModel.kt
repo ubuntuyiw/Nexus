@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ubuntuyouiwe.nexus.domain.repository.RoleRepository
 import com.ubuntuyouiwe.nexus.domain.use_case.GetRolesUseCase
 import com.ubuntuyouiwe.nexus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class CreateChatRoomViewModel @Inject constructor(
     private val getRolesUseCase: GetRolesUseCase
 
-): ViewModel() {
+) : ViewModel() {
 
     private val _rolesState = mutableStateOf<RolesState>(RolesState())
     val rolesState: State<RolesState> = _rolesState
@@ -24,6 +23,7 @@ class CreateChatRoomViewModel @Inject constructor(
     init {
         getRoles()
     }
+
     private fun getRoles() {
         getRolesUseCase().onEach {
             when (it) {

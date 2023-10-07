@@ -84,11 +84,14 @@ fun Role.toRolesDto(): RoleDto =
 fun Purchase.toPurchaseDto(json: Json): PurchaseDto =
     PurchaseDto(
         purchaseToken = this.purchaseToken,
-        originalJson = json.decodeFromString(this.originalJson) ,
+        originalJson = json.decodeFromString(this.originalJson),
         products = this.products,
         packageName = this.packageName,
         orderId = this.purchaseToken,
-        accountIdentifiers = AccountIdentifiersDto(this.accountIdentifiers?.obfuscatedAccountId, this.accountIdentifiers?.obfuscatedProfileId),
+        accountIdentifiers = AccountIdentifiersDto(
+            this.accountIdentifiers?.obfuscatedAccountId,
+            this.accountIdentifiers?.obfuscatedProfileId
+        ),
         developerPayload = this.developerPayload,
         isAcknowledged = this.isAcknowledged,
         isAutoRenewing = this.isAutoRenewing,

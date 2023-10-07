@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class RoleRepositoryImpl @Inject constructor(
     private val roleDatasource: RoleDataSource
-): RoleRepository {
+) : RoleRepository {
     override fun getRoles(): List<Role> {
         return roleDatasource.getRoles().map { it.toRoles() }
     }

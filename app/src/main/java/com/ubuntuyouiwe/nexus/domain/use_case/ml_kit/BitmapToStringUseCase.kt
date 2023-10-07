@@ -14,12 +14,13 @@ class BitmapToStringUseCase @Inject constructor(
     operator fun invoke(inputImage: InputImage): Flow<Resource<String>> = flow {
         emit(Resource.Loading)
         try {
-            val text = mlKitRepository.getText(inputImage) ?: throw Exception(ErrorCodes.UNKNOWN_ERROR.name)
+            val text = mlKitRepository.getText(inputImage)
+                ?: throw Exception(ErrorCodes.UNKNOWN_ERROR.name)
             if (text.isEmpty()) throw Exception("No text was found in the image.")
             emit(Resource.Success(text))
 
         } catch (e: Exception) {
-            emit(Resource.Error(errorCode = null, e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(errorCode = null, e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 }

@@ -10,13 +10,13 @@ import javax.inject.Inject
 
 class GetRolesUseCase @Inject constructor(
     private val roleRepository: RoleRepository
-){
+) {
     operator fun invoke(): Flow<Resource<List<Role>>> = flow {
         emit(Resource.Loading)
         try {
             emit(Resource.Success(roleRepository.getRoles()))
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 }

@@ -11,11 +11,12 @@ import javax.inject.Inject
 
 class SettingsProtoRepositoryImpl @Inject constructor(
     private val protoDataStoreDataSource: ProtoDataStoreDataSource
-): SettingsProtoRepository {
+) : SettingsProtoRepository {
     override suspend fun updateSettings(updateAction: (SettingsDto.Builder) -> Unit) {
         protoDataStoreDataSource.updateSettings(updateAction)
     }
 
-    override fun getSettings(): Flow<Settings> = protoDataStoreDataSource.getSettings().map { it.toSettings() }
+    override fun getSettings(): Flow<Settings> =
+        protoDataStoreDataSource.getSettings().map { it.toSettings() }
 
 }

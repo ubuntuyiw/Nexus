@@ -24,17 +24,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ubuntuyouiwe.nexus.R
-import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.SecondaryButton
-import com.ubuntuyouiwe.nexus.presentation.component.icon_style.PrimaryIcon
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
-import com.ubuntuyouiwe.nexus.presentation.component.text_style.PrimaryHintText
 import com.ubuntuyouiwe.nexus.presentation.login.email_with_login.state.ResetPasswordState
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.Black
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.DarkGray
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.LightGray
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.White
-import com.ubuntuyouiwe.nexus.presentation.ui.theme.VeryLightGray
 
 @Composable
 fun ForgotPasswordDialog(

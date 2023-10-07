@@ -54,7 +54,7 @@ fun PrimaryTextField(
             errorContainerColor = MaterialTheme.colorScheme.errorContainer,
             disabledContainerColor = MaterialTheme.colorScheme.secondary,
             focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-            errorTextColor = MaterialTheme.colorScheme.onErrorContainer,
+            errorTextColor = MaterialTheme.colorScheme.error,
             disabledTextColor = MaterialTheme.colorScheme.onSecondary,
             cursorColor = MaterialTheme.colorScheme.onSecondary,
             focusedLabelColor = MaterialTheme.colorScheme.onSecondary,

@@ -41,11 +41,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.top_app_bar_style.PrimaryTopAppBar
 
 @Composable
@@ -56,6 +58,13 @@ fun PhotoEditingScreen(
     onEvent: (event: PhotoEditingEvent) -> Unit,
     bitmap: Bitmap?
 ) {
+    val cancel = stringResource(id = R.string.cancel)
+    val preview = stringResource(id = R.string.preview)
+    val croppedImage = stringResource(id = R.string.cropped_image)
+    val editCrop = stringResource(id = R.string.edit_crop)
+    val applyCrop = stringResource(id = R.string.apply_crop)
+    val crop = stringResource(id = R.string.crop)
+    val cropInstruction = stringResource(id = R.string.crop_instruction)
 
     if (bitmap == null) navController.navigateUp()
 
@@ -102,7 +111,7 @@ fun PhotoEditingScreen(
                         }
 
                         Text(
-                            text = "Preview",
+                            text = preview,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(16.dp)
@@ -148,7 +157,7 @@ fun PhotoEditingScreen(
                                 } else {
                                     Image(
                                         bitmap = it,
-                                        contentDescription = "Cropped Image",
+                                        contentDescription = croppedImage,
                                         contentScale = scale,
                                         modifier = Modifier.matchParentSize()
 
@@ -175,7 +184,7 @@ fun PhotoEditingScreen(
                                 contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
-                            Text(text = "Edit Crop", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = editCrop, style = MaterialTheme.typography.bodyMedium)
                         }
                         Spacer(modifier = Modifier.padding(16.dp))
                         Button(
@@ -187,7 +196,7 @@ fun PhotoEditingScreen(
                                 contentColor = MaterialTheme.colorScheme.onSurface
                             )
                         ) {
-                            Text(text = "Apply Crop", style = MaterialTheme.typography.bodyMedium)
+                            Text(text = applyCrop, style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -209,7 +218,7 @@ fun PhotoEditingScreen(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        Text(text = "Crop")
+                        Text(text = crop)
                     }
                 }
             )
@@ -229,7 +238,7 @@ fun PhotoEditingScreen(
                     Button(onClick = {
                         navController.navigateUp()
                     }) {
-                        Text(text = "Cancel", style = MaterialTheme.typography.bodyLarge)
+                        Text(text = cancel, style = MaterialTheme.typography.bodyLarge)
                     }
                     Spacer(modifier = Modifier.padding(24.dp))
 
@@ -246,7 +255,7 @@ fun PhotoEditingScreen(
                         )
                     ) {
                         Text(
-                            text = "Preview",
+                            text = preview,
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
@@ -288,7 +297,7 @@ fun PhotoEditingScreen(
             }
 
             Text(
-                text = "Please crop the photo to focus on the text you want to send to Nexus. Don't forget to leave out any unwanted words or objects.",
+                text = cropInstruction,
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(24.dp)

@@ -10,13 +10,14 @@ import javax.inject.Inject
 class ChatRoomUpdateUseCase @Inject constructor(
     private val dataSyncRepository: DataSyncRepository
 ) {
-    operator fun invoke(chatRoom: List<ChatRoom>) = flow<Resource<Nothing>>{
+    operator fun invoke(chatRoom: List<ChatRoom>) = flow<Resource<Nothing>> {
         emit(Resource.Loading)
         try {
             dataSyncRepository.updateChatRoomDocuments(chatRoom)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))        }
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
+        }
 
     }
 }

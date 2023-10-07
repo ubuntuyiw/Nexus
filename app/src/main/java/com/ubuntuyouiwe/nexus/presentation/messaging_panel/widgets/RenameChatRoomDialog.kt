@@ -15,11 +15,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.presentation.component.button_style.SecondaryButton
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.text_field_style.PrimaryTextField
 import com.ubuntuyouiwe.nexus.presentation.in_app_purchase_screen.state.ChatRoomUpdateState
+import com.ubuntuyouiwe.nexus.presentation.ui.theme.Gray
 
 @Composable
 fun RenameChatRoomDialog(
@@ -29,6 +32,9 @@ fun RenameChatRoomDialog(
     approvalOnClick: () -> Unit,
     rejectOnClick: () -> Unit,
 ) {
+    val cancel = stringResource(id = R.string.cancel)
+    val newNameString = stringResource(id = R.string.new_name)
+    val ok = stringResource(id = R.string.ok)
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,
@@ -52,10 +58,25 @@ fun RenameChatRoomDialog(
                 },
 
                 label = {
-                    Text(
-                        text = "New Name: ${newName.length}",
-                        style = MaterialTheme.typography.labelLarge,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = newNameString,
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        Text(
+                            text =  newName.length.toString(),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                color = if (newName.length > 25) MaterialTheme.colorScheme.error
+                                    else Gray,
+                            ),
+                        )
+
+                    }
+
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -76,14 +97,14 @@ fun RenameChatRoomDialog(
                     .background(MaterialTheme.colorScheme.scrim)
             ) {
                 SecondaryButton(onClick = rejectOnClick) {
-                    Text(text = "Cancel", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
+                    Text(text = cancel, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
                 SecondaryButton(
                     onClick = approvalOnClick,
                     enabled = newName.length <= 25
                 ) {
-                    Text(text = "Ok", color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
+                    Text(text = ok, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.padding(8.dp))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
             }

@@ -1,11 +1,8 @@
 package com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_filter
 
 import com.google.protobuf.BoolValue
-import com.google.protobuf.FloatValue
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoomFilter
-import com.ubuntuyouiwe.nexus.domain.model.Settings
 import com.ubuntuyouiwe.nexus.domain.repository.ChatRoomFilterRepository
-import com.ubuntuyouiwe.nexus.domain.repository.SettingsProtoRepository
 import com.ubuntuyouiwe.nexus.util.Resource
 import com.ubuntuyouiwe.nexus.util.erros.ErrorCodes
 import kotlinx.coroutines.flow.Flow
@@ -53,10 +50,9 @@ class UpdateChatRoomFilterUseCase @Inject constructor(
 
 
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
 
         }
-
 
 
     }

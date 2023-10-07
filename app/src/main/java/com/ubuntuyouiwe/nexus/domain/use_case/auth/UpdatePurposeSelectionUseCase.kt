@@ -16,7 +16,7 @@ class UpdatePurposeSelectionUseCase @Inject constructor(
             authRepository.updatePurposeSelection(purposeSelection)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error( message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
 
     }

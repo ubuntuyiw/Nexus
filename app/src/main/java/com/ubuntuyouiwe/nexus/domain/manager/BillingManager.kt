@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface BillingManager {
 
-    val purchasesUpdateFlow: MutableSharedFlow<Pair<BillingResult,PurchaseDto?>>
+    val purchasesUpdateFlow: MutableSharedFlow<Pair<BillingResult, PurchaseDto?>>
 
     var billingClientBuild: BillingClient
     suspend fun handlePurchase(purchases: PurchaseDto): HttpsCallableResult?

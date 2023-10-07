@@ -1,7 +1,6 @@
 package com.ubuntuyouiwe.nexus.presentation.chat_dashboard
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -19,8 +18,8 @@ import com.ubuntuyouiwe.nexus.domain.use_case.firestore.delete_chat_rooms.Cancel
 import com.ubuntuyouiwe.nexus.domain.use_case.firestore.delete_chat_rooms.ChatRoomDeleteUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_filter.GetChatRoomFilterUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_filter.UpdateChatRoomFilterUseCase
-import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_short.GetChatRoomShortUseCase
-import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_short.UpdateChatRoomShortUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_short.GetChatRoomSortUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.proto.chat_room_short.UpdateChatRoomSortUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomDeleteState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomFilterState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.ChatRoomShortState
@@ -48,8 +47,8 @@ class ChatDashBoardViewModel @Inject constructor(
     private val getRolesUseCase: GetRolesUseCase,
     private val getChatRoomFilterUseCase: GetChatRoomFilterUseCase,
     private val updateChatRoomFilterUseCase: UpdateChatRoomFilterUseCase,
-    private val getChatRoomShortUseCase: GetChatRoomShortUseCase,
-    private val updateChatRoomShortUseCase: UpdateChatRoomShortUseCase,
+    private val getChatRoomSortUseCase: GetChatRoomSortUseCase,
+    private val updateChatRoomSortUseCase: UpdateChatRoomSortUseCase,
     private val chatRoomUpdateUseCase: ChatRoomUpdateUseCase,
     private val chatRoomDeleteUseCase: ChatRoomDeleteUseCase,
     private val cancelWorkerUseCase: CancelWorkerUseCase,
@@ -134,6 +133,7 @@ class ChatDashBoardViewModel @Inject constructor(
             is ChatDashBoardEvent.ChatRoomDelete -> {
                 chatRoomDelete(event.chatRooms)
             }
+
             is ChatDashBoardEvent.ChatRoomCancelDelete -> {
                 cancelChatRoomDelete(event.id)
             }
@@ -386,6 +386,7 @@ class ChatDashBoardViewModel @Inject constructor(
                         isError = false
                     )
                 }
+
                 is Resource.Success -> {
                     _chatRoomFilterState.value = chatRoomFilterState.value.copy(
                         isLoading = false,
@@ -450,7 +451,7 @@ class ChatDashBoardViewModel @Inject constructor(
     }
 
     private fun updateShortDate(chatRoomShort: ChatRoomShort) {
-        updateChatRoomShortUseCase(chatRoomShort).onEach { resource ->
+        updateChatRoomSortUseCase(chatRoomShort).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     _chatRoomShortState.value = chatRoomShortState.value.copy(
@@ -489,7 +490,7 @@ class ChatDashBoardViewModel @Inject constructor(
     }
 
     private fun getChatRoomShort() {
-        getChatRoomShortUseCase().onEach { resource ->
+        getChatRoomSortUseCase().onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     _chatRoomShortState.value = chatRoomShortState.value.copy(

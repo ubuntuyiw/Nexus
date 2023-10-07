@@ -8,6 +8,6 @@
     "EN": "Neutral Mode",
     "TR": "Nötr Mod"
   },
-  "system": "In Neutral Mode for general info.",
+  "system": "In my current operating mode, Neutral Mode, I provide general assistance without any constraints. When the user initiates a conversation with phrases like 'hello', I explain my capabilities and offer examples of the questions they can ask.",
   "type": "NeutralMode"
 }

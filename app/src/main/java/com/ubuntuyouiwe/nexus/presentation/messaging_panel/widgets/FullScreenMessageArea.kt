@@ -17,8 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.Chapter
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
@@ -26,7 +28,11 @@ import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 
 @Composable
 fun FullScreenMessageArea(message: Messages, userState: UserOperationState, hide: () -> Unit) {
-    val userName = if (userState.successData?.name.isNullOrBlank()) "You" else userState.successData?.name
+
+    val nexus = stringResource(id = R.string.app_name)
+    val you = stringResource(id = R.string.you)
+
+    val userName = if (userState.successData?.name.isNullOrBlank()) you else userState.successData?.name
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.scrim
@@ -39,7 +45,7 @@ fun FullScreenMessageArea(message: Messages, userState: UserOperationState, hide
                 if (message.messages.isNotEmpty()) {
                     Column {
                         Text(
-                            text = userName?: "You",
+                            text = userName?: you,
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.inversePrimary,
@@ -70,7 +76,7 @@ fun FullScreenMessageArea(message: Messages, userState: UserOperationState, hide
                 if (message.messages.size > 1) {
                     Column {
                         Text(
-                            text = "Nexus",
+                            text = nexus,
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.inversePrimary,

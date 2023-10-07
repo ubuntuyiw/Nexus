@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.speech.tts.TextToSpeech
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -63,11 +64,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.app.ActivityCompat
@@ -98,6 +99,7 @@ import com.ubuntuyouiwe.nexus.presentation.state.ButtonState
 import com.ubuntuyouiwe.nexus.presentation.state.TextFieldState
 import com.ubuntuyouiwe.nexus.presentation.util.ImageUrl.SHAKE
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
@@ -111,6 +113,7 @@ fun MessagingPanelScreen(
     getMessagesState: GetMessagesState,
     chatRoomState: ChatRoomState,
     photoUri: Uri,
+    textToSpeech: TextToSpeech,
     settingsState: SettingsState,
     userState: UserOperationState,
     userMessagingDataState: UserMessagingDataState,
@@ -120,6 +123,8 @@ fun MessagingPanelScreen(
     var dropdownMenuState by remember {
         mutableStateOf(false)
     }
+    val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+
 
     val hostState = remember { SnackbarHostState() }
     var expendedTextField by remember {
@@ -131,6 +136,23 @@ fun MessagingPanelScreen(
     var expendedMessageContent by remember {
         mutableStateOf<Messages?>(null)
     }
+    val send = stringResource(id = R.string.send)
+    val availableMessages = stringResource(id = R.string.available_messages)
+    val shakePhone = stringResource(id = R.string.shake_phone)
+    val shakeForCredits = stringResource(id = R.string.shake_for_credits)
+    val buyMessagesString = stringResource(id = R.string.buy_messages)
+    val specificRequestNotice = stringResource(id = R.string.specific_request_notice)
+    val permissionDenied = stringResource(id = R.string.permission_denied)
+    val settings = stringResource(id = R.string.settings)
+    val rename = stringResource(id = R.string.rename)
+    val typeMessage = stringResource(id = R.string.type_message)
+    val cameraAccessNeeded = stringResource(id = R.string.camera_access_needed)
+    val grantPermission = stringResource(id = R.string.grant_permission)
+    val newChat = stringResource(id = R.string.new_chat)
+    val buyMessagesText = stringResource(id = R.string.buy_messages)
+    val combinedBuyMessagesPrompt = stringResource(id = R.string.buy_messages_prompt, buyMessagesText)
+
+
 
 
 
@@ -171,8 +193,8 @@ fun MessagingPanelScreen(
         } else {
             scope.launch {
                 val result = hostState.showSnackbar(
-                    message ="Permission denied. Please grant access from settings.",
-                    actionLabel = "Settings",
+                    message =permissionDenied,
+                    actionLabel = settings,
                     withDismissAction = true,
                     duration = SnackbarDuration.Indefinite)
                 if (SnackbarResult.ActionPerformed == result) {
@@ -232,14 +254,14 @@ fun MessagingPanelScreen(
                         horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-                            text = chatRoomState.data.name,
+                            text = if (chatRoomState.data.isNew) newChat else chatRoomState.data.name,
                             style = MaterialTheme.typography.titleMedium,
                             overflow = TextOverflow.Ellipsis,
                             softWrap = false,
                             maxLines = 1,
                         )
                         Spacer(modifier = Modifier.padding(start = 16.dp))
-                        Text(text = role.data.name.EN, style = MaterialTheme.typography.titleSmall)
+                        Text(text = if (systemLanguage == "TR") role.data.name.TR else role.data.name.EN, style = MaterialTheme.typography.titleSmall)
                     }
 
                 },
@@ -294,7 +316,7 @@ fun MessagingPanelScreen(
                             },
                             text = {
                                 Text(
-                                    text = "Rename",
+                                    text = rename,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -365,7 +387,7 @@ fun MessagingPanelScreen(
                         },
                         placeholder = {
                             Text(
-                                text = "Type a message",
+                                text = typeMessage,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         },
@@ -394,8 +416,8 @@ fun MessagingPanelScreen(
                                         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.CAMERA)) {
                                             scope.launch {
                                                 val result = hostState.showSnackbar(
-                                                    message ="We need camera access to convert the photo you take into text.",
-                                                    actionLabel = "Grant Permission",
+                                                    message =cameraAccessNeeded,
+                                                    actionLabel = grantPermission,
                                                     withDismissAction = true,
                                                     duration = SnackbarDuration.Indefinite)
 
@@ -457,7 +479,7 @@ fun MessagingPanelScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Send,
-                                    contentDescription = "Voice Recording",
+                                    contentDescription = send,
                                 )
 
                             }
@@ -491,7 +513,7 @@ fun MessagingPanelScreen(
                        contentAlignment = Alignment.Center,
                    ) {
                        Text(
-                           text = "Available Messages: " + userMessagingDataState.successData?.totalMessages.toString(),
+                           text = "$availableMessages: " + userMessagingDataState.successData?.totalMessages.toString(),
                            style = MaterialTheme.typography.labelLarge,
                        )
                    }
@@ -512,14 +534,15 @@ fun MessagingPanelScreen(
                             MessageArea(
                                 messages,
                                 index,
+                                textToSpeech,
+                                hostState,
                                 expendedMessage = {
                                     expendedMessageState = true
                                     expendedMessageContent = messages
-                                },
-                                speechStateChange = { state ->
-                                    onEvent(MessagingPanelOnEvent.Speak(state))
                                 }
-                            )
+                            ) { state ->
+                                onEvent(MessagingPanelOnEvent.Speak(state))
+                            }
 
 
                         }
@@ -535,7 +558,7 @@ fun MessagingPanelScreen(
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "Please be specific and descriptive when requesting information or answers from Nexus. Be aware that the provided information or responses may be inaccurate",
+                                    text = specificRequestNotice,
                                     style = MaterialTheme.typography.labelLarge,
                                 )
                                 Spacer(modifier = Modifier.padding(16.dp))
@@ -544,10 +567,10 @@ fun MessagingPanelScreen(
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
-                                    GlideImage(model = SHAKE, contentDescription = "shake the phone", modifier = Modifier.size(50.dp))
+                                    GlideImage(model = SHAKE, contentDescription = shakePhone, modifier = Modifier.size(50.dp))
                                     Spacer(modifier = Modifier.padding(8.dp))
                                     Text(
-                                        text = "Shake your phone quickly to earn message credits.",
+                                        text = shakeForCredits,
                                         style = MaterialTheme.typography.labelLarge,
                                     )
 
@@ -559,45 +582,40 @@ fun MessagingPanelScreen(
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
+
                                     val buyMessages = buildAnnotatedString {
-                                        withStyle(
-                                            style = SpanStyle(
+                                        append(combinedBuyMessagesPrompt)
+
+                                        val buyMessagesTextStart = combinedBuyMessagesPrompt.indexOf(buyMessagesText)
+                                        val buyMessagesTextEnd = buyMessagesTextStart + buyMessagesText.length
+                                        addStyle(
+                                            SpanStyle(
                                                 fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
                                                 fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                                color = MaterialTheme.typography.labelLarge.color,
-                                            )
-
-                                        ) {
-                                            append("Purchase a message package from the")
-                                        }
-
-                                        withStyle(
-                                            style = SpanStyle(
+                                                color = MaterialTheme.typography.labelLarge.color
+                                            ),
+                                            0, buyMessagesTextStart
+                                        )
+                                        addStyle(
+                                            SpanStyle(
                                                 color = MaterialTheme.colorScheme.inversePrimary,
-                                                fontWeight = FontWeight.ExtraBold,
-                                            )
-                                        ) {
-                                            pushStringAnnotation(
-                                                tag = "go",
-                                                annotation = "go"
-                                            )
-                                            append(" Buy Messages ")
-                                            pop()
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
+                                                fontWeight = FontWeight.ExtraBold
+                                            ),
+                                            buyMessagesTextStart, buyMessagesTextEnd
+                                        )
+                                        addStringAnnotation(tag = "go", annotation = "go", start = buyMessagesTextStart, end = buyMessagesTextEnd)
+                                        addStyle(
+                                            SpanStyle(
                                                 fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
                                                 fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                                color = MaterialTheme.typography.labelLarge.color,
-                                            )
-                                        ) {
-                                            append("screen.")
-                                        }
-
+                                                color = MaterialTheme.typography.labelLarge.color
+                                            ),
+                                            buyMessagesTextEnd, length
+                                        )
                                     }
 
                                     Spacer(modifier = Modifier.padding(8.dp))
-                                    GlideImage(model = R.drawable.goldmessage, contentDescription = "Buy Messages", modifier = Modifier.size(50.dp))
+                                    GlideImage(model = R.drawable.goldmessage, contentDescription = buyMessagesString, modifier = Modifier.size(50.dp))
                                     Spacer(modifier = Modifier.padding(8.dp))
                                     ClickableText(
                                         text =  buyMessages,

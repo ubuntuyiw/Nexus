@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetGoogleSignInIntentUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke(): Intent  {
+    operator fun invoke(): Intent {
         return authRepository.googleSignInIntent()
     }
 }

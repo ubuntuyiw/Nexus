@@ -1,5 +1,7 @@
 package com.ubuntuyouiwe.nexus.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -50,7 +52,7 @@ import com.ubuntuyouiwe.nexus.presentation.settings.password.PasswordViewModel
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseScreen
 import com.ubuntuyouiwe.nexus.presentation.widgets.terms_of_use.TermsOfUseViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun NavHostScreen(startDestination: Screen) {
     val navController = rememberNavController()
@@ -207,6 +209,7 @@ fun NavHostScreen(startDestination: Screen) {
             val userState by viewModel.userState
             val userMessagingDataState by viewModel.userMessagingDataState
             val chatRoomUpdateState by viewModel.chatRoomUpdateState
+            val textToSpeech= viewModel.getTextToSpeech()
 
             MessagingPanelScreen(
                 navController,
@@ -217,6 +220,7 @@ fun NavHostScreen(startDestination: Screen) {
                 getMessagesState,
                 chatRoomState,
                 photoUri,
+                textToSpeech,
                 settingsState,
                 userState,
                 userMessagingDataState,

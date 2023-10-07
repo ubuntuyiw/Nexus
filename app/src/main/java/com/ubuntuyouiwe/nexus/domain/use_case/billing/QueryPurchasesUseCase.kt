@@ -14,9 +14,9 @@ class QueryPurchasesUseCase @Inject constructor(
         billingManager.queryPurchases.collect { (billingResult, purchaseDtoList) ->
             emit(Resource.Loading)
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                emit(Resource.Success( purchaseDtoList))
+                emit(Resource.Success(purchaseDtoList))
             } else {
-                emit(Resource.Error( message = billingResult.debugMessage))
+                emit(Resource.Error(message = billingResult.debugMessage))
             }
 
         }

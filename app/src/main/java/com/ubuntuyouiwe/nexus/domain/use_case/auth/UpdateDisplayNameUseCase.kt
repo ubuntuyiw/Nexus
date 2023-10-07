@@ -10,13 +10,13 @@ import javax.inject.Inject
 class UpdateDisplayNameUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke(name: String): Flow<Resource<Nothing>> = flow  {
+    operator fun invoke(name: String): Flow<Resource<Nothing>> = flow {
         emit(Resource.Loading)
         try {
             authRepository.updateDisplayName(name)
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 }

@@ -43,6 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
+    private val viewModel: MainActivityViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,6 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
         shakeDetector.start(sensorManager, SensorManager.SENSOR_DELAY_GAME)
 
         setContent {
-            val viewModel: MainActivityViewModel = hiltViewModel()
 
             val mainAuthUiEvent by viewModel.userOperationState
             val user by viewModel.userState
@@ -130,7 +130,6 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
     private var isShowAd: Boolean = true
 
     override fun hearShake() {
-        val viewModel: MainActivityViewModel by viewModels()
         val mainAuthUiEvent by viewModel.userOperationState
         mainAuthUiEvent.successData?.let { user ->
             loadAd(user)

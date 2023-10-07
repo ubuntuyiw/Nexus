@@ -1,10 +1,8 @@
 package com.ubuntuyouiwe.nexus.domain.use_case.firestore
 
-import android.util.Log
 import com.ubuntuyouiwe.nexus.domain.model.ChatRoom
 import com.ubuntuyouiwe.nexus.domain.model.messages.Message
 import com.ubuntuyouiwe.nexus.domain.model.messages.MessageItem
-import com.ubuntuyouiwe.nexus.domain.model.messages.Messages
 import com.ubuntuyouiwe.nexus.domain.repository.DataSyncRepository
 import com.ubuntuyouiwe.nexus.util.Resource
 import com.ubuntuyouiwe.nexus.util.erros.ErrorCodes
@@ -43,18 +41,13 @@ class SendFirstMessageUseCase @Inject constructor(
 
         val filterMessage = messages.messages.takeWhile {
             sumTokens += it.totalTokens
-            sumTokens <= 2000
+            sumTokens <= 3000
         }
 
 
-        val messagesReversed = filterMessage .flatMap {
+        val messagesReversed = filterMessage.flatMap {
             it.messages.reversed()
         }.reversed()
-        messagesReversed.forEach { a ->
-            Log.v("asdsad",a.toString())
-        }
-        Log.v("asdsad",sumTokens.toString())
-
 
         return messagesReversed + listOf(newMessage)
     }

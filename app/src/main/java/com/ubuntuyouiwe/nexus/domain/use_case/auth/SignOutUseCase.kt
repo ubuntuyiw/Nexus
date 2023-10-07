@@ -10,13 +10,13 @@ import javax.inject.Inject
 class SignOutUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke(): Flow<Resource<Any>> = flow{
+    operator fun invoke(): Flow<Resource<Any>> = flow {
         emit(Resource.Loading)
         try {
             authRepository.logOut()
             emit(Resource.Success())
         } catch (e: Exception) {
-            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
         }
     }
 
