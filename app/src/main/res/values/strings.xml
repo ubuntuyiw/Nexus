@@ -28,7 +28,7 @@
     <string name="chat_rooms">Chat Rooms</string>
     <string name="filter">Filter</string>
     <string name="send_email">Send Email</string>
-    <string name="no_content_created">No content has been created yet.</string>
+    <string name="no_content_created">Are you ready for a brand-new experience?\nTap to see what we can offer you!</string>
     <string name="time_remaining_deletion">Time remaining until deletion</string>
     <string name="cancel">Cancel</string>
     <string name="roles_sort">Sort</string>
@@ -102,6 +102,7 @@ Examples:
     <string name="textToSpeechSettings">"Please set the preferred search engine to Google from the settings."</string>
     <string name="count">"Count"</string>
     <string name="consume">"Consume"</string>
+    <string name="allow_nexus_notifications">Allow Nexus to send you notifications for a seamless experience.</string>
 
 
 

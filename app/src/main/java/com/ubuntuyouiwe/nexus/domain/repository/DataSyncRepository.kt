@@ -10,12 +10,14 @@ import kotlinx.coroutines.flow.Flow
 interface DataSyncRepository {
     suspend fun getChatRooms(): Flow<ChatRooms>
     fun getTermsOfUse(): TermsOfUseModel
-    suspend fun sendMessage(chatRoom: ChatRoom, messages: List<MessageItem>)
+    suspend fun sendMessage(chatRoom: ChatRoom, messages: List<MessageItem>,   isUserMessagingData: Boolean)
     suspend fun getChatRoom(id: String): Flow<ChatRoom?>
     suspend fun getChatRoomMessage(id: String): Flow<Message?>
 
     suspend fun updateChatRoomDocuments(chatRooms: List<ChatRoom>)
 
     suspend fun deleteChatRoomDocuments(chatRooms: List<ChatRoom>)
+
+
 
 }

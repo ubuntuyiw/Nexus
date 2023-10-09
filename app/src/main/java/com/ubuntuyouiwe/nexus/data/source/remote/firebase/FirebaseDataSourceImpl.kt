@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -339,6 +340,12 @@ class FirebaseDataSourceImpl @Inject constructor(
         return fireStore.collection(collection.name).document(documentId)
             .collection(subCollection.name).add(data).await()
     }
+
+    override fun firebaseMessaging(): FirebaseMessaging = messaging
+
+    override suspend fun getDeviceToken(): String? = firebaseMessaging().token.await()
+
+
 
 
 }

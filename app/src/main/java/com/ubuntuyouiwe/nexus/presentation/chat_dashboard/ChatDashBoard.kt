@@ -99,6 +99,8 @@ import com.ubuntuyouiwe.nexus.presentation.component.button_style.SecondaryButto
 import com.ubuntuyouiwe.nexus.presentation.component.pogress_style.PrimaryCircularProgressIndicator
 import com.ubuntuyouiwe.nexus.presentation.component.snacbar_style.PrimarySnackbar
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
+import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.AppNameAnimation
+import com.ubuntuyouiwe.nexus.presentation.login.auth_choice.widgets.LogoAnimation
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
@@ -843,13 +845,18 @@ fun ChatDashBoard(
                     }
                     item {
                         if (chatRoomsState.data.isEmpty()) {
+
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center,
-                                modifier = Modifier
+                                modifier = Modifier.clickable {
+                                    navController.navigate(Screen.CreateChatRoomScreen.name)
+                                }
                                     .fillParentMaxSize()
                                     .padding(16.dp)
                             ) {
+                                AppNameAnimation()
+                                Spacer(modifier = Modifier.padding(16.dp))
                                 Text(
                                     text = noContentCreated,
                                     color = MaterialTheme.colorScheme.onBackground,

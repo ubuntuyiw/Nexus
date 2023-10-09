@@ -28,7 +28,7 @@
     <string name="chat_rooms">Sohbet Odaları</string>
     <string name="filter">Filtrele</string>
     <string name="send_email">E-posta Gönder</string>
-    <string name="no_content_created">Henüz içerik oluşturulmadı.</string>
+    <string name="no_content_created">Yepyeni bir deneyime hazır mısın?\nSana neler sunabileceğimizi görmek için dokun!</string>
     <string name="time_remaining_deletion">Silinmeye kalan süre</string>
     <string name="cancel">İptal</string>
     <string name="roles_sort">Sırala</string>
@@ -102,5 +102,7 @@
     <string name="textToSpeechSettings">"Lütfen ayarlar kısmından tercih edilen arama motorunu Google olarak belirleyiniz."</string>
     <string name="count">"Miktar"</string>
     <string name="consume">"Tüket"</string>
+    <string name="allow_nexus_notifications">Nexus\'un size kesintisiz bir deneyim için bildirim göndermesine izin verin.</string>
+
 
 </resources>

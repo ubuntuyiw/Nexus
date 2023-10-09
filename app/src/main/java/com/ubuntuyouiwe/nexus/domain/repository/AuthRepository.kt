@@ -34,4 +34,10 @@ interface AuthRepository {
     suspend fun updateSystemMessage(systemMessage: String)
 
     suspend fun changePassword(password: String)
+
+    suspend fun setSystemLanguage(code: String)
+
+    suspend fun saveTokenToDatabase(onNewToken: String?)
+
+    suspend fun getDeviceToken(): String?
 }

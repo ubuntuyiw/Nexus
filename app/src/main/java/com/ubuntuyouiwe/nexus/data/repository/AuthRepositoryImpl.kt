@@ -1,6 +1,8 @@
 package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Intent
+import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
 import com.ubuntuyouiwe.nexus.data.dto.user_messaging_data.UserMessagingDataDto
 import com.ubuntuyouiwe.nexus.data.source.remote.firebase.FirebaseDataSource
@@ -17,13 +19,18 @@ import com.ubuntuyouiwe.nexus.domain.model.user_messaging_data.UserMessagingData
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
 import com.ubuntuyouiwe.nexus.domain.util.toPurposeSelectionDto
 import com.ubuntuyouiwe.nexus.domain.util.toUserCredentialsDto
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseDatasource: FirebaseDataSource,
 ) : AuthRepository {
+
 
     override suspend fun signUp(userCredentials: UserCredentials) {
         val userCredentialsDto = userCredentials.toUserCredentialsDto()
@@ -31,6 +38,11 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseDatasource.signUp(userCredentialsDto.email, userCredentialsDto.password)
         createUserDatabase(result.user?.uid, result.user?.email, result.user?.displayName)
         firebaseDatasource.createUserMessagingData()
+        val token = firebaseDatasource.getDeviceToken()
+        saveTokenToDatabase(token)
+        val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+        setSystemLanguage(systemLanguage)
+
     }
 
     override suspend fun googleSignIn(data: Intent): User? {
@@ -44,6 +56,11 @@ class AuthRepositoryImpl @Inject constructor(
             )
             firebaseDatasource.createUserMessagingData()
         }
+        val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
+        setSystemLanguage(systemLanguage)
+        val token = firebaseDatasource.getDeviceToken()
+        saveTokenToDatabase(token)
+
         return authResult.user?.toUserDto()?.toUser()
     }
 
@@ -51,8 +68,13 @@ class AuthRepositoryImpl @Inject constructor(
         val userCredentialsDto = userCredentials.toUserCredentialsDto()
         val result =
             firebaseDatasource.loginIn(userCredentialsDto.email, userCredentialsDto.password)
+        val token = firebaseDatasource.getDeviceToken()
+        saveTokenToDatabase(token)
+
         return result.user?.toUserDto()?.toUser()
     }
+
+    override suspend fun getDeviceToken(): String? = firebaseDatasource.getDeviceToken()
 
     override suspend fun loginUserDatabase(uid: String?) {
         uid?.let {
@@ -97,6 +119,35 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
 
+    }
+
+    override suspend fun saveTokenToDatabase(onNewToken: String?) {
+        onNewToken?.let { token ->
+            val uid = firebaseDatasource.userState()?.uid
+            uid?.let {
+                firebaseDatasource.set(
+                    FirebaseCollections.Users,
+                    it,
+                    hashMapOf("deviceTokens" to FieldValue.arrayUnion(onNewToken))
+                )
+            }
+        }
+
+
+
+    }
+
+
+    override suspend fun setSystemLanguage(code: String) {
+        val uid = firebaseDatasource.userState()?.uid
+        uid?.let {
+            firebaseDatasource.set(
+                FirebaseCollections.Users,
+                uid,
+                hashMapOf("language" to code)
+
+            )
+        }
     }
 
     override suspend fun updatePurposeSelection(purposeSelection: PurposeSelection) {

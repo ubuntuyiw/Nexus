@@ -1,30 +1,34 @@
 package com.ubuntuyouiwe.nexus.presentation.main_activity
 
-import android.app.LocaleManager
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.os.LocaleList
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.os.LocaleListCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
@@ -35,27 +39,35 @@ import com.squareup.seismic.ShakeDetector
 import com.squareup.seismic.ShakeDetector.SENSITIVITY_LIGHT
 import com.ubuntuyouiwe.nexus.R
 import com.ubuntuyouiwe.nexus.domain.model.User
+import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.NotificationPermission
 import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.UserOperationErrorUi
 import com.ubuntuyouiwe.nexus.presentation.navigation.NavHostScreen
-import com.ubuntuyouiwe.nexus.presentation.util.ThemeCategory
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
+class MainActivity : ComponentActivity(), ShakeDetector.Listener {
     private val viewModel: MainActivityViewModel by viewModels()
 
-
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         MobileAds.initialize(this)
-        
+        MobileAds.initialize(this)
+
         val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         val shakeDetector = ShakeDetector(this)
         shakeDetector.setSensitivity(SENSITIVITY_LIGHT)
         shakeDetector.start(sensorManager, SensorManager.SENSOR_DELAY_GAME)
 
         setContent {
+            val hostState = remember {
+                SnackbarHostState()
+            }
+           /* NotificationPermission(
+                hostState,
+            )*/
+            val token = viewModel.getTokenState.value.successData
+
 
             val mainAuthUiEvent by viewModel.userOperationState
             val user by viewModel.userState
@@ -63,7 +75,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
             var isDarkTheme by remember {
                 mutableStateOf<Boolean?>(null)
             }
-            when(settingsState.successData.theme) {
+            when (settingsState.successData.theme) {
                 0 -> isDarkTheme = true
                 1 -> isDarkTheme = false
                 2 -> isDarkTheme = null
@@ -72,7 +84,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
 
             val authListenerRetryButtonState by viewModel.authListenerRetryButton
             LaunchedEffect(key1 = user.successData) {
-                user.successData?.let {user ->
+                user.successData?.let { user ->
                     mainAuthUiEvent.successData?.let { auth ->
                         if (user.shouldLogout && !user.isFromCache && !user.hasPendingWrites) {
                             viewModel.logOut()
@@ -86,7 +98,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
                 mainAuthUiEvent.successData?.let {
                     viewModel.getUser(it.uid)
                     viewModel.getUserMessagingData(it.uid)
-                }?: run {
+                } ?: run {
                     viewModel.getUserJob?.cancel()
                     viewModel.getUserMessagingJob?.cancel()
                 }
@@ -94,22 +106,39 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
             }
 
             NexusTheme(
-                isDarkTheme?: isSystemInDarkTheme()
+                isDarkTheme ?: isSystemInDarkTheme()
             ) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHostScreen(startDestination)
-                    if (mainAuthUiEvent.isError) {
-                        UserOperationErrorUi(
-                            errorMessage = mainAuthUiEvent.errorMessage,
-                            authListenerRetryButtonState
+                    Scaffold(
+                        snackbarHost = {
+                            SnackbarHost(hostState) {
+                                Snackbar(snackbarData = it)
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+
+                        Column(
+                            modifier = Modifier
+                                .padding(it)
+                                .fillMaxSize()
                         ) {
-                            viewModel.onEvent(MainEvent.Retry)
+                            NavHostScreen(startDestination)
+                            if (mainAuthUiEvent.isError) {
+                                UserOperationErrorUi(
+                                    errorMessage = mainAuthUiEvent.errorMessage,
+                                    authListenerRetryButtonState
+                                ) {
+                                    viewModel.onEvent(MainEvent.Retry)
+                                }
+                            }
                         }
                     }
+
 
                 }
 
@@ -117,13 +146,13 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
         }
 
 
-         val isTablet = resources.getBoolean(R.bool.isTablet)
-         requestedOrientation = if (isTablet) {
-             ActivityInfo.SCREEN_ORIENTATION_SENSOR
-         } else {
-             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-         }
-         
+        val isTablet = resources.getBoolean(R.bool.isTablet)
+        requestedOrientation = if (isTablet) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
     }
 
 
@@ -139,24 +168,25 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
 
     override fun onStart() {
         super.onStart()
-        Log.v("asdasd","onStart")
+        Log.v("asdasd", "onStart")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.v("asdasd","onStop")
+        Log.v("asdasd", "onStop")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.v("asdasd","onPause")
+        Log.v("asdasd", "onPause")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.v("asdasd","onResume")
+        Log.v("asdasd", "onResume")
         isShowAd = true
     }
+
     private fun loadAd(user: User) {
         if (!isShowAd) return
         else isShowAd = false
@@ -164,41 +194,46 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener  {
         val adsUnavailable = this.resources.getString(R.string.ads_unavailable)
         Toast.makeText(this@MainActivity, loadingAd, Toast.LENGTH_SHORT).show()
         val adRequest = AdRequest.Builder().build()
-        RewardedAd.load(this,"ca-app-pub-8437475970369583/4956584331", adRequest, object : RewardedAdLoadCallback() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                Toast.makeText(
-                    this@MainActivity,
-                    adsUnavailable,
-                    Toast.LENGTH_SHORT
-                ).show()
-                isShowAd = true
-            }
-            override fun onAdLoaded(ad: RewardedAd) {
-                val options = ServerSideVerificationOptions.Builder()
-                    .setCustomData(user.uid)
-                    .setUserId(user.uid)
-                    .build()
-                ad.setServerSideVerificationOptions(options)
-                ad.setOnPaidEventListener {
-                    val value: Double = it.valueMicros.toDouble()  / 1000000
-                    Log.v("asdasd",it.currencyCode)
-                    Log.v("asdasd",it.precisionType.toString())
-                    Log.v("asdasd", String.format("%.6f", value))
-                }
-                ad.show(this@MainActivity) { _ ->
+        RewardedAd.load(
+            this,
+            "ca-app-pub-8437475970369583/4956584331",
+            adRequest,
+            object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
                     Toast.makeText(
                         this@MainActivity,
-                        "Reward loaded.",
+                        adsUnavailable,
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.v("asdasd",user.uid)
                     isShowAd = true
-
-
                 }
 
-            }
-        })
+                override fun onAdLoaded(ad: RewardedAd) {
+                    val options = ServerSideVerificationOptions.Builder()
+                        .setCustomData(user.uid)
+                        .setUserId(user.uid)
+                        .build()
+                    ad.setServerSideVerificationOptions(options)
+                    ad.setOnPaidEventListener {
+                        val value: Double = it.valueMicros.toDouble() / 1000000
+                        Log.v("asdasd", it.currencyCode)
+                        Log.v("asdasd", it.precisionType.toString())
+                        Log.v("asdasd", String.format("%.6f", value))
+                    }
+                    ad.show(this@MainActivity) { _ ->
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Reward loaded.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.v("asdasd", user.uid)
+                        isShowAd = true
+
+
+                    }
+
+                }
+            })
     }
 
 

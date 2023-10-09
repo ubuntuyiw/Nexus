@@ -5,10 +5,12 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.functions.HttpsCallableResult
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.user.UserDto
 import com.ubuntuyouiwe.nexus.data.util.FirebaseCollections
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.tasks.await
 
 interface FirebaseDataSource {
 
@@ -80,4 +82,7 @@ interface FirebaseDataSource {
 
     /*    suspend fun isDocumentExist(collection: FirebaseCollections, documentId: String): Boolean
         fun documentToSubCollection(database: FirebaseCollections, document: String, subDataBases: FirebaseCollections): CollectionReference*/
+
+    fun firebaseMessaging(): FirebaseMessaging
+    suspend fun getDeviceToken(): String?
 }

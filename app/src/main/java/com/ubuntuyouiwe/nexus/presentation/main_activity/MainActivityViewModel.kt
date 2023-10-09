@@ -8,7 +8,10 @@ import com.ubuntuyouiwe.nexus.domain.model.Settings
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.AuthStateUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserMessagingDataUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.auth.SaveSystemLanguageUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.SignOutUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.auth.token.GetTokenUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.auth.token.SaveTokenUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.navigation.Screen
@@ -28,7 +31,10 @@ class MainActivityViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val getSettingsUseCase: GetSettingsUseCase,
-    private val userMessagingDataUseCase: GetUserMessagingDataUseCase
+    private val userMessagingDataUseCase: GetUserMessagingDataUseCase,
+    private val saveTokenUseCase: SaveTokenUseCase,
+    private val getTokenUseCase: GetTokenUseCase,
+    private val saveSystemLanguageUseCase: SaveSystemLanguageUseCase
 ) : ViewModel() {
 
     private val _userOperationState = mutableStateOf(UserOperationState())
@@ -48,6 +54,9 @@ class MainActivityViewModel @Inject constructor(
     private val _authListenerRetryButton = mutableStateOf(ButtonState())
     val authListenerRetryButton: State<ButtonState> = _authListenerRetryButton
 
+    private val _getTokenState = mutableStateOf(GetTokenState())
+    val getTokenState: State<GetTokenState> = _getTokenState
+
     var startDestination =  mutableStateOf(Screen.SPLASH)
 
     var getUserJob: Job? = null
@@ -61,6 +70,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     init {
+        getToken()
         getSettings()
         getAuthStateListener()
     }
@@ -233,6 +243,37 @@ class MainActivityViewModel @Inject constructor(
 
 
 
+            }
+        }.launchIn(viewModelScope)
+    }
+
+
+    private fun getToken() {
+        getTokenUseCase().onEach {
+            when (it) {
+                is Resource.Loading -> {
+                    _getTokenState.value = getTokenState.value.copy(
+                        isLoading = true,
+                        isSuccess = false,
+                        isError = false
+                    )
+                }
+                is Resource.Success -> {
+                    _getTokenState.value = getTokenState.value.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        isError = false,
+                        successData = it.data?: ""
+                    )
+                }
+                is Resource.Error -> {
+                    _getTokenState.value = getTokenState.value.copy(
+                        isLoading = false,
+                        isSuccess = false,
+                        isError = true,
+                        errorMessage = it.message
+                    )
+                }
             }
         }.launchIn(viewModelScope)
     }

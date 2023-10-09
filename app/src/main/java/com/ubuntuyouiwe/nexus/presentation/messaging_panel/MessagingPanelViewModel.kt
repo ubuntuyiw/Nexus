@@ -387,9 +387,7 @@ class MessagingPanelViewModel @Inject constructor(
                         isLoading = true,
                         isSuccess = false,
                         isError = false
-
                     )
-
                 }
 
                 is Resource.Success -> {
@@ -414,7 +412,8 @@ class MessagingPanelViewModel @Inject constructor(
     }
 
     private fun sendFirstMessage(chatRoom: ChatRoom, messages: Message, newMessage: MessageItem) {
-        sendFirstMessageUseCase(chatRoom, messages, newMessage).onEach {
+        val isUserMessagingData = userMessagingDataState.value.successData == null
+        sendFirstMessageUseCase(chatRoom, messages, newMessage, isUserMessagingData).onEach {
             when (it) {
                 is Resource.Loading -> {
                     _sendMessageState.value = sendMessageState.value.copy(

@@ -125,7 +125,6 @@ fun MessagingPanelScreen(
     }
     val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
 
-
     val hostState = remember { SnackbarHostState() }
     var expendedTextField by remember {
         mutableStateOf(false)
@@ -512,10 +511,18 @@ fun MessagingPanelScreen(
                            .fillMaxWidth(),
                        contentAlignment = Alignment.Center,
                    ) {
-                       Text(
-                           text = "$availableMessages: " + userMessagingDataState.successData?.totalMessages.toString(),
-                           style = MaterialTheme.typography.labelLarge,
-                       )
+                       userMessagingDataState.successData?.let {
+                           Text(
+                               text = "$availableMessages: " + it.totalMessages.toString(),
+                               style = MaterialTheme.typography.labelLarge,
+                           )
+                       }?: run {
+                           Text(
+                               text = "$availableMessages: 50",
+                               style = MaterialTheme.typography.labelLarge,
+                           )
+                       }
+
                    }
 
 

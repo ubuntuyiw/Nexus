@@ -41,6 +41,7 @@ class UserNameViewModel @Inject constructor(
             }
         }
     }
+
     private fun updateDisplayName(name: String) {
         updateDisplayNameUseCase(name).onEach {
             when(it) {
@@ -68,7 +69,6 @@ class UserNameViewModel @Inject constructor(
                     )
                 }
             }
-
         }.launchIn(viewModelScope)
     }
 }

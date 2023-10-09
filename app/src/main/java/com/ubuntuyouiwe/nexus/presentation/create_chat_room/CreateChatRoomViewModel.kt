@@ -14,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateChatRoomViewModel @Inject constructor(
     private val getRolesUseCase: GetRolesUseCase
-
 ) : ViewModel() {
 
     private val _rolesState = mutableStateOf<RolesState>(RolesState())

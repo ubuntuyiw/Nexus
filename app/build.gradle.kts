@@ -20,8 +20,8 @@ android {
         applicationId = "com.ubuntuyouiwe.nexus"
         minSdk = 28
         targetSdk = 34
-        versionCode = 14
-        versionName = "0.9.0"
+        versionCode = 15
+        versionName = "0.9.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -31,8 +31,8 @@ android {
     buildTypes {
         release {
             ndk.debugSymbolLevel = "FULL"
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -42,7 +42,6 @@ android {
                 nativeSymbolUploadEnabled = true
                 strippedNativeLibsDir = "build/intermediates/stripped_native_libs/release/out/lib"
                 unstrippedNativeLibsDir = "build/intermediates/merged_native_libs/release/out/lib"
-
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.ubuntuyouiwe.nexus.data.repository
 
 import android.content.Context
-import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.ubuntuyouiwe.nexus.data.dto.AIRequest
 import com.ubuntuyouiwe.nexus.data.dto.AIRequestBody
 import com.ubuntuyouiwe.nexus.data.dto.ChatRoomDto
@@ -61,11 +61,15 @@ class DataSyncRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun sendMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
+    override suspend fun sendMessage(
+        chatRoom: ChatRoom,
+        messages: List<MessageItem>,
+        isUserMessagingData: Boolean
+    ) {
         if (chatRoom.isNew) {
-            sendInitialMessage(chatRoom, messages)
+            sendInitialMessage(chatRoom, messages, isUserMessagingData)
         } else {
-            sendSubsequentMessage(chatRoom, messages)
+            sendSubsequentMessage(chatRoom, messages, isUserMessagingData)
         }
     }
 
@@ -89,7 +93,15 @@ class DataSyncRepositoryImpl @Inject constructor(
     }
 
 
-    private suspend fun sendInitialMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
+    private suspend fun sendInitialMessage(
+        chatRoom: ChatRoom,
+        messages: List<MessageItem>,
+        isUserMessagingData: Boolean
+    ) {
+        if (isUserMessagingData) {
+            firebaseDataSource.createUserMessagingData()
+        }
+
         val rolesDto = chatRoom.role.toRolesDto()
         val messagesItemToDto = messages.map { it.toMessageItemDto() }
         val chatRoomToDto = chatRoom.toChatRoomDto()
@@ -114,6 +126,7 @@ class DataSyncRepositoryImpl @Inject constructor(
 
         ai(messageResult.id, chatRoomToDto.id, rolesDto.system!!, messagesItemToDto)
     }
+
 
     private suspend fun ai(
         messageId: String,
@@ -148,8 +161,14 @@ class DataSyncRepositoryImpl @Inject constructor(
     }
 
 
-    private suspend fun sendSubsequentMessage(chatRoom: ChatRoom, messages: List<MessageItem>) {
-
+    private suspend fun sendSubsequentMessage(
+        chatRoom: ChatRoom,
+        messages: List<MessageItem>,
+        isUserMessagingData: Boolean
+    ) {
+        if (isUserMessagingData) {
+            firebaseDataSource.createUserMessagingData()
+        }
         val rolesDto = chatRoom.role.toRolesDto()
         val messagesItemToDto = messages.map { it.toMessageItemDto() }
 
@@ -230,6 +249,8 @@ class DataSyncRepositoryImpl @Inject constructor(
             }
         }
     }
+
+
 
 
 }

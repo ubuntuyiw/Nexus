@@ -13,13 +13,14 @@ class SendFirstMessageUseCase @Inject constructor(
     private val dataSyncRepository: DataSyncRepository
 ) {
 
-    operator fun invoke(chatRoom: ChatRoom, messages: Message, newMessage: MessageItem) =
+    operator fun invoke(chatRoom: ChatRoom, messages: Message, newMessage: MessageItem, isUserMessagingData: Boolean) =
         flow<Resource<Any>> {
             emit(Resource.Loading)
             try {
                 dataSyncRepository.sendMessage(
                     totalMessageCountUpdate(chatRoom),
-                    aiMemory(messages, newMessage)
+                    aiMemory(messages, newMessage),
+                    isUserMessagingData
                 )
 
                 emit(Resource.Success())
