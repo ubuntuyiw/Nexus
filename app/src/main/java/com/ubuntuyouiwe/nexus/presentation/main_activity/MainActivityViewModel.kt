@@ -57,6 +57,9 @@ class MainActivityViewModel @Inject constructor(
     private val _getTokenState = mutableStateOf(GetTokenState())
     val getTokenState: State<GetTokenState> = _getTokenState
 
+    private val _saveTokenState = mutableStateOf(SaveTokenState())
+    val saveTokenState: State<SaveTokenState> = _saveTokenState
+
     var startDestination =  mutableStateOf(Screen.SPLASH)
 
     var getUserJob: Job? = null
@@ -275,6 +278,40 @@ class MainActivityViewModel @Inject constructor(
                     )
                 }
             }
+        }.launchIn(viewModelScope)
+    }
+    fun saveToken(token: String) {
+        saveTokenUseCase(token).onEach {
+            when (it) {
+                is Resource.Loading -> {
+                    _saveTokenState.value = saveTokenState.value.copy(
+                        isLoading = true,
+                        isSuccess = false,
+                        isError = false
+                    )
+                }
+                is Resource.Success -> {
+                    _saveTokenState.value = saveTokenState.value.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        isError = false
+                    )
+                }
+                is Resource.Error -> {
+                    _saveTokenState.value = saveTokenState.value.copy(
+                        isLoading = false,
+                        isSuccess = false,
+                        isError = true
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    fun saveSystemLanguage(code: String) {
+        saveSystemLanguageUseCase(code).onEach {
+
         }.launchIn(viewModelScope)
     }
 }

@@ -38,10 +38,6 @@ class AuthRepositoryImpl @Inject constructor(
             firebaseDatasource.signUp(userCredentialsDto.email, userCredentialsDto.password)
         createUserDatabase(result.user?.uid, result.user?.email, result.user?.displayName)
         firebaseDatasource.createUserMessagingData()
-        val token = firebaseDatasource.getDeviceToken()
-        saveTokenToDatabase(token)
-        val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
-        setSystemLanguage(systemLanguage)
 
     }
 
@@ -56,11 +52,6 @@ class AuthRepositoryImpl @Inject constructor(
             )
             firebaseDatasource.createUserMessagingData()
         }
-        val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
-        setSystemLanguage(systemLanguage)
-        val token = firebaseDatasource.getDeviceToken()
-        saveTokenToDatabase(token)
-
         return authResult.user?.toUserDto()?.toUser()
     }
 
@@ -68,9 +59,6 @@ class AuthRepositoryImpl @Inject constructor(
         val userCredentialsDto = userCredentials.toUserCredentialsDto()
         val result =
             firebaseDatasource.loginIn(userCredentialsDto.email, userCredentialsDto.password)
-        val token = firebaseDatasource.getDeviceToken()
-        saveTokenToDatabase(token)
-
         return result.user?.toUserDto()?.toUser()
     }
 
@@ -128,13 +116,10 @@ class AuthRepositoryImpl @Inject constructor(
                 firebaseDatasource.set(
                     FirebaseCollections.Users,
                     it,
-                    hashMapOf("deviceTokens" to FieldValue.arrayUnion(onNewToken))
+                    hashMapOf("deviceTokens" to FieldValue.arrayUnion(token))
                 )
             }
         }
-
-
-
     }
 
 

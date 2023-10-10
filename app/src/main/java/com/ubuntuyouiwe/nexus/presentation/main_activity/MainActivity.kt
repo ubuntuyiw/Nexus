@@ -44,12 +44,12 @@ import com.ubuntuyouiwe.nexus.presentation.main_activity.widgets.UserOperationEr
 import com.ubuntuyouiwe.nexus.presentation.navigation.NavHostScreen
 import com.ubuntuyouiwe.nexus.presentation.ui.theme.NexusTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), ShakeDetector.Listener {
     private val viewModel: MainActivityViewModel by viewModels()
-
-    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
@@ -63,11 +63,12 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener {
             val hostState = remember {
                 SnackbarHostState()
             }
-           /* NotificationPermission(
+            NotificationPermission(
                 hostState,
-            )*/
-            val token = viewModel.getTokenState.value.successData
+            )
+            val systemLanguage = Locale.getDefault().language.uppercase(Locale.ROOT)
 
+            val getTokenState by viewModel.getTokenState
 
             val mainAuthUiEvent by viewModel.userOperationState
             val user by viewModel.userState
@@ -98,6 +99,12 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener {
                 mainAuthUiEvent.successData?.let {
                     viewModel.getUser(it.uid)
                     viewModel.getUserMessagingData(it.uid)
+
+                    if (getTokenState.isSuccess) {
+                        viewModel.saveToken(getTokenState.successData)
+                    }
+                    viewModel.saveSystemLanguage(systemLanguage)
+
                 } ?: run {
                     viewModel.getUserJob?.cancel()
                     viewModel.getUserMessagingJob?.cancel()

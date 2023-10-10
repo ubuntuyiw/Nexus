@@ -167,6 +167,7 @@ fun MessagingPanelScreen(
             savedStateHandle?.remove<String>("image_text")
         }
     }
+
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = {
