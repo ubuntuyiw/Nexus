@@ -1,4 +1,4 @@
-package com.ubuntuyouiwe.nexus.domain.use_case.auth
+package com.ubuntuyouiwe.nexus.domain.use_case.auth.token
 
 import com.ubuntuyouiwe.nexus.domain.repository.AuthRepository
 import com.ubuntuyouiwe.nexus.util.Resource
@@ -7,18 +7,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SignOutUseCase @Inject constructor(
+class RemoveTokenFromDatabaseUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    operator fun invoke(token: String): Flow<Resource<Any>> = flow {
+    operator fun invoke(token: String) = flow<Resource<Nothing>> {
         emit(Resource.Loading)
         try {
             authRepository.removeTokenFromDatabase(token)
-            authRepository.logOut()
             emit(Resource.Success())
-        } catch (e: Exception) {
-            emit(Resource.Error(message = e.message ?: ErrorCodes.UNKNOWN_ERROR.name))
-        }
-    }
 
+        } catch (e: Exception) {
+            emit(Resource.Error(message = e.message?: ErrorCodes.UNKNOWN_ERROR.name))
+        }
+
+    }
 }

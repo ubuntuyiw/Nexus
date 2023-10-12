@@ -11,6 +11,7 @@ import com.ubuntuyouiwe.nexus.domain.use_case.auth.GetUserUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.SaveSystemLanguageUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.SignOutUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.token.GetTokenUseCase
+import com.ubuntuyouiwe.nexus.domain.use_case.auth.token.RemoveTokenFromDatabaseUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.auth.token.SaveTokenUseCase
 import com.ubuntuyouiwe.nexus.domain.use_case.proto.settings.GetSettingsUseCase
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
@@ -34,7 +35,7 @@ class MainActivityViewModel @Inject constructor(
     private val userMessagingDataUseCase: GetUserMessagingDataUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val getTokenUseCase: GetTokenUseCase,
-    private val saveSystemLanguageUseCase: SaveSystemLanguageUseCase
+    private val saveSystemLanguageUseCase: SaveSystemLanguageUseCase,
 ) : ViewModel() {
 
     private val _userOperationState = mutableStateOf(UserOperationState())
@@ -54,7 +55,7 @@ class MainActivityViewModel @Inject constructor(
     private val _authListenerRetryButton = mutableStateOf(ButtonState())
     val authListenerRetryButton: State<ButtonState> = _authListenerRetryButton
 
-    private val _getTokenState = mutableStateOf(GetTokenState())
+    private val _getTokenState = sharedState.token
     val getTokenState: State<GetTokenState> = _getTokenState
 
     private val _saveTokenState = mutableStateOf(SaveTokenState())
@@ -174,8 +175,8 @@ class MainActivityViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-    fun logOut() {
-        signOutUseCase().onEach {
+    fun logOut(token: String) {
+        signOutUseCase(token).onEach {
             when (it) {
                 is Resource.Loading -> {
                     _stateLogOut.value =
@@ -314,4 +315,5 @@ class MainActivityViewModel @Inject constructor(
 
         }.launchIn(viewModelScope)
     }
+
 }

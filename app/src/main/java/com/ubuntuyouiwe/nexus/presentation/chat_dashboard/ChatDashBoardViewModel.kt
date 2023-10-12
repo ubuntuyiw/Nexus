@@ -28,6 +28,7 @@ import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.state.SignOutState
 import com.ubuntuyouiwe.nexus.presentation.chat_dashboard.widgets.filter.FilterState
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.ChatRoomsState
 import com.ubuntuyouiwe.nexus.presentation.create_chat_room.RolesState
+import com.ubuntuyouiwe.nexus.presentation.main_activity.GetTokenState
 import com.ubuntuyouiwe.nexus.presentation.main_activity.UserOperationState
 import com.ubuntuyouiwe.nexus.presentation.state.SharedState
 import com.ubuntuyouiwe.nexus.presentation.state.WorkManagerState
@@ -53,7 +54,6 @@ class ChatDashBoardViewModel @Inject constructor(
     private val chatRoomDeleteUseCase: ChatRoomDeleteUseCase,
     private val cancelWorkerUseCase: CancelWorkerUseCase,
     private val application: Application
-
 ) : AndroidViewModel(application) {
 
     private val _rolesState = mutableStateOf(RolesState())
@@ -61,6 +61,7 @@ class ChatDashBoardViewModel @Inject constructor(
     private val _stateLogOut = mutableStateOf(SignOutState())
     val stateLogOut: State<SignOutState> = _stateLogOut
 
+    val getTokenState: State<GetTokenState> = sharedState.token
 
     private val _chatRoomsState = mutableStateOf(ChatRoomsState())
     val chatRoomsState: State<ChatRoomsState> = _chatRoomsState
@@ -98,7 +99,7 @@ class ChatDashBoardViewModel @Inject constructor(
     fun onEvent(event: ChatDashBoardEvent) {
         when (event) {
             is ChatDashBoardEvent.LogOut -> {
-                logOut()
+                logOut(getTokenState.value.successData)
             }
 
             is ChatDashBoardEvent.ChangeMenuVisibility -> {
@@ -137,7 +138,6 @@ class ChatDashBoardViewModel @Inject constructor(
             is ChatDashBoardEvent.ChatRoomCancelDelete -> {
                 cancelChatRoomDelete(event.id)
             }
-
         }
     }
 
@@ -524,8 +524,8 @@ class ChatDashBoardViewModel @Inject constructor(
     }
 
 
-    private fun logOut() {
-        signOutUseCase().onEach {
+    private fun logOut(token: String) {
+        signOutUseCase(token).onEach {
             when (it) {
                 is Resource.Loading -> {
                     _stateLogOut.value =

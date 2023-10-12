@@ -122,6 +122,17 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun removeTokenFromDatabase(tokenToRemove: String) {
+        val uid = firebaseDatasource.userState()?.uid
+        uid?.let {
+            firebaseDatasource.set(
+                FirebaseCollections.Users,
+                it,
+                hashMapOf("deviceTokens" to FieldValue.arrayRemove(tokenToRemove))
+            )
+        }
+    }
+
 
     override suspend fun setSystemLanguage(code: String) {
         val uid = firebaseDatasource.userState()?.uid

@@ -39,5 +39,7 @@ interface AuthRepository {
 
     suspend fun saveTokenToDatabase(onNewToken: String?)
 
+    suspend fun removeTokenFromDatabase(tokenToRemove: String)
+
     suspend fun getDeviceToken(): String?
 }

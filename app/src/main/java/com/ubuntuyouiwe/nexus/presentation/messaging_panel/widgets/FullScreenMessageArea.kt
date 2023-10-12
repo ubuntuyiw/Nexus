@@ -3,6 +3,7 @@ package com.ubuntuyouiwe.nexus.presentation.messaging_panel.widgets
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -37,7 +38,7 @@ fun FullScreenMessageArea(message: Messages, userState: UserOperationState, hide
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.scrim
         ),
-        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
 
     ) {
         Chapter(

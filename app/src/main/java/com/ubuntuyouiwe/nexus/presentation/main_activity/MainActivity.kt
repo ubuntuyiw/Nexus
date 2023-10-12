@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity(), ShakeDetector.Listener {
                 user.successData?.let { user ->
                     mainAuthUiEvent.successData?.let { auth ->
                         if (user.shouldLogout && !user.isFromCache && !user.hasPendingWrites) {
-                            viewModel.logOut()
+                            viewModel.logOut(getTokenState.successData)
                         }
                     }
                 }
